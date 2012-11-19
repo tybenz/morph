@@ -128,7 +128,7 @@ Draw.redraw = function( grid, paintGrid, unit ) {
 
 Draw.resetCanvas = function() {
   Draw.$canvas.remove();
-  Draw.$canvas = $( '<canvas id="canvas" width="450" height="450"></canvas>' );
+  Draw.$canvas = $( '<canvas id="canvas" width="360" height="360"></canvas>' );
   Draw.$canvas.click( Draw.canvasClick );
   $( '#game' ).prepend( Draw.$canvas );
   Draw.redraw( Draw.grid, Draw.paintGrid(), Draw.unit );
