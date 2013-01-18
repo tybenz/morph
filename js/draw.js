@@ -33,7 +33,7 @@ Draw.init = function() {
     var $blue = Draw.$pal.find( '.color:first' )
         $activeColor = $( '#active-color' );
 
-    Draw.$pal.find( '.color' ).bind( 'click', function( evt ) {
+    Draw.$pal.find( '.color' ).bind( 'vclick', function( evt ) {
         evt.preventDefault();
         var $this = $( this ),
             color = $this.css( 'background-color' );
@@ -51,7 +51,7 @@ Draw.init = function() {
     $blue.click();
 
 
-    Draw.$canvas.bind( 'click', Draw.canvasClick );
+    Draw.$canvas.bind( 'vclick', Draw.canvasClick );
 
     $( document ).bind( 'keydown', function( evt ) {
         var undo = evt.which == 90 && evt.metaKey,
