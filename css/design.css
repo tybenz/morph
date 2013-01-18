@@ -58,8 +58,7 @@
     height: 105px;
     margin-bottom: -15px;
     width: 900px;
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow: auto;
     -wekbit-overflow-scrolling: touch;
 }
 .thumbs-inner {
