@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Morph | Draw</title>
+<link rel="shortcut icon" href="img/favicon.png">
+
+<link rel="stylesheet" type="text/css" href="css/app.css" />
+<link rel="stylesheet" type="text/css" href="css/ui.css" />
+<link rel="stylesheet" type="text/css" href="css/draw.css" />
+<link rel="stylesheet" type="text/css" href="css/font-awesome.css" />
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/vmouse.js"></script>
+<script type="text/javascript" src="js/draw.js"></script>
+</head>
+<body>
+
+<div id="buffer"></div>
+<div id="game">
+    <canvas id="canvas" width="360" height="360"></canvas>
+    <div id="tools">
+        <a href="#" id="clear" class="icon-ban-circle"></a>
+        <a href="#" id="undo" class="icon-undo"></a>
+        <a href="#" id="redo" class="icon-repeat"></a>
+        <a href="#" id="download-full" class="icon-camera"></a>
+        <a href="#" id="download" class="icon-download"></a>
+        <div id="pallette"></div>
+        <div id="active-color"></div>
+    </div>
+</div>
+
+</body>
+</html>
