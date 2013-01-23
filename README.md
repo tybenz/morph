@@ -20,6 +20,8 @@ Entities have:
 
 - action methods (attacks, interacting with people/objects)
 
+- transform method
+
 ### Friend
 
 - Nice NPCs
@@ -33,6 +35,12 @@ Entities have:
 - Move methods
 
 - Sequence (their A.I.)
+
+#### Boss
+
+- Derives from Enemy
+
+- Can transform like the hero
 
 ### Objects (collectibles)
 
