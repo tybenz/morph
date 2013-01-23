@@ -67,3 +67,11 @@ Entities have:
 - Health and maybe some point-system
 
 - Also the player's "level" (e.g. which shapes/characters has the player unlocked)
+
+### Levels
+
+- Levels have a collection of entities and portals to other levels
+
+### State
+
+- Stores level, score, and inventory
