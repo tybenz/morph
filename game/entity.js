@@ -15,7 +15,15 @@ Game.Entity = Class.extend({
     y: null,
     render: function() {
         if ( this.visible ) {
-            Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.x, this.y );
+            var activeSprite = this.sprites[ this.activeSprite ],
+                rectSize = Game.unit / 9;
+            for ( var i in activeSprite ) {
+                for ( var j in activeSprite[ i ] ) {
+                    Game.ctx.fillStyle = activeSprite[ i ][ j ];
+                    Game.ctx.fillRect( this.x + j * rectSize, this.y + i * rectSize, rectSize, rectSize );
+                }
+            }
+            // Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.x, this.y );
         }
     }
 });

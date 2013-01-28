@@ -11,14 +11,14 @@ var Game = {
         //Load level and sprites
         Game.currentLevel = Game.Levels[0];
         Game.loadLevel();
+        Game.startLoop();
     },
     startLoop: function() {
         //Start event listeners and main loop
-        addEventListener( 'keydown', Game.keyDownLister, false );
-        addEventListener( 'keyup', Game.keyUpLister, false );
+        addEventListener( 'keydown', Game.keyDownListener, false );
+        addEventListener( 'keyup', Game.keyUpListener, false );
         Game.then = Date.now();
-        // setInterval(Game.loop, 1);
-        Game.loop();
+        setInterval(Game.loop, 1);
     },
     loop: function() {
         var now = Date.now(),
@@ -30,13 +30,26 @@ var Game = {
         Game.then = now;
     },
     update: function() {
+        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { //player holding left
+            Game.hero.x -= 18;
+            Game.keysDown[ 37 ] = 'locked';
+        }
+        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { //player holding right
+            Game.hero.x += 18;
+            Game.keysDown[ 39 ] = 'locked';
+        }
+        if ( 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) { //player holding spacebar
+            //action
+            Game.keysDown[ 32 ] = 'locked';
+        }
     },
     render: function() {
         var i;
 
         //Background
-        Game.ctx.fillStyle = 'rgba(0,0,0,1)';
+        Game.ctx.fillStyle = '#000';
         Game.ctx.fillRect( 0, 0, 900, 450 );
+
         for ( i in Game.currentLevel.entities ) {
             Game.currentLevel.entities[ i ].render();
         }
@@ -48,6 +61,9 @@ var Game = {
                 if ( entityString != 'blank' ) {
                     entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
                     Game.currentLevel.entities.push( entity );
+                    if ( entityString.indexOf( 'hero' ) != -1 ) {
+                        Game.hero = entity
+                    }
                 }
             }
         }
