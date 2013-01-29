@@ -22,105 +22,17 @@ Game.Entity.Hero = Game.Entity.extend({
 
 Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     type: 'Hero.Man',
-    sprites: [[
+    bitmaps: [
         [
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#00ff00",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#00ff00",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "#00ff00",
-            "transparent",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "transparent",
-            "transparent",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "transparent",
-            "transparent",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "transparent",
-            "transparent",
-            "transparent"
-        ],
-        [
-            "#00ff00",
-            "#00ff00",
-            "#00ff00",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#00ff00",
-            "transparent",
-            "transparent"
-        ],
-        [
-            "#00ff00",
-            "#00ff00",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#00ff00",
-            "#00ff00",
-            "transparent"
-        ],
-        [
-            "#00ff00",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#00ff00",
-            "#00ff00",
-            "#00ff00"
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+            [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+            [ "transparent", "#00ff00", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent" ],
+            [ "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00"  ]
         ]
-    ]]
+    ]
 });

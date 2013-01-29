@@ -20,105 +20,15 @@ Game.Entity.Enemy = Game.Entity.extend({
 
 Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
     type: 'Enemy.Monster',
-    sprites: [[
-        [
-            "transparent",
-            "#ff0000",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#ff0000",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "#ff0000",
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "transparent",
-            "#ff0000",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "transparent"
-        ],
-        [
-            "#ff0000",
-            "#ff0000",
-            "transparent",
-            "#ff0000",
-            "transparent",
-            "#ff0000",
-            "transparent",
-            "#ff0000",
-            "#ff0000"
-        ],
-        [
-            "#ff0000",
-            "#ff0000",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "transparent",
-            "#ff0000",
-            "#ff0000"
-        ],
-        [
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "transparent",
-            "transparent"
-        ],
-        [
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "transparent",
-            "#ff0000",
-            "#ff0000",
-            "#ff0000",
-            "transparent"
-        ]
+    bitmaps: [[
+        [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
+        [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
+        [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
+        [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
+        [ "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000" ],
+        [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
+        [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
+        [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
+        [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
     ]]
 });

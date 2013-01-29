@@ -11,7 +11,6 @@ var Game = {
         //Load level and sprites
         Game.currentLevel = Game.Levels[0];
         Game.loadLevel();
-        Game.startLoop();
     },
     startLoop: function() {
         //Start event listeners and main loop

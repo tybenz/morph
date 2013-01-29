@@ -1,8 +1,10 @@
-Game.Sprite = function( path ) {
-    var image = new Image();
-    image.src = path;
+Game.Sprite = function( path, title ) {
+    var title = title || '',
+        image = new Image();
     image.onload = function() {
         Game.imageLoaded( image );
     }
+    image.src = path;
+    image.title = title;
     return image;
 }
