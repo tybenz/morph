@@ -18,6 +18,8 @@ var Game = {
         addEventListener( 'keyup', Game.keyUpListener, false );
         Game.then = Date.now();
         setInterval(Game.loop, 1);
+
+	Game.axisList = Game.currentLevel.entities;
     },
     loop: function() {
         var now = Date.now(),
@@ -29,6 +31,7 @@ var Game = {
         Game.then = now;
     },
     update: function() {
+	
         if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { //player holding left
             Game.hero.x -= 18;
             Game.keysDown[ 37 ] = 'locked';
@@ -41,6 +44,26 @@ var Game = {
             //action
             Game.keysDown[ 32 ] = 'locked';
         }
+	//Broad-phase collision detection using sweep and prune algorithm. 
+	var activeList = new Array(Game.axisList[0]));
+	for (var i = 1; i < Game.axisList.length; i++) {
+	    for (var j = 0; j < activeList.length; j++) {
+		if (Game.axisList[i].x - (Game.unit / 4) > activeList[j].x - (Game.unit / 4)) {
+		    activeList.pop();
+		    continue;
+		}
+		//Narrow-phase collision detection.
+		if (!( Abs(Game.axisList[i].x - activeList[j].x) > (Game.unit / 2)) &&
+		    !( Abs(Game.axisList[i].y - activeList[j].y) > (Game.unit / 2))) {
+		    //We have a collision between axisList[i] and activeList[j]
+		}
+	    }
+	    activeList.push(Game.axisList[i]);
+	}
+			   
+			
+	    
+	
     },
     render: function() {
         var i;
