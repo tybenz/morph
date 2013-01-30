@@ -19,7 +19,7 @@ var Game = {
         Game.then = Date.now();
         setInterval(Game.loop, 1);
 
-	Game.axisList = Game.currentLevel.entities;
+	
     },
     loop: function() {
         var now = Date.now(),
@@ -44,26 +44,33 @@ var Game = {
             //action
             Game.keysDown[ 32 ] = 'locked';
         }
-	//Broad-phase collision detection using sweep and prune algorithm. 
-	var activeList = new Array(Game.axisList[0]));
-	for (var i = 1; i < Game.axisList.length; i++) {
+	// Collision Detection
+	var axisList = Game.currentLevel.entities.sort(function(a, b) { return (a.x - Game.unit/4) - (b.x - Game.unit/4) }),
+	    activeList = new Array(axisList[0]);
+	    collisions = new Array();
+	for (var i = 1; i < axisList.length; i++) {
 	    for (var j = 0; j < activeList.length; j++) {
-		if (Game.axisList[i].x - (Game.unit / 4) > activeList[j].x - (Game.unit / 4)) {
+		if (axisList[i].x - Game.unit/4 > activeList[j].x + Game.unit/4) {
 		    activeList.pop();
 		    continue;
 		}
-		//Narrow-phase collision detection.
-		if (!( Abs(Game.axisList[i].x - activeList[j].x) > (Game.unit / 2)) &&
-		    !( Abs(Game.axisList[i].y - activeList[j].y) > (Game.unit / 2))) {
-		    //We have a collision between axisList[i] and activeList[j]
+		if (!(Math.abs(axisList[i].y - activeList[j].y) > Game.unit/2)) {// unit/4 =? half_width
+		    collisions.push([axisList[i], activeList[j]);
 		}
 	    }
-	    activeList.push(Game.axisList[i]);
+	    activeList.push(axisList[i]);
 	}
-			   
-			
-	    
-	
+	for (i in collisions) {
+	    Game.collider(collisions[i]);
+	}
+    },
+    collider: function(a) {
+	if (a instanceof Array && a.length == 2) {
+	    if (a[0] instanceof Game.Entity && a[1] instanceof Game.Entity) {
+		a[0].collideWith(a[1]);
+		a[1].collideWith(a[0]);
+	    }
+	}
     },
     render: function() {
         var i;
