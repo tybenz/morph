@@ -37,5 +37,11 @@ Game.Entity = Class.extend({
         if ( this.visible ) {
             Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.x, this.y );
         }
-    }
+    },
+    collideWith: function(entity) { 
+	// by default, do nothing 
+    },
+    update: function() {
+	//by default, do nothing
+    },
 });

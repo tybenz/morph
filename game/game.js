@@ -1,3 +1,4 @@
+
 var Game = {
     unit: 18,
     init: function() {
@@ -17,9 +18,8 @@ var Game = {
         addEventListener( 'keydown', Game.keyDownListener, false );
         addEventListener( 'keyup', Game.keyUpListener, false );
         Game.then = Date.now();
-        setInterval(Game.loop, 1);
-
-	
+		//Game.loop();
+	setInterval(Game.loop, 1);
     },
     loop: function() {
         var now = Date.now(),
@@ -30,9 +30,8 @@ var Game = {
 
         Game.then = now;
     },
-    update: function() {
-	
-        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { //player holding left
+    update: function(modifier) {
+	if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { //player holding left
             Game.hero.x -= 18;
             Game.keysDown[ 37 ] = 'locked';
         }
@@ -40,36 +39,45 @@ var Game = {
             Game.hero.x += 18;
             Game.keysDown[ 39 ] = 'locked';
         }
+	if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { //player holding up
+            Game.hero.up();
+            Game.keysDown[ 38 ] = 'locked';
+        }
         if ( 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) { //player holding spacebar
             //action
             Game.keysDown[ 32 ] = 'locked';
         }
-	// Collision Detection
-	var axisList = Game.currentLevel.entities.sort(function(a, b) { return (a.x - Game.unit/4) - (b.x - Game.unit/4) }),
-	    activeList = new Array(axisList[0]);
+	//collision 
+	var axisList = Game.currentLevel.entities.sort(function(a, b) { return a.x - b.x }),
+	    activeList = new Array(axisList[0]),
 	    collisions = new Array();
 	for (var i = 1; i < axisList.length; i++) {
-	    for (var j = 0; j < activeList.length; j++) {
-		if (axisList[i].x - Game.unit/4 > activeList[j].x + Game.unit/4) {
+	    for (var j = activeList.length - 1; j >= 0; j--) {
+		if (axisList[i].x > (activeList[j].x + Game.unit)) {
 		    activeList.pop();
 		    continue;
 		}
-		if (!(Math.abs(axisList[i].y - activeList[j].y) > Game.unit/2)) {// unit/4 =? half_width
-		    collisions.push([axisList[i], activeList[j]);
+		if (Math.abs(axisList[i].x - activeList[j].x) <= Game.unit &&
+		    Math.abs(axisList[i].y - activeList[j].y) <= Game.unit) {
+		    collisions.push([axisList[i], activeList[j]]);
 		}
 	    }
 	    activeList.push(axisList[i]);
 	}
+//	console.log("There are %d collisions", collisions.length);
 	for (i in collisions) {
 	    Game.collider(collisions[i]);
 	}
+	//update all entities
+	for (i in Game.currentLevel.entities) {
+	    Game.currentLevel.entities[i].update();
+	}
     },
     collider: function(a) {
-	if (a instanceof Array && a.length == 2) {
-	    if (a[0] instanceof Game.Entity && a[1] instanceof Game.Entity) {
-		a[0].collideWith(a[1]);
+	if (a instanceof Array && a.length == 2 &&
+	   a[0] instanceof Game.Entity && a[1] instanceof Game.Entity) {
+	        a[0].collideWith(a[1]);
 		a[1].collideWith(a[0]);
-	    }
 	}
     },
     render: function() {
@@ -85,11 +93,11 @@ var Game = {
     },
     loadLevel: function() {
         for ( i in Game.currentLevel.grid ) {
-            for ( j in Game.currentLevel.grid[ i ] ) {
+	    for (j in Game.currentLevel.grid[i]) {
                 entityString = Game.currentLevel.grid[ i ][ j ];
                 if ( entityString != 'blank' ) {
-                    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
-                    Game.currentLevel.entities.push( entity );
+		    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
+		    Game.currentLevel.entities.push( entity );
                     if ( entityString.indexOf( 'hero' ) != -1 ) {
                         Game.hero = entity
                     }
@@ -112,8 +120,10 @@ var Game = {
         if ( Game.imageCount < Game.currentLevel.entityCount ) {
             Game.imageCount++;
             return;
-        }
-        Game.startLoop();
+        } else if (Game.imageCount == Game.currentLevel.entityCount) {
+	    //console.log("i'm from image loaded. you should see me once.")
+            Game.startLoop();
+	}
     }
 };
 window.Game = Game;

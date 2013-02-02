@@ -30,5 +30,18 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
         [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-    ]]
+    ]],
+    collideWith: function(entity) { 
+	//as of now, handle land, rock, coin, monster
+	if (entity instanceof Game.Entity.Interactable.Rock) {
+	    
+	}
+	if (entity instanceof Game.Entity.Interactable.Coin) {
+	}
+	if (entity instanceof Game.Entity.Terrain.Land) {
+	}
+	if (entity instanceof Game.Entity.Enemy.Monster) {
+	}
+    },
 });
+

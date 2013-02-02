@@ -20,7 +20,22 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
             [ "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ],
             [ "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ]
         ]
-    ]
+    ],
+    collideWith: function(entity) { 
+	//as of now, handle land, rock, coin, monster
+	if (entity instanceof Game.Entity.Hero.Man) {
+	    if (32 in Game.keysDown && this.y == entity.y) {
+		this.y -= Game.unit;
+		this.x -= Game.unit;
+	    }
+	}
+	if (entity instanceof Game.Entity.Interactable.Coin) {
+	}
+	if (entity instanceof Game.Entity.Terrain.Land) {
+	}
+	if (entity instanceof Game.Entity.Enemy.Monster) {
+	}
+    },
 });
 
 Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
@@ -37,5 +52,17 @@ Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
             [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
             [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent"  ]
         ]
-    ]
+    ],
+    collideWith: function(entity) { 
+	//as of now, handle land, rock, coin, monster
+	if (entity instanceof Game.Entity.Interactable.Rock) {
+	    
+	}
+	if (entity instanceof Game.Entity.Interactable.Coin) {
+	}
+	if (entity instanceof Game.Entity.Terrain.Land) {
+	}
+	if (entity instanceof Game.Entity.Enemy.Monster) {
+	}
+    },
 });
