@@ -13,13 +13,18 @@ var Game = {
         Game.currentLevel = Game.Levels[0];
         Game.loadLevel();
     },
+    loopStarted: false,
     startLoop: function() {
         //Start event listeners and main loop
-        addEventListener( 'keydown', Game.keyDownListener, false );
-        addEventListener( 'keyup', Game.keyUpListener, false );
-        Game.then = Date.now();
-		//Game.loop();
-	setInterval(Game.loop, 1);
+	if (!this.loopStarted) {
+	    this.loopStarted = true;
+	    console.log("I'm from startLoop(). You should see me once.");
+            addEventListener( 'keydown', Game.keyDownListener, false );
+            addEventListener( 'keyup', Game.keyUpListener, false );
+            Game.then = Date.now();
+	    //Game.loop();
+	    setInterval(Game.loop, 1);
+	}
     },
     loop: function() {
         var now = Date.now(),
@@ -47,26 +52,24 @@ var Game = {
             //action
             Game.keysDown[ 32 ] = 'locked';
         }
-	//collision 
+	//collision detection
 	var axisList = Game.currentLevel.entities.sort(function(a, b) { return a.x - b.x }),
 	    activeList = new Array(axisList[0]),
-	    collisions = new Array();
+	    possible_collision_set = new Array();
 	for (var i = 1; i < axisList.length; i++) {
 	    for (var j = activeList.length - 1; j >= 0; j--) {
 		if (axisList[i].x > (activeList[j].x + Game.unit)) {
 		    activeList.pop();
 		    continue;
-		}
-		if (Math.abs(axisList[i].x - activeList[j].x) <= Game.unit &&
-		    Math.abs(axisList[i].y - activeList[j].y) <= Game.unit) {
-		    collisions.push([axisList[i], activeList[j]]);
+		} else if (possible_collision_set.indexOf([axisList[i], activeList[j]].sort(function(a, b) { return a.x - b.x }) ) == -1) {
+		          possible_collision_set.push([axisList[i], activeList[j]]);
 		}
 	    }
 	    activeList.push(axisList[i]);
 	}
-//	console.log("There are %d collisions", collisions.length);
-	for (i in collisions) {
-	    Game.collider(collisions[i]);
+	possible_collision_set.length;
+	for (var i in possible_collision_set) {
+	    Game.collider(possible_collision_set[i]);
 	}
 	//update all entities
 	for (i in Game.currentLevel.entities) {

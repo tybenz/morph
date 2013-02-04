@@ -39,17 +39,21 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
 	//as of now, handle land, rock, coin, monster
 	if (entity instanceof Game.Entity.Interactable.Rock) {
 	    //Switch to holding rock animation state.
+	    console.log("man collided with rock");
+
 	}
 	if (entity instanceof Game.Entity.Interactable.Coin) {
 	    //coins++;
 	}
 	if (entity instanceof Game.Entity.Terrain.Land) {
 	    //if he's actually above the terrain, turn jumping off.
-	    if (this.x <= entity.x + 4.5 && this.x >= entity.x - 4.5 && 
-		this.y + 4.5 <= entity.y + 4.5) {
-		//this.jumping = false;
+	    if (this.x >= entity.x && this.x <= entity.x + Game.unit && 
+		this.y <= entity.y + 4 && this.y >= entity.y - 4) {
+		this.jumping = false;
+		this.y = entity.y;
 	    }
 	    //console.log("man collided with land");
+
 	}
 	if (entity instanceof Game.Entity.Enemy.Monster) {
 	    //GAME OVER

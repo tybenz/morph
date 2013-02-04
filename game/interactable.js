@@ -22,7 +22,6 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         ]
     ],
     collideWith: function(entity) { 
-	//as of now, handle land, rock, coin, monster
 	if (entity instanceof Game.Entity.Hero.Man) {
 	    if (32 in Game.keysDown && this.y == entity.y) {
 		this.y -= Game.unit;
