@@ -18,7 +18,7 @@ var Game = {
         //Start event listeners and main loop
 	if (!this.loopStarted) {
 	    this.loopStarted = true;
-	    console.log("I'm from startLoop(). You should see me once.");
+	    //console.log("I'm from startLoop(). You should see me once.");
             addEventListener( 'keydown', Game.keyDownListener, false );
             addEventListener( 'keyup', Game.keyUpListener, false );
             Game.then = Date.now();
@@ -27,7 +27,7 @@ var Game = {
 	}
     },
     loop: function() {
-        var now = Date.now(),
+	var now = Date.now(),
         delta = now - Game.then;
 
         Game.update( delta / 1000 );
@@ -55,19 +55,24 @@ var Game = {
 	//collision detection
 	var axisList = Game.currentLevel.entities.sort(function(a, b) { return a.x - b.x }),
 	    activeList = new Array(axisList[0]),
+	    //possible_collision_set = {};
 	    possible_collision_set = new Array();
+	
 	for (var i = 1; i < axisList.length; i++) {
 	    for (var j = activeList.length - 1; j >= 0; j--) {
 		if (axisList[i].x > (activeList[j].x + Game.unit)) {
-		    activeList.pop();
+		    activeList.splice(j, 1);
 		    continue;
-		} else if (possible_collision_set.indexOf([axisList[i], activeList[j]].sort(function(a, b) { return a.x - b.x }) ) == -1) {
-		          possible_collision_set.push([axisList[i], activeList[j]]);
+		}
+		var set_item = [ axisList[i], activeList[j] ].sort(function(a, b) { return a.x - b.x });
+		//possible_collision_set[ set_item ] = 'dummy'; //I wish this would work
+		if (possible_collision_set.indexOf(set_item) == -1) {
+		    possible_collision_set.push(set_item);
 		}
 	    }
 	    activeList.push(axisList[i]);
 	}
-	possible_collision_set.length;
+	// for (var collision in possible_collision_set) Game.collider(collision);
 	for (var i in possible_collision_set) {
 	    Game.collider(possible_collision_set[i]);
 	}

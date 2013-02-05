@@ -24,8 +24,8 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
     collideWith: function(entity) { 
 	if (entity instanceof Game.Entity.Hero.Man) {
 	    if (32 in Game.keysDown && this.y == entity.y) {
-		this.y -= Game.unit;
-		this.x -= Game.unit;
+		this.y = entity.y - Game.unit;
+		this.x = entity.x;
 	    }
 	}
 	if (entity instanceof Game.Entity.Interactable.Coin) {

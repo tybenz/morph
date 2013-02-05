@@ -39,38 +39,42 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
 	//as of now, handle land, rock, coin, monster
 	if (entity instanceof Game.Entity.Interactable.Rock) {
 	    //Switch to holding rock animation state.
-	    console.log("man collided with rock");
-
 	}
 	if (entity instanceof Game.Entity.Interactable.Coin) {
 	    //coins++;
 	}
 	if (entity instanceof Game.Entity.Terrain.Land) {
-	    //if he's actually above the terrain, turn jumping off.
-	    if (this.x >= entity.x && this.x <= entity.x + Game.unit && 
-		this.y <= entity.y + 4 && this.y >= entity.y - 4) {
+	    //The y-axis detection range should be more formulaic. like a ratio involving Y_VEL and GRAV.
+	    if (this.jumping && Date.now() - this.time_jump_started > 1000 &&
+		this.x == entity.x &&
+		this.y + Game.unit < entity.y + 18 && this.y + Game.unit > entity.y - 2) {
 		this.jumping = false;
-		this.y = entity.y;
+	        this.y = entity.y - Game.unit;
 	    }
-	    //console.log("man collided with land");
+        }
+	    
+	   
 
-	}
+	
 	if (entity instanceof Game.Entity.Enemy.Monster) {
 	    //GAME OVER
 	}
     },
     jumping: false,
     up: function() {
-	this.jumping = true;
-	this.time_jump_started = Date.now();
-	this.initial_y = this.y;
+	if (!this.jumping) {
+	    this.jumping = true;
+	    this.time_jump_started = Date.now();
+	    this.initial_y = this.y;
+	}
     },
     update: function() {
-	var GRAV = 0.002,
-	    Y_VEL = .8;
+	var GRAV = 0.00163,
+	    Y_VEL = .8
 	if (this.jumping) {
 	    var t = Date.now() - this.time_jump_started;
 	    this.y = this.initial_y - Y_VEL*t + .5*GRAV*t*t;
+	   // console.log("%d", this.y);
 	}
     },
 });
