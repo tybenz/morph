@@ -1,4 +1,3 @@
-
 var Game = {
     unit: 18,
     init: function() {
@@ -22,6 +21,7 @@ var Game = {
             addEventListener( 'keydown', Game.keyDownListener, false );
             addEventListener( 'keyup', Game.keyUpListener, false );
             Game.then = Date.now();
+	    Game.xAxisList = Game.currentLevel.entities;
 	    //Game.loop();
 	    setInterval(Game.loop, 1);
 	}
@@ -38,10 +38,12 @@ var Game = {
     update: function(modifier) {
 	if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { //player holding left
             Game.hero.x -= 18;
+	    Game.hero.xDirection = -1;
             Game.keysDown[ 37 ] = 'locked';
         }
         if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { //player holding right
             Game.hero.x += 18;
+	    Game.hero.xDirection = 1;
             Game.keysDown[ 39 ] = 'locked';
         }
 	if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { //player holding up
@@ -53,31 +55,31 @@ var Game = {
             Game.keysDown[ 32 ] = 'locked';
         }
 	//collision detection
-	var axisList = Game.currentLevel.entities.sort(function(a, b) { return a.x - b.x }),
-	    activeList = new Array(axisList[0]),
-	    //possible_collision_set = {};
+	Game.xAxisList.sort(function(a, b) { return a.x - b.x });
+	var activeList = new Array(Game.xAxisList[0]),
 	    possible_collision_set = new Array();
-	
-	for (var i = 1; i < axisList.length; i++) {
+	for (var i = 1; i < Game.xAxisList.length; i++) {
 	    for (var j = activeList.length - 1; j >= 0; j--) {
-		if (axisList[i].x > (activeList[j].x + Game.unit)) {
-		    activeList.splice(j, 1);
-		    continue;
-		}
-		var set_item = [ axisList[i], activeList[j] ].sort(function(a, b) { return a.x - b.x });
-		//possible_collision_set[ set_item ] = 'dummy'; //I wish this would work
-		if (possible_collision_set.indexOf(set_item) == -1) {
-		    possible_collision_set.push(set_item);
-		}
+		if (Game.xAxisList[i].x <= (activeList[j].x + Game.unit)) {
+		    var set_item = [ Game.xAxisList[i], activeList[j] ].sort(function(a, b) { return a.x - b.x });
+		    if (possible_collision_set.indexOf(set_item) == -1) {
+			//This part could be faster.
+			possible_collision_set.push(set_item);
+		    }
+		} else activeList.splice(j, 1);
 	    }
-	    activeList.push(axisList[i]);
+	    activeList.push(Game.xAxisList[i]);
 	}
-	// for (var collision in possible_collision_set) Game.collider(collision);
+	for (var i in Game.currentLevel.entities) {
+	    //this could be interleaved with sweep and prune.
+	    var timeNow = Date.now();
+	    Game.currentLevel.entities[i].gravity(timeNow);
+	}
 	for (var i in possible_collision_set) {
 	    Game.collider(possible_collision_set[i]);
 	}
 	//update all entities
-	for (i in Game.currentLevel.entities) {
+	for (var i in Game.currentLevel.entities) {
 	    Game.currentLevel.entities[i].update();
 	}
     },

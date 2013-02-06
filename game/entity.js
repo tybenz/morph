@@ -6,6 +6,11 @@ Game.Entity = Class.extend({
     pos: {},
     collisions: [],
     init: function( x, y ) {
+	//variables for free falling
+	this.falling = true;
+	this.timeFallBegan = Date.now();
+	this.freeFallStartY = y;
+	
         this.sprites = [];
         var i, j, k,
             tempCanvas, tempContext,
@@ -33,15 +38,27 @@ Game.Entity = Class.extend({
     },
     x: null,
     y: null,
+    
+
     render: function() {
         if ( this.visible ) {
             Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.x, this.y );
         }
     },
-    collideWith: function(entity) { 
-	// by default, do nothing 
+    X_VEL : 0,
+    Y_VEL : 0,
+    GRAV: .001,
+    xDirection: 1,
+    gravity: function(timeNow) { 
+	var t = timeNow - this.timeFallBegan;		       
+	this.newY = this.freeFallStartY - this.Y_VEL*t + this.GRAV*t*t;
+    },
+    collideWith: function(entity) {
+	//do nothing
     },
     update: function() {
-	//by default, do nothing
+	if (this.falling) this.y = this.newY; 
+	this.falling = true;
+	this.x += this.xDirection*this.X_VEL;
     },
 });
