@@ -19,7 +19,7 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         ]
     ],
     holder: null,
-    collideWith: function(entity) { 
+    collideWith: function(entity, timeNow) { 
 	if (entity instanceof Game.Entity.Hero.Man) {
 	    if (this.holder) {
 		this.x = this.holder.x;
@@ -27,22 +27,21 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
 		this.falling = false;
 	    }
 	    //holder throws
-	    if (32 in Game.keysDown && this.holder instanceof Game.Entity.Hero.Man) {
-		this.timeFallBegan = Date.now();
+	    if (this.holder && 32 in Game.keysDown) {
+		this.timeFallBegan = timeNow;
 		this.freeFallStartY = this.y;
 		this.Y_VEL = .6;
 		this.X_VEL = 2;
-		this.thrown = true;
 		this.xDirection = this.holder.xDirection;
 		this.holder = null;
-		delete Game.keysDown[32];
+		delete Game.keysDown[32]; //we want to map 1 event to 1 action.
 	    }
 	    //get picked up
 	    if (32 in Game.keysDown && this.y == entity.y) {
 		this.y = entity.y - Game.unit;
 		this.x = entity.x;
 		this.holder = entity;
-		delete Game.keysDown[32];
+		delete Game.keysDown[32]; //we want to map 1 event to 1 action.
 	    }
 	}
 	if (entity instanceof Game.Entity.Interactable.Coin) {

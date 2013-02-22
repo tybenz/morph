@@ -9,7 +9,7 @@ var Game = {
         Game.ctx = Game.canvas.getContext( '2d' );
 
         //Load level and sprites
-        Game.currentLevel = Game.Levels[0];
+        Game.currentLevel = Game.Levels[1];
         Game.loadLevel();
     },
     loopStarted: false,
@@ -22,7 +22,7 @@ var Game = {
             addEventListener( 'keyup', Game.keyUpListener, false );
             Game.then = Date.now();
 	    Game.xAxisList = Game.currentLevel.entities;
-	    //Game.loop();
+//	    Game.loop();
 	    setInterval(Game.loop, 1);
 	}
     },
@@ -70,24 +70,23 @@ var Game = {
 	    }
 	    activeList.push(Game.xAxisList[i]);
 	}
+	var timeNow = Date.now();
 	for (var i in Game.currentLevel.entities) {
-	    //this could be interleaved with sweep and prune.
-	    var timeNow = Date.now();
 	    Game.currentLevel.entities[i].gravity(timeNow);
 	}
 	for (var i in possible_collision_set) {
-	    Game.collider(possible_collision_set[i]);
+	    Game.collider(possible_collision_set[i], timeNow);
 	}
 	//update all entities
 	for (var i in Game.currentLevel.entities) {
 	    Game.currentLevel.entities[i].update();
 	}
     },
-    collider: function(a) {
+    collider: function(a, t) {
 	if (a instanceof Array && a.length == 2 &&
 	   a[0] instanceof Game.Entity && a[1] instanceof Game.Entity) {
-	        a[0].collideWith(a[1]);
-		a[1].collideWith(a[0]);
+	        a[0].collideWith(a[1], t);
+		a[1].collideWith(a[0], t);
 	}
     },
     render: function() {
@@ -102,16 +101,19 @@ var Game = {
         }
     },
     loadLevel: function() {
-        for ( i in Game.currentLevel.grid ) {
-	    for (j in Game.currentLevel.grid[i]) {
+	//for ( i in Game.currentLevel.grid ) {
+	  //  for ( j in Game.currentLevel.grid[i] ) {
+	for ( var i = 0; i < Game.currentLevel.grid.length; i++ ) {
+	    for (var j = 0; j < Game.currentLevel.grid[i].length; j++ ) {
                 entityString = Game.currentLevel.grid[ i ][ j ];
-                if ( entityString != 'blank' ) {
+		if ( entityString != 'blank' ) {
 		    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
+		    //console.log("%d, %d", j*Game.unit, i*Game.unit);
 		    Game.currentLevel.entities.push( entity );
                     if ( entityString.indexOf( 'hero' ) != -1 ) {
-                        Game.hero = entity
+                        Game.hero = entity;
                     }
-                }
+		}
             }
         }
     },

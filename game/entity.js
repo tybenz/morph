@@ -11,6 +11,8 @@ Game.Entity = Class.extend({
 	this.timeFallBegan = Date.now();
 	this.freeFallStartY = y;
 	
+	this.dead = false; 
+
         this.sprites = [];
         var i, j, k,
             tempCanvas, tempContext,
@@ -53,7 +55,7 @@ Game.Entity = Class.extend({
 	var t = timeNow - this.timeFallBegan;		       
 	this.newY = this.freeFallStartY - this.Y_VEL*t + this.GRAV*t*t;
     },
-    collideWith: function(entity) {
+    collideWith: function(entity, timeNow) {
 	//do nothing
     },
     update: function() {
