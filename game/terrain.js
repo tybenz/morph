@@ -20,8 +20,7 @@ Game.Entity.Terrain.Land = Game.Entity.Terrain.extend({
     ],
     collideWith : function(entity, timeNow) {
 	//Did something land on me?
-	if (!(entity instanceof Game.Entity.Terrain.Land) && entity.falling && entity.newY > entity.y && entity.x == this.x && // careful with x == x, this means all x moves have to be multiples of Game.unit.
-	    (entity.newY > this.y || (entity.y + Game.unit >= this.y && entity.y <= this.y + 50))) {
+	if (!(entity instanceof Game.Entity.Terrain.Land) && entity.y < entity.newY && this.hasCollision(entity)) {
 	    entity.falling = false;
 	    entity.y = this.y - Game.unit;
 	    entity.timeFallBegan = timeNow;
@@ -29,7 +28,6 @@ Game.Entity.Terrain.Land = Game.Entity.Terrain.extend({
 	    entity.Y_VEL = 0;
 	    entity.X_VEL = 0;
 	}
-
     },
     update : function() { 
 	//do nothing, unaffected by gravity.

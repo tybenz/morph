@@ -20,7 +20,9 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
     ],
     holder: null,
     collideWith: function(entity, timeNow) { 
-	if (entity instanceof Game.Entity.Hero.Man) {
+	this.CONTACT_BUFFER = 2;
+	if (entity instanceof Game.Entity.Hero.Man //&& this.hasCollision(entity)
+	   ) {
 	    if (this.holder) {
 		this.x = this.holder.x;
 		this.y = this.holder.y - Game.unit;

@@ -101,11 +101,9 @@ var Game = {
         }
     },
     loadLevel: function() {
-	//for ( i in Game.currentLevel.grid ) {
-	  //  for ( j in Game.currentLevel.grid[i] ) {
-	for ( var i = 0; i < Game.currentLevel.grid.length; i++ ) {
-	    for (var j = 0; j < Game.currentLevel.grid[i].length; j++ ) {
-                entityString = Game.currentLevel.grid[ i ][ j ];
+	for ( i in Game.currentLevel.grid ) {
+	  for ( j in Game.currentLevel.grid[i] ) {
+	      entityString = Game.currentLevel.grid[ i ][ j ];
 		if ( entityString != 'blank' ) {
 		    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
 		    //console.log("%d, %d", j*Game.unit, i*Game.unit);

@@ -55,8 +55,19 @@ Game.Entity = Class.extend({
 	var t = timeNow - this.timeFallBegan;		       
 	this.newY = this.freeFallStartY - this.Y_VEL*t + this.GRAV*t*t;
     },
+    CONTACT_BUFFER : 0,
+    hasCollision: function(entity) {
+	if ( (Math.abs(this.y - entity.y) < Game.unit + this.CONTACT_BUFFER &&
+	      Math.abs(this.x - entity.x) < Game.unit + this.CONTACT_BUFFER) || 
+	     (entity.falling && //does y trajectory pass through on next time step? 
+	      Math.abs(this.x - entity.x) < Game.unit + this.CONTACT_BUFFER &&
+	      entity.y < this.y && entity.newY >= this.y) ) {
+	    
+	    return true;
+	}
+    },
     collideWith: function(entity, timeNow) {
-	//do nothing
+	//default is to do nothing 
     },
     update: function() {
 	if (this.falling) this.y = this.newY; 
