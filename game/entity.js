@@ -11,8 +11,6 @@ Game.Entity = Class.extend({
 	this.timeFallBegan = Date.now();
 	this.freeFallStartY = y;
 	
-	this.dead = false; 
-
         this.sprites = [];
         var i, j, k,
             tempCanvas, tempContext,
@@ -72,6 +70,6 @@ Game.Entity = Class.extend({
     update: function() {
 	if (this.falling) this.y = this.newY; 
 	this.falling = true;
-	this.x += this.xDirection*this.X_VEL;
+	this.x += this.xDirection*this.X_VEL;//should be function of time, not loop speed.
     },
 });

@@ -98,6 +98,10 @@ var Game = {
 
         for ( i in Game.currentLevel.entities ) {
             Game.currentLevel.entities[ i ].render();
+	    //This is not a great place for this. But it's a fast way to remove the rock 
+	    if (Game.currentLevel.entities[ i ].type.indexOf('Traj') != -1) {
+		Game.currentLevel.entities.splice(i, 1);
+	    }
         }
     },
     loadLevel: function() {
@@ -108,7 +112,7 @@ var Game = {
 		    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
 		    //console.log("%d, %d", j*Game.unit, i*Game.unit);
 		    Game.currentLevel.entities.push( entity );
-                    if ( entityString.indexOf( 'hero' ) != -1 ) {
+                    if ( entityString.indexOf( 'hero' ) != -1 ) {//why not use type?
                         Game.hero = entity;
                     }
 		}

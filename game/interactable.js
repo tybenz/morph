@@ -20,20 +20,30 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
     ],
     holder: null,
     collideWith: function(entity, timeNow) { 
-	this.CONTACT_BUFFER = 2;
-	if (entity instanceof Game.Entity.Hero.Man //&& this.hasCollision(entity)
+	//this.CONTACT_BUFFER = 100;
+	if (entity instanceof Game.Entity.Hero.Man// && this.hasCollision(entity)
 	   ) {
 	    if (this.holder) {
 		this.x = this.holder.x;
 		this.y = this.holder.y - Game.unit;
 		this.falling = false;
+	/*	
+		var t = 0, x = this.x, y = this.y;
+		while (x >= 0 && x <= Game.canvas.width && 
+		       y >= 0 && y <= Game.canvas.height) {
+		    x += this.holder.xDirection * 2;
+		    y = this.y - .6*t + this.GRAV*t*t; 
+		    Game.currentLevel.entities.push( new Game.Entity.Traj( x, y ) );
+		    t++;
+		}
+	*/
 	    }
 	    //holder throws
 	    if (this.holder && 32 in Game.keysDown) {
-		this.timeFallBegan = timeNow;
-		this.freeFallStartY = this.y;
 		this.Y_VEL = .6;
 		this.X_VEL = 2;
+		this.timeFallBegan = timeNow;
+		this.freeFallStartY = this.y;
 		this.xDirection = this.holder.xDirection;
 		this.holder = null;
 		delete Game.keysDown[32]; //we want to map 1 event to 1 action.
@@ -82,4 +92,17 @@ Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
 	if (entity instanceof Game.Entity.Enemy.Monster) {
 	}
     },
+});
+
+Game.Entity.Traj = Game.Entity.extend({
+    type: 'Traj',
+    bitmaps: [
+	[
+	    [ "#ff0000"]
+	]
+    ],
+    update : function() { 
+	//do nothing, unaffected by gravity.
+    },
+
 });
