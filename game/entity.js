@@ -50,7 +50,6 @@ Game.Entity = Class.extend({
             Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.pos.x, this.pos.y );
         }
     },
-    collideWith: function() {},
     getCollisions: function( entity ) {
         var src = {
                 top: Math.round( this.pos.y ),
@@ -99,7 +98,6 @@ Game.Entity = Class.extend({
         switch ( entity.type ) {
             case 'Terrain.Land':
                 if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
-                    this.disableJump = false;
                     this.velocity.y = 0;
                     this.pos.y = entity.pos.y - Game.unit;
                 }
