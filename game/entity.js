@@ -1,20 +1,26 @@
+/* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
+
 Game.Entity = Class.extend({
     type: 'Entity',
-    bitmaps: [],
-    activeSprite: 0,
-    visible: true,
-    pos: {},
-    collisions: [],
+    ignoreGravity: false,
+    width: 18,
+    height: 18,
+    maxVelocityY: 7,
     init: function( x, y ) {
+        this.activeSprite = 0;
+        this.visible = true;
         this.sprites = [];
         var i, j, k,
             tempCanvas, tempContext,
             dataURL, currentSprite,
             rectSize = Game.unit / 9;
         if ( x !== null && y !== null ) {
-            this.x = x;
-            this.y = y;
+            this.pos = new Game.Vector( x, y );
+        } else {
+            this.pos = new Game.Vector( 0, 0 );
         }
+        this.velocity = new Game.Vector( 0, 0 );
+        this.gravity = new Game.Vector( 0, 0.001 );
         for ( i in this.bitmaps ) {
             currentSprite = this.bitmaps[ i ];
             tempCanvas = document.createElement( 'canvas' );
@@ -31,11 +37,80 @@ Game.Entity = Class.extend({
             this.sprites.push( Game.Sprite( dataURL, this.type ) );
         }
     },
-    x: null,
-    y: null,
+    update: function( timeDiff ) {
+        if ( !this.ignoreGravity ) {
+            this.applyGravity( timeDiff );
+        }
+        var positionChange = this.velocity.multiply(timeDiff)
+        positionChange.y = Math.min( positionChange.y, this.maxVelocityY );
+        this.pos = this.pos.add(positionChange)
+    },
     render: function() {
         if ( this.visible ) {
-            Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.x, this.y );
+            Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.pos.x, this.pos.y );
+        }
+    },
+    collideWith: function() {},
+    getCollisions: function( entity ) {
+        var src = {
+                top: Math.round( this.pos.y ),
+                bottom: Math.round( this.pos.y + this.height ),
+                left: Math.round( this.pos.x ),
+                right: Math.round( this.pos.x + this.width )
+            },
+            target = {
+                top: Math.round( entity.pos.y ),
+                bottom: Math.round( entity.pos.y + entity.height ),
+                left: Math.round( entity.pos.x ),
+                right: Math.round( entity.pos.x + entity.width )
+            },
+            betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) || ( src.right < target.right && src.right > target.left ),
+            betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) || ( src.bottom < target.bottom && src.bottom > target.top ),
+            leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
+            topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
+            collisions = {
+                rightEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < 5,
+                leftEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5,
+                topEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5,
+                bottomEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5,
+                exact: ( leftAndRightAligned && topAndBottomAligned )
+            };
+        // We iterate through all collision types, if we any are set to true
+        // we return the entire object. Otherwise we return an empty object.
+        for ( var i in collisions ) {
+            if ( collisions[i] ) {
+                return collisions;
+            }
+        }
+        return {};
+    },
+    hasCollisionWith: function( entityType ) {
+        var hasCollision = false,
+            i = 0;
+        for ( ; i < Game.currentLevel.entities.length; i++ ) {
+            entity = Game.currentLevel.entities[i];
+            if ( this.getCollisions( entity ).bottomEdge && entity.type == entityType ) {
+                hasCollision = true;
+            }
+        }
+        return hasCollision;
+    },
+    collideWith: function( entity, collisionType ) {
+        switch ( entity.type ) {
+            case 'Terrain.Land':
+                if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
+                    this.disableJump = false;
+                    this.velocity.y = 0;
+                    this.pos.y = entity.pos.y - Game.unit;
+                }
+                break;
+            default: break;
+        }
+    },
+    applyGravity: function( timeDiff ) {
+        var gravitationalForce = this.gravity.multiply( timeDiff );
+        if ( !this.hasCollisionWith( 'Terrain.Land' ) ) {
+            this.velocity = this.velocity.add( gravitationalForce );
         }
     }
 });

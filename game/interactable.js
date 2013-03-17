@@ -1,3 +1,5 @@
+/* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
+
 Game.Entity.Interactable = Game.Entity.extend({
     type: 'Interactable',
     collectable: null, // indicates whether it automatically goes into inventory
@@ -25,6 +27,7 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
 
 Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
     type: 'Interactable.Coin',
+    ignoreGravity: true,
     bitmaps: [
         [
             [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],

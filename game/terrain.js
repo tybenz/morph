@@ -1,5 +1,8 @@
+/* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
+
 Game.Entity.Terrain = Game.Entity.extend({
     type: 'Terrain',
+    ignoreGravity: true,
     portal: null // portal to another level?
 });
 

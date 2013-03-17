@@ -1,3 +1,5 @@
+/* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
+
 var Game = {
     unit: 18,
     init: function() {
@@ -17,29 +19,57 @@ var Game = {
         addEventListener( 'keydown', Game.keyDownListener, false );
         addEventListener( 'keyup', Game.keyUpListener, false );
         Game.then = Date.now();
-        setInterval(Game.loop, 1);
+        requestAnimationFrame(Game.loop);
     },
-    loop: function() {
-        var now = Date.now(),
-        delta = now - Game.then;
-
-        Game.update( delta / 1000 );
-        Game.render();
-
-        Game.then = now;
+    loop: function( timestamp ) {
+        if ( Game.lastUpdate ) {
+            var timeDiff = timestamp - Game.lastUpdate;
+            Game.update( timeDiff );
+            Game.render( timeDiff );
+        }
+        Game.lastUpdate = timestamp;
+        requestAnimationFrame( Game.loop );
     },
-    update: function() {
-        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { //player holding left
-            Game.hero.x -= 18;
+    update: function( timeDiff ) {
+        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
+            Game.hero.move.left.call( Game.hero );
             Game.keysDown[ 37 ] = 'locked';
         }
-        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { //player holding right
-            Game.hero.x += 18;
+        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
+            Game.hero.move.right.call( Game.hero );
             Game.keysDown[ 39 ] = 'locked';
         }
-        if ( 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) { //player holding spacebar
-            //action
-            Game.keysDown[ 32 ] = 'locked';
+        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
+            Game.hero.move.up.call( Game.hero, timeDiff );
+            Game.keysDown[ 38 ] = 'locked';
+        }
+        for ( var i = 0; i < Game.currentLevel.entities.length; i++ ) {
+            Game.currentLevel.entities[i].update( timeDiff );
+        }
+        var a, b, i, j;
+        for ( i = 0; i < Game.currentLevel.entities.length; i++ ) {
+            a = Game.currentLevel.entities[i];
+            for ( j = 0; j < Game.currentLevel.entities.length; j++ ) {
+                b = Game.currentLevel.entities[j];
+                if ( a != b && a.pos.x <= b.pos.x + Game.unit ) {
+                    Game.collider( a, b );
+                }
+            }
+        }
+    },
+    go: true,
+    collider: function( a, b ) {
+        var i, aCollisions = a.getCollisions( b ),
+            bCollisions = b.getCollisions( a );
+        for ( i in aCollisions ) {
+            if ( aCollisions[i] ) {
+                a.collideWith( b, i );
+            }
+        }
+        for ( i in bCollisions ) {
+            if ( bCollisions[i] ) {
+                b.collideWith( a, i );
+            }
         }
     },
     render: function() {
@@ -68,7 +98,9 @@ var Game = {
         }
     },
     keyDownListener: function( evt ) {
-        evt.preventDefault();
+        if ( evt.keyCode == '38' || evt.keyCode == '40' ) {
+            evt.preventDefault();
+        }
         if ( Game.keysDown[ evt.keyCode ] != 'locked' ) {
             Game.keysDown[ evt.keyCode ] = true;
         }
@@ -77,13 +109,23 @@ var Game = {
         delete Game.keysDown[ evt.keyCode ];
     },
     keysDown: {},
+    totalImages: function() {
+        var count = 0, i;
+        for( i in Game.currentLevel.entityTypes ) {
+            count++;
+        }
+        return count;
+    },
     imageCount: 1,
     imageLoaded: function( img ) {
         if ( Game.imageCount < Game.currentLevel.entityCount ) {
             Game.imageCount++;
             return;
         }
-        Game.startLoop();
+        if ( !Game.hasStarted ) {
+            Game.hasStarted = true;
+            Game.startLoop();
+        }
     }
 };
 window.Game = Game;

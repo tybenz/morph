@@ -1,11 +1,13 @@
+/* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
+
 Game.Entity.Enemy = Game.Entity.extend({
     type: 'Enemy',
     move: {
         'right': function() {
-            this.x += Game.unit;
+            this.pos.x += Game.unit;
         },
         'left': function() {
-            this.x -= Game.unit;
+            this.pos.x -= Game.unit;
         },
         'up': function() {
             //jump
