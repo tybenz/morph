@@ -5,10 +5,16 @@ Game.Entity.Hero = Game.Entity.extend({
     jumpHeight: 54,
     move: {
         'right': function() {
-            this.pos.x += Game.unit;
+            var collisions = this.hasCollisionWith( 'Terrain.Land' );
+            if ( !collisions || !collisions.rightEdge ) {
+                this.pos.x += Game.unit;
+            }
         },
         'left': function() {
-            this.pos.x -= Game.unit;
+            var collisions = this.hasCollisionWith( 'Terrain.Land' );
+            if ( !collisions || !collisions.leftEdge ) {
+                this.pos.x -= Game.unit;
+            }
         },
         'up': function() {
             //jump
@@ -26,6 +32,18 @@ Game.Entity.Hero = Game.Entity.extend({
     transform: function() {},
     update: function( timeDiff ) {
         this._super( timeDiff );
+        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
+            this.move.left.call( this );
+            Game.keysDown[ 37 ] = 'locked';
+        }
+        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
+            this.move.right.call( this );
+            Game.keysDown[ 39 ] = 'locked';
+        }
+        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
+            this.move.up.call( this, timeDiff );
+            Game.keysDown[ 38 ] = 'locked';
+        }
     },
     collideWith: function( entity, collisionType ) {
         switch ( entity.type ) {

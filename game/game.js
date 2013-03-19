@@ -31,27 +31,20 @@ var Game = {
         requestAnimationFrame( Game.loop );
     },
     update: function( timeDiff ) {
-        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
-            Game.hero.move.left.call( Game.hero );
-            Game.keysDown[ 37 ] = 'locked';
+        var entities = Game.currentLevel.entities,
+            entitiesLength = entities.length;
+        for ( var i = 0; i < entitiesLength; i++ ) {
+            entities[i].update( timeDiff );
         }
-        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
-            Game.hero.move.right.call( Game.hero );
-            Game.keysDown[ 39 ] = 'locked';
-        }
-        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
-            Game.hero.move.up.call( Game.hero, timeDiff );
-            Game.keysDown[ 38 ] = 'locked';
-        }
-        for ( var i = 0; i < Game.currentLevel.entities.length; i++ ) {
-            Game.currentLevel.entities[i].update( timeDiff );
-        }
-        var a, b, i, j;
+        var a, b, i, j, aX, bX,
+            gameUnit = Game.unit;
         for ( i = 0; i < Game.currentLevel.entities.length; i++ ) {
             a = Game.currentLevel.entities[i];
+            aX = a.pos.x;
             for ( j = 0; j < Game.currentLevel.entities.length; j++ ) {
                 b = Game.currentLevel.entities[j];
-                if ( a != b && a.pos.x <= b.pos.x + Game.unit ) {
+                bX = b.pos.x;
+                if ( a != b && aX <= ( bX + gameUnit ) && aX >= ( bX - gameUnit * 2 ) ) {
                     Game.collider( a, b );
                 }
             }

@@ -81,25 +81,29 @@ Game.Entity = Class.extend({
                 return collisions;
             }
         }
-        return {};
+        return false;
     },
     hasCollisionWith: function( entityType ) {
-        var hasCollision = false,
-            i = 0;
+        var i = 0, collisions;
         for ( ; i < Game.currentLevel.entities.length; i++ ) {
             entity = Game.currentLevel.entities[i];
-            if ( this.getCollisions( entity ).bottomEdge && entity.type == entityType ) {
-                hasCollision = true;
+            collisions = this.getCollisions( entity );
+            if ( collisions && entity.type == entityType ) {
+                return collisions;
             }
         }
-        return hasCollision;
+        return {};
     },
     collideWith: function( entity, collisionType ) {
         switch ( entity.type ) {
             case 'Terrain.Land':
                 if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
                     this.velocity.y = 0;
-                    this.pos.y = entity.pos.y - Game.unit;
+                    this.pos.y = entity.pos.y - entity.height;
+                }
+                if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
+                    this.velocity.y = 0;
+                    this.pos.y = entity.pos.y + entity.height;
                 }
                 break;
             default: break;
@@ -107,7 +111,7 @@ Game.Entity = Class.extend({
     },
     applyGravity: function( timeDiff ) {
         var gravitationalForce = this.gravity.multiply( timeDiff );
-        if ( !this.hasCollisionWith( 'Terrain.Land' ) ) {
+        if ( !this.hasCollisionWith( 'Terrain.Land' ).bottomEdge ) {
             this.velocity = this.velocity.add( gravitationalForce );
         }
     }
