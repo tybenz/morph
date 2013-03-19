@@ -49,12 +49,30 @@ Game.Entity.Hero = Game.Entity.extend({
             this.move.up.call( this, timeDiff );
             Game.keysDown[ 38 ] = 'locked';
         }
+        if ( this.takingDamage && this.takingDamage != 'locked' ) {
+            var hero = this;
+            this.blinking = true;
+            Game.score.decrementHealth();
+            this.takingDamage = 'locked';
+            setTimeout( function() { hero.takingDamage = false; }, 1000 );
+        }
     },
     collideWith: function( entity, collisionType ) {
         switch ( entity.type ) {
             case 'Terrain.Land':
                 if ( collisionType == 'bottomEdge' ) {
                     this.disableJump = false;
+                }
+                break;
+            case 'Enemy.Monster':
+                if ( collisionType == 'exact' && this.takingDamage != 'locked' ) {
+                    this.takingDamage = true;
+                }
+                break;
+            case 'Interactable.Coin':
+                if ( collisionType == 'exact' && entity.visible ) {
+                    entity.visible = false;
+                    Game.score.incrementHealth();
                 }
                 break;
             default: break;

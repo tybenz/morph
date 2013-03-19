@@ -10,6 +10,9 @@ var Game = {
         document.getElementById( 'game' ).appendChild( Game.canvas );
         Game.ctx = Game.canvas.getContext( '2d' );
 
+        //Initialize extra sprites
+        Game.extraSprites.init();
+
         //Load level and sprites
         Game.currentLevel = Game.Levels[0];
         Game.loadLevel();
@@ -75,6 +78,14 @@ var Game = {
         for ( i in Game.currentLevel.entities ) {
             Game.currentLevel.entities[ i ].render();
         }
+
+        for ( i = 0; i < Game.score.maxHealth; i++ ) {
+            if ( i < Game.score.health ) {
+                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + 20, 20 );
+            } else {
+                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + 20, 20 );
+            }
+        }
     },
     loadLevel: function() {
         for ( i in Game.currentLevel.grid ) {
@@ -118,6 +129,70 @@ var Game = {
         if ( !Game.hasStarted ) {
             Game.hasStarted = true;
             Game.startLoop();
+        }
+    },
+    extraSprites: {
+        init: function() {
+            var i, j, k,
+                tempCanvas, tempContext,
+                dataURL, currentSprite,
+                rectSize = Game.unit / 9;
+
+            for ( i in this.bitmaps ) {
+                currentSprite = this.bitmaps[ i ];
+                tempCanvas = document.createElement( 'canvas' );
+                tempCanvas.width = Game.unit;
+                tempCanvas.height = Game.unit;
+                tempContext = tempCanvas.getContext( '2d' );
+                for ( j in currentSprite ) {
+                    for ( k in currentSprite[ j ] ) {
+                        tempContext.fillStyle = currentSprite[ j ][ k ];
+                        tempContext.fillRect( k * rectSize, j * rectSize, rectSize, rectSize );
+                    }
+                }
+                dataURL = tempCanvas.toDataURL( 'image/png' );
+                sprite = Game.Sprite(dataURL,this.type);
+                this.sprites[i] = Game.Sprite( dataURL, this.type );
+            }
+        },
+        sprites: {},
+        bitmaps: {
+            heart: [
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "transparent", "#ff55ff", "#ff55ff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "#ff55ff", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+            ],
+            emptyHeart: [
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ffffff", "#ffffff", "transparent", "#ffffff", "#ffffff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+            ]
+        }
+    },
+    score: {
+        health: 5,
+        maxHealth: 5,
+        decrementHealth: function() {
+            if ( this.health > 0 ) {
+                this.health--;
+            }
+        },
+        incrementHealth: function() {
+            if ( this.health < this.maxHealth ) {
+                this.health++;
+            }
         }
     }
 };
