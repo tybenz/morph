@@ -2,6 +2,7 @@
 
 Game.Entity.Interactable = Game.Entity.extend({
     type: 'Interactable',
+    drawLayer: 1,
     collectable: null, // indicates whether it automatically goes into inventory
     collision: function() {
         //executed with hero collides with it

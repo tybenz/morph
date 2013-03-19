@@ -2,6 +2,7 @@
 
 Game.Entity.Enemy = Game.Entity.extend({
     type: 'Enemy',
+    drawLayer: 2,
     move: {
         'right': function() {
             this.pos.x += Game.unit;

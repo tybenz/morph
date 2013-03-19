@@ -6,6 +6,7 @@ Game.Entity = Class.extend({
     width: 18,
     height: 18,
     maxVelocityY: 7,
+    drawLayer: 0,
     init: function( x, y ) {
         this.activeSprite = 0;
         this.visible = true;
@@ -36,6 +37,7 @@ Game.Entity = Class.extend({
             dataURL = tempCanvas.toDataURL( 'image/png' );
             this.sprites.push( Game.Sprite( dataURL, this.type ) );
         }
+        Game.drawLayers[this.drawLayer].push( this );
     },
     update: function( timeDiff ) {
         if ( !this.ignoreGravity ) {

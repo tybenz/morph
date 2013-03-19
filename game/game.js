@@ -68,15 +68,27 @@ var Game = {
             }
         }
     },
+    drawLayers: [
+        //Terrain
+        [],
+        //Interactables
+        [],
+        //Enemies
+        [],
+        //Hero
+        []
+    ],
     render: function() {
-        var i;
+        var i, j;
 
         //Background
         Game.ctx.fillStyle = '#000';
         Game.ctx.fillRect( 0, 0, 900, 450 );
 
-        for ( i in Game.currentLevel.entities ) {
-            Game.currentLevel.entities[ i ].render();
+        for ( i in Game.drawLayers ) {
+            for ( j in Game.drawLayers[i] ) {
+                Game.drawLayers[i][j].render();
+            }
         }
 
         for ( i = 0; i < Game.score.maxHealth; i++ ) {

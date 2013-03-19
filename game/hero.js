@@ -6,6 +6,7 @@ var MAN_RIGHT = 0,
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
     jumpHeight: 54,
+    drawLayer: 3,
     move: {
         'right': function() {
             var collisions = this.hasCollisionWith( 'Terrain.Land' );
