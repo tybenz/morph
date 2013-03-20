@@ -41,26 +41,29 @@ Game.Entity = Class.extend({
         // Game.redrawEntities[this.drawLayer].push( this );
     },
     update: function( timeDiff ) {
+        //Copy pos into oldPos
+        this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
         if ( !this.ignoreGravity ) {
             this.applyGravity( timeDiff );
         }
         var positionChange = this.velocity.multiply(timeDiff)
         positionChange.y = Math.min( positionChange.y, this.maxVelocityY );
-        var newPos = this.pos.add(positionChange);
-        if ( positionChange.y || positionChange.x ) {
-            this.invalidateRect( newPos.x, newPos.y );
+        this.pos = this.pos.add( positionChange );
+        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y ) {
+            this.invalidateRect();
         }
-        this.pos = newPos;
     },
-    invalidateRect: function( x, y ) {
-        var oldX = this.pos.x,
-            oldY = this.pos.y,
+    invalidateRect: function() {
+        var newX = this.pos.x,
+            newY = this.pos.y,
+            oldX = this.oldPos.x,
+            oldY = this.oldPos.y,
             width = this.width,
             height = this.height,
-            top = oldY <= y ? oldY : y,
-            left = oldX <= x ? oldX : x,
-            bottom = ( oldY+height ) >= ( y+height ) ? oldY + height : y + height,
-            right = ( oldX+width ) >= ( x+width ) ? oldX + width : x + width;
+            top = oldY <= newY ? oldY : newY,
+            left = oldX <= newX ? oldX : newX,
+            bottom = ( oldY + height ) >= ( newY + height ) ? oldY + height : newY + height,
+            right = ( oldX + width ) >= ( newX + width ) ? oldX + width : newX + width;
 
         Game.invalidateRect( top, right, bottom, left );
         Game.redrawEntities[this.drawLayer].push( this );
