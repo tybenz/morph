@@ -89,7 +89,7 @@ var Game = {
             }
         }
     },
-    redrawEntities: [
+    drawLayers: [
         //Terrain
         [],
         //Interactables
@@ -126,29 +126,37 @@ var Game = {
         var i, j;
 
         if ( Game.invalidRect ) {
-            var invalidLeft = Game.invalidRect.left,
-                invalidTop = Game.invalidRect.top,
-                invalidWidth = Game.invalidRect.right - invalidLeft;
-                invalidHeight = Game.invalidRect.bottom - invalidTop;
+            var invalidLeft = Game.invalidRect.left - 18,
+                invalidTop = Game.invalidRect.top - 18
+                invalidWidth = Game.invalidRect.right - invalidLeft + 36,
+                invalidHeight = Game.invalidRect.bottom - invalidTop + 36;
             if ( Game.go ) {
                 Game.go = false;
             }
+            /*
+            // Show invalidRect
+            var left = $( Game.canvas ).offset().left + invalidLeft;
+            var top = $( Game.canvas ).offset().top + invalidTop;
+            var box = $('<div style="border: 1px solid red;position:absolute;left:'+left+'px;top:'+top+'px;width:'+invalidWidth+'px;height:'+invalidHeight+'px"></div>');
+            $('body').append(box);
+            */
 
+            Game.ctx.save();
+            Game.ctx.beginPath();
+            Game.ctx.rect( invalidLeft, invalidTop, invalidWidth, invalidHeight );
+            Game.ctx.clip();
+            Game.ctx.closePath();
             Game.ctx.fillStyle = '#000';
-            Game.ctx.fillRect( invalidLeft, invalidTop, invalidWidth, invalidHeight );
+            Game.ctx.fillRect( 0, 0, 900, 450 );
 
-            for ( i in Game.redrawEntities ) {
-                if ( Game.redrawEntities[i] ) {
-                    for ( j in Game.redrawEntities ) {
-                        if ( Game.redrawEntities[i][j] ) {
-                            Game.redrawEntities[i][j].render();
-                        }
-                    }
+            for ( i = 0; i < Game.drawLayers.length; i++ ) {
+                for ( j = 0; j < Game.drawLayers[i].length; j++ ) {
+                    Game.drawLayers[i][j].render();
                 }
             }
 
+            Game.ctx.restore();
             Game.invalidRect = null;
-            Game.redrawEntities = [ [], [], [], [] ];
         }
     },
     loadLevel: function() {

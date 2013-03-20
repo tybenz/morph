@@ -37,8 +37,7 @@ Game.Entity = Class.extend({
             dataURL = tempCanvas.toDataURL( 'image/png' );
             this.sprites.push( Game.Sprite( dataURL, this.type ) );
         }
-        // this.invalidateRect( this.pos.y, this.pos.x + this.width, this.pos.y + this.height, this.pos.x );
-        // Game.redrawEntities[this.drawLayer].push( this );
+        Game.drawLayers[this.drawLayer].push( this );
     },
     update: function( timeDiff ) {
         //Copy pos into oldPos
@@ -66,7 +65,6 @@ Game.Entity = Class.extend({
             right = ( oldX + width ) >= ( newX + width ) ? oldX + width : newX + width;
 
         Game.invalidateRect( top, right, bottom, left );
-        Game.redrawEntities[this.drawLayer].push( this );
     },
     render: function() {
         if ( this.visible ) {
