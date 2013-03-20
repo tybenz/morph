@@ -37,7 +37,8 @@ Game.Entity = Class.extend({
             dataURL = tempCanvas.toDataURL( 'image/png' );
             this.sprites.push( Game.Sprite( dataURL, this.type ) );
         }
-        Game.drawLayers[this.drawLayer].push( this );
+        // this.invalidateRect( this.pos.y, this.pos.x + this.width, this.pos.y + this.height, this.pos.x );
+        // Game.redrawEntities[this.drawLayer].push( this );
     },
     update: function( timeDiff ) {
         if ( !this.ignoreGravity ) {
@@ -45,7 +46,24 @@ Game.Entity = Class.extend({
         }
         var positionChange = this.velocity.multiply(timeDiff)
         positionChange.y = Math.min( positionChange.y, this.maxVelocityY );
-        this.pos = this.pos.add(positionChange)
+        var newPos = this.pos.add(positionChange);
+        if ( positionChange.y || positionChange.x ) {
+            this.invalidateRect( newPos.x, newPos.y );
+        }
+        this.pos = newPos;
+    },
+    invalidateRect: function( x, y ) {
+        var oldX = this.pos.x,
+            oldY = this.pos.y,
+            width = this.width,
+            height = this.height,
+            top = oldY <= y ? oldY : y,
+            left = oldX <= x ? oldX : x,
+            bottom = ( oldY+height ) >= ( y+height ) ? oldY + height : y + height,
+            right = ( oldX+width ) >= ( x+width ) ? oldX + width : x + width;
+
+        Game.invalidateRect( top, right, bottom, left );
+        Game.redrawEntities[this.drawLayer].push( this );
     },
     render: function() {
         if ( this.visible ) {

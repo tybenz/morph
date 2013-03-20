@@ -12,6 +12,7 @@ Game.Entity.Hero = Game.Entity.extend({
             var collisions = this.hasCollisionWith( 'Terrain.Land' );
             this.activeSprite = MAN_RIGHT;
             if ( !collisions || !collisions.rightEdge ) {
+                this.invalidateRect( this.pos.x + Game.unit, this.pos.y );
                 this.pos.x += Game.unit;
             }
         },
@@ -19,6 +20,7 @@ Game.Entity.Hero = Game.Entity.extend({
             var collisions = this.hasCollisionWith( 'Terrain.Land' );
             this.activeSprite = MAN_LEFT;
             if ( !collisions || !collisions.leftEdge ) {
+                this.invalidateRect( this.pos.x - Game.unit, this.pos.y );
                 this.pos.x -= Game.unit;
             }
         },

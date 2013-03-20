@@ -21,6 +21,23 @@ var Game = {
         //Start event listeners and main loop
         addEventListener( 'keydown', Game.keyDownListener, false );
         addEventListener( 'keyup', Game.keyUpListener, false );
+
+        //Background
+        Game.ctx.fillStyle = '#000';
+        Game.ctx.fillRect( 0, 0, 900, 450 );
+
+        for ( var i in Game.currentLevel.entities ) {
+            Game.currentLevel.entities[i].render();
+        }
+
+        for ( i = 0; i < Game.score.maxHealth; i++ ) {
+            if ( i < Game.score.health ) {
+                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + 20, 20 );
+            } else {
+                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + 20, 20 );
+            }
+        }
+
         Game.then = Date.now();
         requestAnimationFrame(Game.loop);
     },
@@ -31,11 +48,15 @@ var Game = {
             Game.render( timeDiff );
         }
         Game.lastUpdate = timestamp;
-        requestAnimationFrame( Game.loop );
+        if ( !Game.paused ) {
+            requestAnimationFrame( Game.loop );
+        }
     },
+    paused: false,
     update: function( timeDiff ) {
         var entities = Game.currentLevel.entities,
             entitiesLength = entities.length;
+        Game.paused = 80 in Game.keysDown;
         for ( var i = 0; i < entitiesLength; i++ ) {
             entities[i].update( timeDiff );
         }
@@ -68,7 +89,7 @@ var Game = {
             }
         }
     },
-    drawLayers: [
+    redrawEntities: [
         //Terrain
         [],
         //Interactables
@@ -78,25 +99,56 @@ var Game = {
         //Hero
         []
     ],
+    invalidateRect: function( top, right, bottom, left ) {
+        if ( !Game.invalidRect ) {
+            Game.invalidRect = { top: top, right: right, bottom: bottom, left: left };
+            return;
+        }
+        var invalidTop = Game.invalidRect.top,
+            invalidBottom = Game.invalidRect.bottom,
+            invalidLeft = Game.invalidRect.left,
+            invalidRight = Game.invalidRect.right;
+
+        if ( invalidTop > top ) {
+            Game.invalidRect.top = top;
+        }
+        if ( invalidBottom < bottom ) {
+            Game.invalidRect.bottom = bottom;
+        }
+        if ( invalidLeft < left ) {
+            Game.invalidRect.left = left;
+        }
+        if ( invalidRight < right ) {
+            Game.invalidRect.right = right;
+        }
+    },
     render: function() {
         var i, j;
 
-        //Background
-        Game.ctx.fillStyle = '#000';
-        Game.ctx.fillRect( 0, 0, 900, 450 );
-
-        for ( i in Game.drawLayers ) {
-            for ( j in Game.drawLayers[i] ) {
-                Game.drawLayers[i][j].render();
+        if ( Game.invalidRect ) {
+            var invalidLeft = Game.invalidRect.left,
+                invalidTop = Game.invalidRect.top,
+                invalidWidth = Game.invalidRect.right - invalidLeft;
+                invalidHeight = Game.invalidRect.bottom - invalidTop;
+            if ( Game.go ) {
+                Game.go = false;
             }
-        }
 
-        for ( i = 0; i < Game.score.maxHealth; i++ ) {
-            if ( i < Game.score.health ) {
-                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + 20, 20 );
-            } else {
-                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + 20, 20 );
+            Game.ctx.fillStyle = '#000';
+            Game.ctx.fillRect( invalidLeft, invalidTop, invalidWidth, invalidHeight );
+
+            for ( i in Game.redrawEntities ) {
+                if ( Game.redrawEntities[i] ) {
+                    for ( j in Game.redrawEntities ) {
+                        if ( Game.redrawEntities[i][j] ) {
+                            Game.redrawEntities[i][j].render();
+                        }
+                    }
+                }
             }
+
+            Game.invalidRect = null;
+            Game.redrawEntities = [ [], [], [], [] ];
         }
     },
     loadLevel: function() {
