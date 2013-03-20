@@ -29,7 +29,6 @@ Game.Entity.Hero = Game.Entity.extend({
             if ( !this.disableJump ) {
                 var jumpForce = new Game.Vector( 0, -0.5 );
                 this.velocity = this.velocity.add( jumpForce );
-                this.disableJump = true;
             }
         },
         'down': function() {
@@ -51,6 +50,9 @@ Game.Entity.Hero = Game.Entity.extend({
         if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
             this.move.up.call( this, timeDiff );
             Game.keysDown[ 38 ] = 'locked';
+        }
+        if ( this.velocity.y < 0 ) {
+            this.disableJump = true;
         }
         if ( this.takingDamage && this.takingDamage != 'locked' ) {
             var hero = this;
