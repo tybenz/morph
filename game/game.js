@@ -154,6 +154,24 @@ var Game = {
             Game.ctx.restore();
             Game.invalidRect = null;
         }
+
+        Game.ctx.save();
+        Game.ctx.beginPath();
+        Game.ctx.rect( 0, 0, 900, 50 );
+        Game.ctx.clip();
+
+        Game.ctx.fillStyle = "#000";
+        Game.ctx.fillRect( 0, 0, 900, 50 );
+
+        for ( i = 0; i < Game.score.maxHealth; i++ ) {
+            if ( i < Game.score.health ) {
+                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + 20, 20 );
+            } else {
+                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + 20, 20 );
+            }
+        }
+
+        Game.ctx.restore();
     },
     loadLevel: function() {
         for ( i in Game.currentLevel.grid ) {
