@@ -39,16 +39,19 @@ Game.Entity = Class.extend({
         }
         Game.drawLayers[this.drawLayer].push( this );
     },
+    animate: function() {},
     update: function( timeDiff ) {
         //Copy pos into oldPos
         this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
+        this.oldSprite = this.activeSprite;
+        this.animate( timeDiff );
         if ( !this.ignoreGravity ) {
             this.applyGravity( timeDiff );
         }
         var positionChange = this.velocity.multiply(timeDiff)
         positionChange.y = Math.min( positionChange.y, this.maxVelocityY );
         this.pos = this.pos.add( positionChange );
-        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y ) {
+        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y || this.oldSprite != this.activeSprite ) {
             this.invalidateRect();
         }
     },

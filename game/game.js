@@ -74,7 +74,6 @@ var Game = {
             }
         }
     },
-    go: true,
     collider: function( a, b ) {
         var i, aCollisions = a.getCollisions( b ),
             bCollisions = b.getCollisions( a );
@@ -115,7 +114,7 @@ var Game = {
         if ( invalidBottom < bottom ) {
             Game.invalidRect.bottom = bottom;
         }
-        if ( invalidLeft < left ) {
+        if ( invalidLeft > left ) {
             Game.invalidRect.left = left;
         }
         if ( invalidRight < right ) {
@@ -130,9 +129,6 @@ var Game = {
                 invalidTop = Game.invalidRect.top - 18
                 invalidWidth = Game.invalidRect.right - invalidLeft + 36,
                 invalidHeight = Game.invalidRect.bottom - invalidTop + 36;
-            if ( Game.go ) {
-                Game.go = false;
-            }
             /*
             // Show invalidRect
             var left = $( Game.canvas ).offset().left + invalidLeft;
