@@ -50,6 +50,7 @@ Game.Entity = Class.extend({
     animate: function() {
         var oldSprite = this.activeSprite,
             wasVisible = this.visible,
+            isVisible,
             timeToAnimate = this.animationStates
                 && this.animationStates[ this.state ]
                 && ( Date.now() - this.lastAnimated ) > this.animationStates[ this.state ].delta;
@@ -65,7 +66,7 @@ Game.Entity = Class.extend({
             this.lastAnimated = Date.now();
         }
         //Return a bool to tell invalidRect if the entity animated
-        return oldSprite == this.activeSprite || ( !wasVisible && isVisible );
+        return oldSprite != this.activeSprite || ( !wasVisible && isVisible );
     },
     //Grabbing the next sprite in each animation
     nextSprite: function() {
@@ -88,15 +89,22 @@ Game.Entity = Class.extend({
         return this.activeSprite;
     },
     update: function( timeDiff ) {
+    },
+    //Don't override
+    updateEntity: function( timeDiff ) {
         //Copy pos into oldPos
         this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
 
         //Bool that will tell us if the entity animated
         var animated = this.animate( timeDiff );
 
+        //Gravity
         if ( !this.ignoreGravity ) {
             this.applyGravity( timeDiff );
         }
+
+        //Call updateEntity
+        this.update( timeDiff );
 
         //Change position based on velocity
         var positionChange = this.velocity.multiply(timeDiff)
@@ -108,6 +116,7 @@ Game.Entity = Class.extend({
             this.invalidateRect();
         }
     },
+    go: true,
     invalidateRect: function() {
         var newX = this.pos.x,
             newY = this.pos.y,

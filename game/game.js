@@ -81,7 +81,7 @@ var Game = {
 
         //Call each entities update function
         for ( var i = 0; i < entities.length; i++ ) {
-            entities[i].update( timeDiff );
+            entities[i].updateEntity( timeDiff );
         }
 
         //Collisions - the performance of this can be improved
