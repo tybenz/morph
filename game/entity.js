@@ -31,8 +31,8 @@ Game.Entity = Class.extend({
         for ( i in this.bitmaps ) {
             currentSprite = this.bitmaps[ i ];
             tempCanvas = document.createElement( 'canvas' );
-            tempCanvas.width = Game.unit;
-            tempCanvas.height = Game.unit;
+            tempCanvas.width = this.width;
+            tempCanvas.height = this.height;
             tempContext = tempCanvas.getContext( '2d' );
             for ( j in currentSprite ) {
                 for ( k in currentSprite[ j ] ) {
@@ -147,11 +147,12 @@ Game.Entity = Class.extend({
             betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) || ( src.bottom < target.bottom && src.bottom > target.top ),
             leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
             topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
+            leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
             collisions = {
                 rightEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < 5,
                 leftEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5,
                 topEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5,
-                bottomEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5,
+                bottomEdge: ( leftOrRightAligned || betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5,
                 exact: ( leftAndRightAligned && topAndBottomAligned ),
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
                 overlappingVertical: leftAndRightAligned && betweenTopAndBottom,

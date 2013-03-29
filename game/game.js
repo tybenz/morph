@@ -65,12 +65,18 @@ var Game = {
 
         //Destroy entities that are queued for removal
         for ( var i = 0; i < Game.toBeDestroyed.length; i++ ) {
+            drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
             for ( var j = 0; j < entities.length; j++ ) {
                 if ( entities[j] == Game.toBeDestroyed[i] ) {
-                    entities.splice(j, 1);
-                    Game.toBeDestroyed.splice(i, 1);
+                    entities.splice( j, 1 );
                 }
             }
+            for ( var j = 0; j < drawLayer.length; j++ ) {
+                if ( drawLayer[j] == Game.toBeDestroyed[i] ) {
+                    drawLayer.splice( j, 1 );
+                }
+            }
+            Game.toBeDestroyed.splice( i, 1 );
         }
 
         //Call each entities update function
