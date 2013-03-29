@@ -1,12 +1,19 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
 var Game = {
+    //Global tilesize value
     unit: 18,
+    //Array of entities that should be destroyed on the following update
+    toBeDestroyed: [],
+    //Dictionary to lookup which keys are pressed on each update
+    keysDown: {},
+    //Image count for loading sprites
+    imageCount: 1,
     init: function() {
         //Prepare canvas
         Game.canvas = document.createElement( 'canvas' );
-        Game.canvas.width = 900;
-        Game.canvas.height = 450;
+        Game.canvas.width = 50 * Game.unit;
+        Game.canvas.height = 25 * Game.unit;
         document.getElementById( 'game' ).appendChild( Game.canvas );
         Game.ctx = Game.canvas.getContext( '2d' );
 
@@ -24,8 +31,9 @@ var Game = {
 
         //Background
         Game.ctx.fillStyle = '#000';
-        Game.ctx.fillRect( 0, 0, 900, 450 );
+        Game.ctx.fillRect( 0, 0, 50 * Game.unit, 25 * Game.unit );
 
+        //Initial render
         for ( var i in Game.currentLevel.entities ) {
             Game.currentLevel.entities[i].render();
         }
@@ -38,28 +46,39 @@ var Game = {
             }
         }
 
+        //Start the actual loop
         Game.then = Date.now();
         requestAnimationFrame(Game.loop);
     },
     loop: function( timestamp ) {
+        //We update and render each loop
         if ( Game.lastUpdate ) {
             var timeDiff = timestamp - Game.lastUpdate;
             Game.update( timeDiff );
             Game.render( timeDiff );
         }
         Game.lastUpdate = timestamp;
-        if ( !Game.paused ) {
-            requestAnimationFrame( Game.loop );
-        }
+        requestAnimationFrame( Game.loop );
     },
-    paused: false,
     update: function( timeDiff ) {
-        var entities = Game.currentLevel.entities,
-            entitiesLength = entities.length;
-        Game.paused = 80 in Game.keysDown;
-        for ( var i = 0; i < entitiesLength; i++ ) {
+        var entities = Game.currentLevel.entities;
+
+        //Destroy entities that are queued for removal
+        for ( var i = 0; i < Game.toBeDestroyed.length; i++ ) {
+            for ( var j = 0; j < entities.length; j++ ) {
+                if ( entities[j] == Game.toBeDestroyed[i] ) {
+                    entities.splice(j, 1);
+                    Game.toBeDestroyed.splice(i, 1);
+                }
+            }
+        }
+
+        //Call each entities update function
+        for ( var i = 0; i < entities.length; i++ ) {
             entities[i].update( timeDiff );
         }
+
+        //Collisions - the performance of this can be improved
         var a, b, i, j, aX, bX,
             gameUnit = Game.unit;
         for ( i = 0; i < Game.currentLevel.entities.length; i++ ) {
@@ -74,20 +93,28 @@ var Game = {
             }
         }
     },
+    //The collider is where entities interact
+    //Pass it two entities - if they have collisions we call
+    //each of their collision handlers
     collider: function( a, b ) {
         var i, aCollisions = a.getCollisions( b ),
             bCollisions = b.getCollisions( a );
         for ( i in aCollisions ) {
-            if ( aCollisions[i] ) {
+            if ( aCollisions[i] && !( aCollisions[i] instanceof Game.Entity ) ) {
                 a.collideWith( b, i );
             }
         }
-        for ( i in bCollisions ) {
+        for ( i in bCollisions && !( bCollisions[i] instanceof Game.Entity ) ) {
             if ( bCollisions[i] ) {
                 b.collideWith( a, i );
             }
         }
     },
+    //Add entity to the removal queue
+    destroyEntity: function( entity ) {
+        Game.toBeDestroyed.push( entity );
+    },
+    //Layers for rendering - specified by each entity
     drawLayers: [
         //Terrain
         [],
@@ -98,6 +125,8 @@ var Game = {
         //Hero
         []
     ],
+    //Used in rendering - anytime an entities animates or moves position
+    //We add them to the invalidRect for that update
     invalidateRect: function( top, right, bottom, left ) {
         if ( !Game.invalidRect ) {
             Game.invalidRect = { top: top, right: right, bottom: bottom, left: left };
@@ -121,30 +150,36 @@ var Game = {
             Game.invalidRect.right = right;
         }
     },
+    //Called every update - uses the invalidRect to set a clip
+    //so we only re-render entities that have changed
     render: function() {
         var i, j;
 
         if ( Game.invalidRect ) {
-            var invalidLeft = Game.invalidRect.left - 18,
-                invalidTop = Game.invalidRect.top - 18
-                invalidWidth = Game.invalidRect.right - invalidLeft + 36,
-                invalidHeight = Game.invalidRect.bottom - invalidTop + 36;
+            var invalidLeft = Game.invalidRect.left - Game.unit,
+                invalidTop = Game.invalidRect.top - Game.unit,
+                invalidWidth = Game.invalidRect.right - invalidLeft + Game.unit * 2,
+                invalidHeight = Game.invalidRect.bottom - invalidTop + Game.unit * 2;
             /*
-            // Show invalidRect
+            //Show invalidRect
             var left = $( Game.canvas ).offset().left + invalidLeft;
             var top = $( Game.canvas ).offset().top + invalidTop;
             var box = $('<div style="border: 1px solid red;position:absolute;left:'+left+'px;top:'+top+'px;width:'+invalidWidth+'px;height:'+invalidHeight+'px"></div>');
             $('body').append(box);
             */
 
+            //Save canvas context before setting clip
             Game.ctx.save();
             Game.ctx.beginPath();
             Game.ctx.rect( invalidLeft, invalidTop, invalidWidth, invalidHeight );
+            //Set the clip to the invalidRect's position/dimensions
             Game.ctx.clip();
             Game.ctx.closePath();
             Game.ctx.fillStyle = '#000';
-            Game.ctx.fillRect( 0, 0, 900, 450 );
+            Game.ctx.fillRect( 0, 0, 50 * Game.unit, 25 * Game.unit );
 
+            //When we render all entities only pixels that actually
+            //get redrawn are the ones within the clip
             for ( i = 0; i < Game.drawLayers.length; i++ ) {
                 for ( j = 0; j < Game.drawLayers[i].length; j++ ) {
                     Game.drawLayers[i][j].render();
@@ -155,13 +190,15 @@ var Game = {
             Game.invalidRect = null;
         }
 
+        //Drawing health meter
+        //TODO - refactor HUD rendering
         Game.ctx.save();
         Game.ctx.beginPath();
-        Game.ctx.rect( 0, 0, 900, 50 );
+        Game.ctx.rect( 0, 0, 50 * Game.unit, 50 );
         Game.ctx.clip();
 
         Game.ctx.fillStyle = "#000";
-        Game.ctx.fillRect( 0, 0, 900, 50 );
+        Game.ctx.fillRect( 0, 0, 50 * Game.unit, 50 );
 
         for ( i = 0; i < Game.score.maxHealth; i++ ) {
             if ( i < Game.score.health ) {
@@ -173,6 +210,7 @@ var Game = {
 
         Game.ctx.restore();
     },
+    //Iterate through level grid and instantiate all entities based on class name
     loadLevel: function() {
         for ( i in Game.currentLevel.grid ) {
             for ( j in Game.currentLevel.grid[ i ] ) {
@@ -188,6 +226,8 @@ var Game = {
         }
     },
     keyDownListener: function( evt ) {
+        //Prevent default on up and down so the
+        //browser doesn't attempt to scroll the page
         if ( evt.keyCode == '38' || evt.keyCode == '40' ) {
             evt.preventDefault();
         }
@@ -198,15 +238,6 @@ var Game = {
     keyUpListener: function( evt ) {
         delete Game.keysDown[ evt.keyCode ];
     },
-    keysDown: {},
-    totalImages: function() {
-        var count = 0, i;
-        for( i in Game.currentLevel.entityTypes ) {
-            count++;
-        }
-        return count;
-    },
-    imageCount: 1,
     imageLoaded: function( img ) {
         if ( Game.imageCount < Game.currentLevel.entityCount ) {
             Game.imageCount++;
@@ -217,6 +248,8 @@ var Game = {
             Game.startLoop();
         }
     },
+    //Extra sprites are those don't have an entity
+    //TODO - think about refactoring this into its own class
     extraSprites: {
         init: function() {
             var i, j, k,
@@ -224,6 +257,7 @@ var Game = {
                 dataURL, currentSprite,
                 rectSize = Game.unit / 9;
 
+            //Same init as Game.Entity
             for ( i in this.bitmaps ) {
                 currentSprite = this.bitmaps[ i ];
                 tempCanvas = document.createElement( 'canvas' );
@@ -267,6 +301,7 @@ var Game = {
             ]
         }
     },
+    //Score to represent game logic
     score: {
         health: 5,
         maxHealth: 5,
@@ -284,6 +319,7 @@ var Game = {
 };
 window.Game = Game;
 
+//We don't initialize the game until the DOM is loaded
 $(function() {
     Game.init();
 });

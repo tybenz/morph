@@ -8,13 +8,17 @@ Game.Entity = Class.extend({
     maxVelocityY: 7,
     drawLayer: 0,
     init: function( x, y ) {
+        this.lastAnimated = Date.now();
         this.activeSprite = 0;
         this.visible = true;
         this.sprites = [];
+
         var i, j, k,
             tempCanvas, tempContext,
             dataURL, currentSprite,
             rectSize = Game.unit / 9;
+
+        //Entities should be initialized with an x and y
         if ( x !== null && y !== null ) {
             this.pos = new Game.Vector( x, y );
         } else {
@@ -22,6 +26,8 @@ Game.Entity = Class.extend({
         }
         this.velocity = new Game.Vector( 0, 0 );
         this.gravity = new Game.Vector( 0, 0.001 );
+
+        //Iterate through an array of bitmaps and cache them as images
         for ( i in this.bitmaps ) {
             currentSprite = this.bitmaps[ i ];
             tempCanvas = document.createElement( 'canvas' );
@@ -39,19 +45,66 @@ Game.Entity = Class.extend({
         }
         Game.drawLayers[this.drawLayer].push( this );
     },
-    animate: function() {},
+    //Animate method uses the entities dictionary of animationStates
+    //and cycles through sprites in each animation
+    animate: function() {
+        var oldSprite = this.activeSprite,
+            wasVisible = this.visible,
+            timeToAnimate = this.animationStates
+                && this.animationStates[ this.state ]
+                && ( Date.now() - this.lastAnimated ) > this.animationStates[ this.state ].delta;
+        if ( timeToAnimate ) {
+            var nextSprite = this.nextSprite();
+            if ( nextSprite != 'invisible' ) {
+                this.activeSprite = nextSprite;
+                this.visible = true;
+                isVisible = true;
+            } else {
+                this.visible = false;
+            }
+            this.lastAnimated = Date.now();
+        }
+        //Return a bool to tell invalidRect if the entity animated
+        return oldSprite == this.activeSprite || ( !wasVisible && isVisible );
+    },
+    //Grabbing the next sprite in each animation
+    nextSprite: function() {
+        var aState = this.animationStates[ this.state ];
+        if ( !aState.current ) {
+            aState.current = 0;
+            aState.initial = this.activeSprite;
+        }
+        aState.current++;
+        if ( aState.times == 'infinite' || Math.floor( aState.current / aState.sequence.length ) < aState.times ) {
+            var nextSprite = aState.sequence[ aState.current % aState.sequence.length ];
+            //Initial and invisible are special values within an animation sequence
+            if ( nextSprite == 'initial' ) {
+                nextSprite = this.activeSprite;
+            } else if ( nextSprite == 'invisible' ) {
+                nextSprite = 'invisible';
+            }
+            return nextSprite;
+        }
+        return this.activeSprite;
+    },
     update: function( timeDiff ) {
         //Copy pos into oldPos
         this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
-        this.oldSprite = this.activeSprite;
-        this.animate( timeDiff );
+
+        //Bool that will tell us if the entity animated
+        var animated = this.animate( timeDiff );
+
         if ( !this.ignoreGravity ) {
             this.applyGravity( timeDiff );
         }
+
+        //Change position based on velocity
         var positionChange = this.velocity.multiply(timeDiff)
         positionChange.y = Math.min( positionChange.y, this.maxVelocityY );
         this.pos = this.pos.add( positionChange );
-        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y || this.oldSprite != this.activeSprite ) {
+
+        //invalidateRect if the entity moved or animated
+        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y || animated ) {
             this.invalidateRect();
         }
     },
@@ -67,13 +120,16 @@ Game.Entity = Class.extend({
             bottom = ( oldY + height ) >= ( newY + height ) ? oldY + height : newY + height,
             right = ( oldX + width ) >= ( newX + width ) ? oldX + width : newX + width;
 
+        //Pass a rect (position/dimensions) to the global invalidRect
         Game.invalidateRect( top, right, bottom, left );
     },
     render: function() {
+        //Render the activeSprite
         if ( this.visible ) {
             Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.pos.x, this.pos.y );
         }
     },
+    //Two entities -> collision dictionary or false if no collision
     getCollisions: function( entity ) {
         var src = {
                 top: Math.round( this.pos.y ),
@@ -96,17 +152,22 @@ Game.Entity = Class.extend({
                 leftEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5,
                 topEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5,
                 bottomEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5,
-                exact: ( leftAndRightAligned && topAndBottomAligned )
+                exact: ( leftAndRightAligned && topAndBottomAligned ),
+                overlapping: betweenTopAndBottom && betweenLeftAndRight,
+                overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
+                overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
             };
         // We iterate through all collision types, if we any are set to true
         // we return the entire object. Otherwise we return an empty object.
         for ( var i in collisions ) {
             if ( collisions[i] ) {
+                collisions.entity = entity;
                 return collisions;
             }
         }
         return false;
     },
+    //Checks all entities for collision with a specific type
     hasCollisionWith: function( entityType ) {
         var i = 0, collisions;
         for ( ; i < Game.currentLevel.entities.length; i++ ) {
@@ -116,8 +177,10 @@ Game.Entity = Class.extend({
                 return collisions;
             }
         }
-        return {};
+        return false;
     },
+    //Collision handler -> to be extended by derived entities
+    //By default entities stop moving when they hit land
     collideWith: function( entity, collisionType ) {
         switch ( entity.type ) {
             case 'Terrain.Land':
@@ -128,6 +191,14 @@ Game.Entity = Class.extend({
                 if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
                     this.velocity.y = 0;
                     this.pos.y = entity.pos.y + entity.height;
+                }
+                if ( this.velocity.x < 0 && collisionType == 'leftEdge' ) {
+                    this.velocity.x = 0;
+                    this.pos.x = entity.pos.x + entity.width;
+                }
+                if ( this.velocity.x > 0 && collisionType == 'rightEdge' ) {
+                    this.velocity.x = 0;
+                    this.pos.x = entity.pos.x - entity.width;
                 }
                 break;
             default: break;

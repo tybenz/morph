@@ -2,15 +2,40 @@
 
 Game.Entity.Interactable = Game.Entity.extend({
     type: 'Interactable',
-    drawLayer: 1,
-    collectable: null, // indicates whether it automatically goes into inventory
-    collision: function() {
-        //executed with hero collides with it
-    }
+    drawLayer: 2,
+    collectable: null // indicates whether it automatically goes into inventory
 });
 
 Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
     type: 'Interactable.Rock',
+    init: function( x, y ) {
+        this.velocity = new Game.Vector( 0, 0 );
+        this._super( x, y );
+    },
+    collideWith: function( entity, collisionType ) {
+        if ( entity.type == 'Hero.Man' ) {
+            if ( this.velocity.y > 0 && ( collisionType == 'bottomEdge' ) ) {
+                this.velocity.y = 0;
+                this.pos.y = entity.pos.y - entity.height;
+            }
+        }
+        this._super( entity, collisionType );
+    },
+    update: function( timeDiff ) {
+        var frictionalForce;
+        if ( this.velocity.x >= 0 ) {
+            frictionalForce = ( new Game.Vector( -0.0004, 0 ) ).multiply( timeDiff );
+        } else {
+            frictionalForce = ( new Game.Vector( 0.0004, 0 ) ).multiply( timeDiff );
+        }
+        if ( this.hasCollisionWith( 'Terrain.Land' ).bottomEdge && this.velocity.x != 0 ) {
+            this.velocity = this.velocity.add( frictionalForce );
+        }
+        if ( Math.abs( this.velocity.x ) < 0.05 ) {
+            this.velocity.x = 0;
+        }
+        this._super( timeDiff );
+    },
     bitmaps: [
         [
             [ "transparent", "transparent", "transparent", "#777777", "#777777", "#777777", "transparent", "transparent", "transparent" ],

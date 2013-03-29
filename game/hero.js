@@ -1,16 +1,24 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
 var MAN_RIGHT = 0,
-    MAN_LEFT = 1;
+    MAN_LEFT = 1,
+    MAN_HOLDING_RIGHT = 2,
+    MAN_HOLDING_LEFT = 3;
 
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
     jumpHeight: 54,
     drawLayer: 3,
+    //Move object required by all derived versions of the hero
     move: {
         'right': function() {
             var collisions = this.hasCollisionWith( 'Terrain.Land' );
-            this.activeSprite = MAN_RIGHT;
+            this.direction = 'right';
+            if ( this.holding ) {
+                this.activeSprite = MAN_HOLDING_RIGHT;
+            } else {
+                this.activeSprite = MAN_RIGHT;
+            }
             if ( !collisions || !collisions.rightEdge ) {
                 this.invalidateRect( this.pos.x + Game.unit, this.pos.y );
                 this.pos.x += Game.unit;
@@ -18,7 +26,12 @@ Game.Entity.Hero = Game.Entity.extend({
         },
         'left': function() {
             var collisions = this.hasCollisionWith( 'Terrain.Land' );
-            this.activeSprite = MAN_LEFT;
+            this.direction = 'left';
+            if ( this.holding ) {
+                this.activeSprite = MAN_HOLDING_LEFT;
+            } else {
+                this.activeSprite = MAN_LEFT;
+            }
             if ( !collisions || !collisions.leftEdge ) {
                 this.invalidateRect( this.pos.x - Game.unit, this.pos.y );
                 this.pos.x -= Game.unit;
@@ -35,8 +48,34 @@ Game.Entity.Hero = Game.Entity.extend({
             //down for plane and jellyfish
         }
     },
-    actions: [],
+    animationStates: {
+        blinking: {
+            delta: 70,
+            sequence: [ 'initial', 'invisible' ],
+            times: 'infinite'
+        }
+    },
+    //Interacting with rock
+    actions: {
+        pickup: function( entity ) {
+            this.holding = entity;
+            entity.pos.y = this.pos.y - this.height;
+            entity.pos.x = this.pos.x;
+            this.activeSprite += 2;
+        },
+        throw: function() {
+            if ( this.direction == 'right' ) {
+                this.holding.velocity.x = 0.1;
+            } else {
+                this.holding.velocity.x = -0.1;
+            }
+            this.holding.velocity.y = -0.4;
+            this.holding = false;
+            this.activeSprite -= 2;
+        }
+    },
     transform: function() {},
+    //Handling user input
     update: function( timeDiff ) {
         this._super( timeDiff );
         if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
@@ -51,27 +90,49 @@ Game.Entity.Hero = Game.Entity.extend({
             this.move.up.call( this, timeDiff );
             Game.keysDown[ 38 ] = 'locked';
         }
+        if ( 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
+            Game.keysDown[ 32 ] = 'locked';
+            if ( this.holding ) {
+                this.actions.throw.call( this );
+            } else {
+                var collisions = this.hasCollisionWith( 'Interactable.Rock' );
+                if ( collisions ) {
+                    this.actions.pickup.call( this, collisions.entity );
+                }
+            }
+        }
+        //Only perform one jump at a time
         if ( this.velocity.y < 0 ) {
             this.disableJump = true;
         }
+        //Update rock
+        if ( this.holding ) {
+            this.holding.pos.y = this.pos.y - this.height;
+            this.holding.pos.x = this.pos.x;
+        }
+        //Lose health and blink when hitting an enemy
+        //When in blinking state cannot take more damage
+        //TODO - don't use setTimeout
         if ( this.takingDamage && this.takingDamage != 'locked' ) {
             var hero = this;
-            this.blinking = true;
             Game.score.decrementHealth();
-            this.takingDamage = 'locked';
-            setTimeout( function() { hero.takingDamage = false; }, 1000 );
+            if ( Game.score.health > 0 ) {
+                this.state = 'blinking';
+                this.takingDamage = 'locked';
+            } else {
+                this.state = 'dying';
+            }
+            setTimeout( function() {
+                hero.takingDamage = false; hero.state = '';
+            }, 1000 );
         }
     },
     collideWith: function( entity, collisionType ) {
+        var entityType = entity.type;
         switch ( entity.type ) {
             case 'Terrain.Land':
                 if ( collisionType == 'bottomEdge' ) {
                     this.disableJump = false;
-                }
-                break;
-            case 'Enemy.Monster':
-                if ( collisionType == 'exact' && this.takingDamage != 'locked' ) {
-                    this.takingDamage = true;
                 }
                 break;
             case 'Interactable.Coin':
@@ -80,7 +141,18 @@ Game.Entity.Hero = Game.Entity.extend({
                     Game.score.incrementHealth();
                 }
                 break;
+            case 'Interactable.Rock':
+                if ( collisionType == 'topEdge' && !this.holding ) {
+                    this.actions.pickup.call( this, entity );
+                }
+                break;
             default: break;
+        }
+        if ( entityType.indexOf( 'Enemy' ) == 0
+            && ( collisionType == 'exact' || collisionType == 'overlapping' || collisionType == 'overlappingVertical' || collisionType == 'overlappingHorizontal' )
+            && this.takingDamage != 'locked' ) {
+
+            this.takingDamage = true;
         }
         this._super( entity, collisionType );
     }
@@ -110,6 +182,28 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00" ],
             [ "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00" ],
             [ "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00"  ]
+        ],
+        [
+            [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent" ],
+            [ "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00" ]
+        ],
+        [
+            [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+            [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00" ],
+            [ "rgba(0,0,0,0)", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "#00ff00", "#00ff00" ],
+            [ "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00" ]
         ]
     ]
 });
