@@ -89,9 +89,6 @@ Game.Entity = Class.extend({
         return this.activeSprite;
     },
     update: function( timeDiff ) {
-    },
-    //Don't override
-    updateEntity: function( timeDiff ) {
         //Copy pos into oldPos
         this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
 
@@ -102,9 +99,6 @@ Game.Entity = Class.extend({
         if ( !this.ignoreGravity ) {
             this.applyGravity( timeDiff );
         }
-
-        //Call updateEntity
-        this.update( timeDiff );
 
         //Change position based on velocity
         var positionChange = this.velocity.multiply(timeDiff)

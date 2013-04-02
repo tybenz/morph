@@ -10,10 +10,16 @@ var Game = {
     //Image count for loading sprites
     imageCount: 1,
     init: function() {
+        //Initialize viewport size
+        Game.viewportWidth = 50 * Game.unit;
+        Game.viewportHeight = 25 * Game.unit;
+        Game.viewportOffset = 0;
+        Game.viewportShiftBoundary = Game.viewportWidth / 2 - ( 3 * Game.unit );
+
         //Prepare canvas
         Game.canvas = document.createElement( 'canvas' );
-        Game.canvas.width = 50 * Game.unit;
-        Game.canvas.height = 25 * Game.unit;
+        Game.canvas.width = Game.viewportWidth;
+        Game.canvas.height = Game.viewportHeight;
         document.getElementById( 'game' ).appendChild( Game.canvas );
         Game.ctx = Game.canvas.getContext( '2d' );
 
@@ -31,19 +37,11 @@ var Game = {
 
         //Background
         Game.ctx.fillStyle = '#000';
-        Game.ctx.fillRect( 0, 0, 50 * Game.unit, 25 * Game.unit );
+        Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
 
         //Initial render
         for ( var i in Game.currentLevel.entities ) {
             Game.currentLevel.entities[i].render();
-        }
-
-        for ( i = 0; i < Game.score.maxHealth; i++ ) {
-            if ( i < Game.score.health ) {
-                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + 20, 20 );
-            } else {
-                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + 20, 20 );
-            }
         }
 
         //Start the actual loop
@@ -81,7 +79,14 @@ var Game = {
 
         //Call each entities update function
         for ( var i = 0; i < entities.length; i++ ) {
-            entities[i].updateEntity( timeDiff );
+            entities[i].update( timeDiff );
+        }
+
+        //Shift viewport if hero's pos is past the shift boundary
+        if ( Game.hero.pos.x > Game.viewportShiftBoundary ) {
+            for ( var i = Game.hero.pos.x; i > Game.viewportShiftBoundary; i -= Game.unit ) {
+                Game.viewportOffset += Game.unit;
+            }
         }
 
         //Collisions - the performance of this can be improved
@@ -182,7 +187,7 @@ var Game = {
             Game.ctx.clip();
             Game.ctx.closePath();
             Game.ctx.fillStyle = '#000';
-            Game.ctx.fillRect( 0, 0, 50 * Game.unit, 25 * Game.unit );
+            Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
 
             //When we render all entities only pixels that actually
             //get redrawn are the ones within the clip
@@ -200,17 +205,17 @@ var Game = {
         //TODO - refactor HUD rendering
         Game.ctx.save();
         Game.ctx.beginPath();
-        Game.ctx.rect( 0, 0, 50 * Game.unit, 50 );
+        Game.ctx.rect( 0, 0, Game.viewportWidth, Game.unit * 2 );
         Game.ctx.clip();
 
         Game.ctx.fillStyle = "#000";
-        Game.ctx.fillRect( 0, 0, 50 * Game.unit, 50 );
+        Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.unit * 2 );
 
         for ( i = 0; i < Game.score.maxHealth; i++ ) {
             if ( i < Game.score.health ) {
-                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + 20, 20 );
+                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
             } else {
-                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + 20, 20 );
+                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
             }
         }
 
