@@ -17,11 +17,12 @@ Game.Entity.Hero = Game.Entity.extend({
             times: 'infinite'
         }
     },
-    transform: function( newType ) {
+    transform: function( newType, timeDiff ) {
         var newHero = new newType( this.pos.x, this.pos.y );
         Game.destroyEntity( this );
         Game.currentLevel.entities.push( newHero );
         Game.hero = newHero;
+        Game.transformed = true;
     },
     //Handling user input
     update: function( timeDiff ) {
@@ -96,7 +97,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                 } else {
                     collisions = this.hasCollisionWith( 'Machine' );
                     if ( collisions ) {
-                        this.transform( Game.Entity.Hero.Block );
+                        this.transform( Game.Entity.Hero.Block, timeDiff );
                     }
                 }
             }
