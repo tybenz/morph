@@ -63,17 +63,17 @@ var Game = {
 	var entities = Game.currentLevel.entities;
 
         //Destroy entities that are queued for removal
-        for ( var i = 0; i < Game.toBeDestroyed.length; i++ ) {
+        for ( var i = Game.toBeDestroyed.length - 1; i >= 0; i-- ) {
 
             drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
 
 	    
-            for ( var j = 0; j < entities.length; j++ ) {
+            for ( var j = entities.length - 1; j >= 0; j++ ) {
                 if ( entities[j] == Game.toBeDestroyed[i] ) {
                     entities.splice( j, 1 ); // splice changes indexes? 
                 }
             }
-            for ( var j = 0; j < drawLayer.length; j++ ) {
+            for ( var j = drawLayer.length - 1; j >= 0; j++ ) {
                 if ( drawLayer[j] == Game.toBeDestroyed[i] ) {
                     drawLayer.splice( j, 1 );
                 }
