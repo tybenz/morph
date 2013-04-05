@@ -106,7 +106,7 @@ Game.Entity = Class.extend({
         this.pos = this.pos.add( positionChange );
 
         //invalidateRect if the entity moved or animated
-        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y || animated ) {
+        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y || animated || this.transformed ) {
             this.invalidateRect();
         }
     },
