@@ -206,7 +206,7 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
     init: function( x, y ) {
         this._super( x, y );
         this.velocity.x = -0.09;
-        this.state = 'flying';
+	this.state = 'flying';
         this.animationStates = {
             flying: {
                 delta: 200,

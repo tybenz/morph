@@ -45,8 +45,8 @@ var Game = {
         }
 
         //Start the actual loop
-        Game.then = Date.now();
-        requestAnimationFrame(Game.loop);
+        Game.then = Date.now();  // Game.then used?
+        requestAnimationFrame(Game.loop); 
     },
     loop: function( timestamp ) {
         //We update and render each loop
@@ -59,14 +59,18 @@ var Game = {
         requestAnimationFrame( Game.loop );
     },
     update: function( timeDiff ) {
-        var entities = Game.currentLevel.entities;
+	
+	var entities = Game.currentLevel.entities;
 
         //Destroy entities that are queued for removal
         for ( var i = 0; i < Game.toBeDestroyed.length; i++ ) {
+
             drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
+
+	    
             for ( var j = 0; j < entities.length; j++ ) {
                 if ( entities[j] == Game.toBeDestroyed[i] ) {
-                    entities.splice( j, 1 );
+                    entities.splice( j, 1 ); // splice changes indexes? 
                 }
             }
             for ( var j = 0; j < drawLayer.length; j++ ) {
@@ -80,7 +84,7 @@ var Game = {
         //Call each entities update function
         for ( var i = 0; i < entities.length; i++ ) {
             entities[i].update( timeDiff );
-        }
+	}
 
         //Shift viewport if hero's pos is past the shift boundary
         if ( Game.hero.pos.x > Game.viewportShiftBoundary ) {
@@ -99,7 +103,7 @@ var Game = {
                 b = Game.currentLevel.entities[j];
                 bX = b.pos.x;
                 if ( a != b && aX <= ( bX + gameUnit ) && aX >= ( bX - gameUnit * 2 ) ) {
-                    Game.collider( a, b );
+                    Game.collider( a, b, timeDiff );
                 }
             }
         }
@@ -107,9 +111,9 @@ var Game = {
     //The collider is where entities interact
     //Pass it two entities - if they have collisions we call
     //each of their collision handlers
-    collider: function( a, b ) {
-        var i, aCollisions = a.getCollisions( b ),
-            bCollisions = b.getCollisions( a );
+    collider: function( a, b, timeDiff ) {
+        var i, aCollisions = a.getCollisions( b, timeDiff ),
+        bCollisions = b.getCollisions( a, timeDiff );
         for ( i in aCollisions ) {
             if ( aCollisions[i] && !( aCollisions[i] instanceof Game.Entity ) ) {
                 a.collideWith( b, i );
