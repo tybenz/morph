@@ -5,7 +5,7 @@ Game.Entity = Class.extend({
     ignoreGravity: false,
     width: 18,
     height: 18,
-    maxVelocityY: 7, //another way is to test the next coordinate in trajectory.
+    maxVelocityY: 1000, //another way is to test the next coordinate in trajectory.
     drawLayer: 0,
     init: function( x, y ) {
         this.lastAnimated = Date.now();
@@ -26,6 +26,8 @@ Game.Entity = Class.extend({
         }
         this.velocity = new Game.Vector( 0, 0 );
         this.gravity = new Game.Vector( 0, 0.001 ); // Changed to test collisions
+
+	this.futurePos = this.pos;
 
         //Iterate through an array of bitmaps and cache them as images
         for ( i in this.bitmaps ) {
@@ -104,6 +106,22 @@ Game.Entity = Class.extend({
         var positionChange = this.velocity.multiply(timeDiff)
         positionChange.y = Math.min( positionChange.y, this.maxVelocityY );
         this.pos = this.pos.add( positionChange );
+	
+/*	
+	//  Approximation check. At this point in update(), we can check 
+	//  to see how well the previous call to update() approximated our 
+	//  position right now. 
+	
+	if ( this.type == 'Hero.Man' && this.disableJump ) {
+	    // Should be about the same.
+	    console.log( this.pos.y, this.futurePos.y );
+	}
+*/
+	
+	// Make a guess at what our next position will be, assuming timeDiff stays the same. timeDiff seems to hover at 16 and 17...
+	// The problem is that differences between timeDiffs cause bad approximations for high velocities. 
+	this.futurePos = this.pos.add( this.velocity.add( this.gravity.multiply( timeDiff + 100 ) ).multiply( timeDiff + 100 ) ); //should multiply with timeDiff, but how much?
+
 
         //invalidateRect if the entity moved or animated
         if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y || animated || this.transformed ) {
@@ -135,19 +153,16 @@ Game.Entity = Class.extend({
     //Two entities -> collision dictionary or false if no collision
     getCollisions: function( entity, timeDiff ) {
 	
-	var futurePos = this.pos.add( this.velocity.add( this.gravity ) ); //should multiply with timeDiff, but how much?
-		
-        var src = {
+	var src = {
                 top: Math.round( this.pos.y ),
                 bottom: Math.round( this.pos.y + this.height ),
                 left: Math.round( this.pos.x ),
                 right: Math.round( this.pos.x + this.width ),
 
-	        //futurePos : this.pos.add( this.velocity.add( this.gravity.multiply( timeDiff ) ).multiply( timeDiff ) ),
-                futureTop: Math.round( futurePos.y ),
-                futureBottom: Math.round( futurePos.y + this.height ),
-                futureLeft: Math.round( futurePos.x ),
-                futureRight: Math.round( futurePos.x + this.width ) 
+	        futureTop: Math.round( this.futurePos.y ),
+                futureBottom: Math.round( this.futurePos.y + this.height ),
+                futureLeft: Math.round( this.futurePos.x ),
+                futureRight: Math.round( this.futurePos.x + this.width ) 
 	   },
             target = {
                 top: Math.round( entity.pos.y ),
@@ -161,14 +176,17 @@ Game.Entity = Class.extend({
             topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
             leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
 	    wouldPassThrough = ( src.right < target.left && src.futureLeft > target.right ) || ( src.left > target.right && src.futureRight < target.left ) ||
-	                       (src.bottom < target.top && src.futureTop > target.bottom) || (src.top > target.bottom && src.futureBottom < target.top) 
+	                       (src.bottom < target.top && src.futureTop > target.bottom) || (src.top > target.bottom && src.futureBottom < target.top) ,
 
             collisions = {
-                rightEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < 5,
-                leftEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5,
-                topEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5,
-                bottomEdge: ( leftOrRightAligned || betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5,
-		passesThrough: wouldPassThrough,
+                rightEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < 5 ||
+		    ( wouldPassThrough && src.right < target.left ),
+                leftEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5 ||
+    		    ( wouldPassThrough && src.left > target.right ),
+                topEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5 ||
+		    ( wouldPassThrough && src.top > target.bottom ),
+                bottomEdge: ( ( leftOrRightAligned || betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5 )||
+		    ( wouldPassThrough && src.bottom < target.top ),
 		exact: ( leftAndRightAligned && topAndBottomAligned ),
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
                 overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
