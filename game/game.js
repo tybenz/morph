@@ -39,7 +39,9 @@ var Game = {
         Game.ctx.fillStyle = '#000';
         Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
 
-        //Initial render
+        // Initial render
+	// Make sure all entities get rendered on first render.
+	Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
         for ( var i in Game.currentLevel.entities ) {
             Game.currentLevel.entities[i].render();
         }
@@ -58,7 +60,7 @@ var Game = {
             Game.update( timeDiff );
             Game.render( timeDiff );
         }
-        Game.lastUpdate = timestamp;
+	Game.lastUpdate = timestamp;
         requestAnimationFrame( Game.loop );
     },
     update: function( timeDiff ) {
