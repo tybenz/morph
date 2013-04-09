@@ -102,6 +102,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                 }
             }
         }
+	
         //Only perform one jump at a time
         if ( this.velocity.y < 0 ) {
             this.disableJump = true;
@@ -142,7 +143,11 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
         'up': function() {
             //jump
             if ( !this.disableJump ) {
+<<<<<<< HEAD
                 var jumpForce = new Game.Vector( 0, -0.5 );
+=======
+                var jumpForce = new Game.Vector( 0, -1.3 );
+>>>>>>> collisions
                 this.velocity = this.velocity.add( jumpForce );
             }
         },

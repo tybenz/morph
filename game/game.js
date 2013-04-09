@@ -52,6 +52,9 @@ var Game = {
         //We update and render each loop
         if ( Game.lastUpdate ) {
             var timeDiff = timestamp - Game.lastUpdate;
+	    
+	    // console.log(timeDiff)
+	    
             Game.update( timeDiff );
             Game.render( timeDiff );
         }
@@ -80,7 +83,7 @@ var Game = {
             Game.toBeDestroyed.splice( i, 1 );
         }
 
-        //Call each entities update function
+        //Call each entity's update function
         for ( var i = 0; i < entities.length; i++ ) {
             entities[i].update( timeDiff );
 	}
