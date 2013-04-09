@@ -5,7 +5,7 @@ Game.Entity = Class.extend({
     ignoreGravity: false,
     width: 18,
     height: 18,
-    maxVelocityY: 1000, //another way is to test the next coordinate in trajectory.
+    maxVelocityY: 10000, //another way is to test the next coordinate in trajectory.
     drawLayer: 0,
     init: function( x, y ) {
         this.lastAnimated = Date.now();
@@ -119,7 +119,7 @@ Game.Entity = Class.extend({
 */
 	
 	// Make a guess at what our next position will be, assuming timeDiff stays the same. timeDiff seems to hover at 16 and 17...
-	// The problem is that differences between timeDiffs cause bad approximations for high velocities. 
+	// A possible bug is that differences between timeDiffs cause worse approximations for high velocities. 
 	this.futurePos = this.pos.add( this.velocity.add( this.gravity.multiply( timeDiff + 100 ) ).multiply( timeDiff + 100 ) ); //should multiply with timeDiff, but how much?
 
 
