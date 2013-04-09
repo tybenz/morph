@@ -200,8 +200,8 @@ Game.Entity = Class.extend({
     //By default entities stop moving when they hit land
     collideWith: function( entity, collisionType ) {
         switch ( entity.type ) {
-            case 'Terrain.Land':
-                if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
+        case 'Terrain.Land':
+	    if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
                     this.velocity.y = 0;
                     this.pos.y = entity.pos.y - entity.height;
                 }

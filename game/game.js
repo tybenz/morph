@@ -66,11 +66,10 @@ var Game = {
         for ( var i = Game.toBeDestroyed.length - 1; i >= 0; i-- ) {
 
             drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
-
 	    
-            for ( var j = entities.length - 1; j >= 0; j++ ) {
+	    for ( var j = entities.length - 1; j >= 0; j++ ) {
                 if ( entities[j] == Game.toBeDestroyed[i] ) {
-                    entities.splice( j, 1 ); // splice changes indexes? 
+                    entities.splice( j, 1 ); 
                 }
             }
             for ( var j = drawLayer.length - 1; j >= 0; j++ ) {
@@ -92,21 +91,44 @@ var Game = {
                 Game.viewportOffset += Game.unit;
             }
         }
+	////////// Collision Detection ////////
+	// Keep entity list sorted on x, ascending.
+	Game.currentLevel.entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
 
-        //Collisions - the performance of this can be improved
-        var a, b, i, j, aX, bX,
-            gameUnit = Game.unit;
-        for ( i = 0; i < Game.currentLevel.entities.length; i++ ) {
-            a = Game.currentLevel.entities[i];
-            aX = a.pos.x;
-            for ( j = 0; j < Game.currentLevel.entities.length; j++ ) {
-                b = Game.currentLevel.entities[j];
-                bX = b.pos.x;
-                if ( a != b && aX <= ( bX + gameUnit ) && aX >= ( bX - gameUnit * 2 ) ) {
-                    Game.collider( a, b, timeDiff );
-                }
-            }
-        }
+	// List of entities to check Game.currentLevel.entities[ i ] against.
+	var activeList = new Array( Game.currentLevel.entities[ 0 ] );
+
+	// List of possible collisions.
+	var possibleCollisions = new Array();
+	
+	for ( var i = 1; i < Game.currentLevel.entities.length; i++ ) {
+	    for ( var j = activeList.length - 1; j >= 0; j-- ) {
+		
+		// Is there a possible collision?
+		if ( Game.currentLevel.entities[ i ].pos.x <= ( activeList[ j ].pos.x + Game.unit ) &&
+		    Game.currentLevel.entities[ i ] != activeList[ j ] ) {
+		    
+		    // It's safer to not interleave collision detection with entity updates. 
+		    possibleCollisions.push( [ Game.currentLevel.entities[ i ], activeList[ j ] ] );
+
+		// If the current entity is past this activeList entity, then we know it
+		// doesn't collide with subsequent entities in Game.currentLevel.entities.
+		} else activeList.splice( j, 1 );
+	    }
+
+	    // Place the current entity into activeList.
+	    activeList.push(Game.currentLevel.entities[ i ]);
+	}
+	
+	// Update entities after gathering all collision-detection data.
+	for ( i in possibleCollisions ) {
+	    var entityPair = possibleCollisions[ i ];
+	    if ( entityPair[ 0 ] instanceof Game.Entity && entityPair[ 1 ] instanceof Game.Entity ) {
+		Game.collider( entityPair[ 0 ], entityPair[ 1 ], timeDiff );
+	    }
+	}
+
+	
     },
     //The collider is where entities interact
     //Pass it two entities - if they have collisions we call
@@ -114,13 +136,15 @@ var Game = {
     collider: function( a, b, timeDiff ) {
         var i, aCollisions = a.getCollisions( b, timeDiff ),
         bCollisions = b.getCollisions( a, timeDiff );
-        for ( i in aCollisions ) {
+
+	for ( i in aCollisions ) {
             if ( aCollisions[i] && !( aCollisions[i] instanceof Game.Entity ) ) {
                 a.collideWith( b, i );
             }
         }
-        for ( i in bCollisions && !( bCollisions[i] instanceof Game.Entity ) ) {
-            if ( bCollisions[i] ) {
+	
+	for ( i in bCollisions ) {
+            if ( bCollisions[i] && !( bCollisions[i] instanceof Game.Entity ) ) {
                 b.collideWith( a, i );
             }
         }
