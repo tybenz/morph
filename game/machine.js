@@ -3,8 +3,11 @@
 Game.Entity.Machine = Game.Entity.extend({
     type: 'Machine',
     ignoreGravity: true,
-    width: Game.unit * 2,
-    height: Game.unit * 2,
+    init: function( x, y ) {
+        this.width = Game.unit * 2;
+        this.height = Game.unit * 2;
+        this._super( x, y );
+    },
     bitmaps: [
         [
             [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],

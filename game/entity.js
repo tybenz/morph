@@ -3,10 +3,11 @@
 Game.Entity = Class.extend({
     type: 'Entity',
     ignoreGravity: false,
-    width: 18,
-    height: 18,
+    maxVelocityY: 7,
     drawLayer: 0,
     init: function( x, y ) {
+        this.width = this.width || Game.unit;
+        this.height = this.height || Game.unit;
         this.lastAnimated = Date.now();
         this.activeSprite = 0;
         this.visible = true;
