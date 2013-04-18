@@ -9,10 +9,10 @@ var Game = {
     keysDown: {},
     //Image count for loading sprites
     imageCount: 1,
-    init: function() {
+    init: function( level ) {
         //Initialize viewport size
-        Game.viewportWidth = 50 * Game.unit;
-        Game.viewportHeight = 25 * Game.unit;
+        Game.viewportWidth = Game.viewportTileWidth * Game.unit;
+        Game.viewportHeight = Game.viewportTileHeight * Game.unit;
         Game.viewportOffset = 0;
         Game.viewportShiftBoundary = Game.viewportWidth / 2 - ( 3 * Game.unit );
 
@@ -26,8 +26,10 @@ var Game = {
         //Initialize extra sprites
         Game.extraSprites.init();
 
+        Game.resize();
+
         //Load level and sprites
-        Game.currentLevel = Game.Levels[0];
+        Game.currentLevel = Game.Levels[ level ];
         Game.loadLevel();
     },
     startLoop: function() {
@@ -390,11 +392,16 @@ var Game = {
                 this.health++;
             }
         }
+    },
+    resize: function() {
+        $( '#game' ).width( Game.viewportWidth ).height( Game.viewportHeight );
+        $( '#game' ).css( 'top', '-' + Game.viewportHeight / 2 + 'px' );
     }
 };
+Game.viewportTileWidth = 50;
+Game.viewportTileHeight = 25;
 window.Game = Game;
 
-//We don't initialize the game until the DOM is loaded
 $(function() {
-    Game.init();
+    $( window ).on( 'resize', Game.resize );
 });

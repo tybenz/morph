@@ -12,6 +12,10 @@
 
 <div class="buffer"></div>
 <div id="game">
+  <div id="start-screen">
+    <div class="buffer"></div>
+    <a href="#" class="start-game">START</a>
+  </div>
 </div>
     
 </body>
@@ -30,8 +34,17 @@
 <script type="text/javascript" charset="utf-8" src="game/machine.js"></script>
 <script type="text/javascript" charset="utf-8" src="game/inventory.js"></script>
 <script type="text/javascript" charset="utf-8">
+Game.viewportTileWidth = 43;
+Game.viewportTileHeight = 20;
+Game.viewportWidth = Game.viewportTileWidth * Game.unit;
+Game.viewportHeight = Game.viewportTileHeight * Game.unit;
+Game.resize();
 $(function() {
-    Game.init( 0 );
+  $( '.start-game' ).click( function( evt ) {
+    evt.preventDefault();
+    $( '#start-screen' ).hide();
+    Game.init( 1 );
+  });
 });
 </script>
 </html>
