@@ -27,7 +27,7 @@ Game.Entity = Class.extend({
         this.velocity = new Game.Vector( 0, 0 );
         this.gravity = new Game.Vector( 0, 0.01 ); // Changed to test collisions
 
-	this.futurePos = this.pos;
+        this.futurePos = this.pos;
 
         //Iterate through an array of bitmaps and cache them as images
         for ( i in this.bitmaps ) {

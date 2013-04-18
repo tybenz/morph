@@ -269,23 +269,25 @@ var Game = {
 
         //Drawing health meter
         //TODO - refactor HUD rendering
-        Game.ctx.save();
-        Game.ctx.beginPath();
-        Game.ctx.rect( 0, 0, Game.viewportWidth, Game.unit * 2 );
-        Game.ctx.clip();
+        if ( !Game.HUDOff ) {
+            Game.ctx.save();
+            Game.ctx.beginPath();
+            Game.ctx.rect( 0, 0, Game.viewportWidth, Game.unit * 2 );
+            Game.ctx.clip();
 
-        Game.ctx.fillStyle = "#000";
-        Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.unit * 2 );
+            Game.ctx.fillStyle = "#000";
+            Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.unit * 2 );
 
-        for ( i = 0; i < Game.score.maxHealth; i++ ) {
-            if ( i < Game.score.health ) {
-                Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
-            } else {
-                Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
+            for ( i = 0; i < Game.score.maxHealth; i++ ) {
+                if ( i < Game.score.health ) {
+                    Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
+                } else {
+                    Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
+                }
             }
-        }
 
-        Game.ctx.restore();
+            Game.ctx.restore();
+        }
     },
     //Iterate through level grid and instantiate all entities based on class name
     loadLevel: function() {
