@@ -25,7 +25,7 @@ Game.Entity = Class.extend({
             this.pos = new Game.Vector( 0, 0 );
         }
         this.velocity = new Game.Vector( 0, 0 );
-        this.gravity = new Game.Vector( 0, 0.001 );
+        this.gravity = new Game.Vector( 0, Game.unit / 18000 );
 
         //Iterate through an array of bitmaps and cache them as images
         for ( i in this.bitmaps ) {

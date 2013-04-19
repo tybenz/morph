@@ -69,5 +69,11 @@ Game.Levels = [
         [ 'blank', 'blank', 'blank', 'machine', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank' ],
         [ 'blank', 'blank', 'hero.man', 'blank', 'blank', 'terrain.land', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'interactable.rock', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'enemy.monster', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'interactable.coin', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank' ],
         [ 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land' ]
+    ]),
+    new Game.Level([
+        [ 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank' ],
+        [ 'blank', 'blank', 'enemy.bird', 'machine', 'blank', 'blank', 'blank', 'blank' ],
+        [ 'hero.man', 'blank', 'blank', 'blank', 'blank', 'blank', 'enemy.monster', 'blank' ],
+        [ 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land' ]
     ])
 ];
