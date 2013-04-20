@@ -5,7 +5,6 @@ Game.Entity = Class.extend({
     ignoreGravity: false,
     width: 18,
     height: 18,
-    maxVelocityY: 10000, //another way is to test the next coordinate in trajectory.
     drawLayer: 0,
     init: function( x, y ) {
         this.lastAnimated = Date.now();
@@ -90,10 +89,7 @@ Game.Entity = Class.extend({
         }
         return this.activeSprite;
     },
-    update: function( timeDiff ) {
-        //Copy pos into oldPos
-        this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
-
+    generateNextCoords: function( timeDiff ) {
         //Bool that will tell us if the entity animated
         var animated = this.animate( timeDiff );
 
@@ -103,37 +99,25 @@ Game.Entity = Class.extend({
         }
 
         //Change position based on velocity
+	// Maybe x's position change should go here too.
         var positionChange = this.velocity.multiply(timeDiff)
-        positionChange.y = Math.min( positionChange.y, this.maxVelocityY );
-        this.pos = this.pos.add( positionChange );
+        this.futurePos = this.pos.add( positionChange );
 	
-/*	
-	//  Approximation check. At this point in update(), we can check 
-	//  to see how well the previous call to update() approximated our 
-	//  position right now. 
-	
-	if ( this.type == 'Hero.Man' && this.disableJump ) {
-	    // Should be about the same.
-	    console.log( this.pos.y, this.futurePos.y );
-	}
-*/
-	
-	// Make a guess at what our next position will be, assuming timeDiff stays the same. timeDiff seems to hover at 16 and 17...
-	// A possible bug is that differences between timeDiffs cause worse approximations for high velocities. 
-	this.futurePos = this.pos.add( this.velocity.add( this.gravity.multiply( timeDiff + 100 ) ).multiply( timeDiff + 100 ) ); //should multiply with timeDiff, but how much?
-
-
         //invalidateRect if the entity moved or animated
-        if ( this.oldPos.x != this.pos.x || this.oldPos.y != this.pos.y || animated || this.transformed ) {
+        if ( this.futurePos.x != this.pos.x || this.futurePos.y != this.pos.y || animated || this.transformed ) {
             this.invalidateRect();
         }
     },
+    update: function() {
+	// All we do is give the entity it's next coordinates.
+	this.pos = this.futurePos
+    },
     go: true,
     invalidateRect: function() {
-        var newX = this.pos.x,
-            newY = this.pos.y,
-            oldX = this.oldPos.x,
-            oldY = this.oldPos.y,
+        var newX = this.futurePos.x,
+            newY = this.futurePos.y,
+            oldX = this.pos.x,
+            oldY = this.pos.y,
             width = this.width,
             height = this.height,
             top = oldY <= newY ? oldY : newY,
@@ -185,7 +169,7 @@ Game.Entity = Class.extend({
     		    ( wouldPassThrough && src.left > target.right ),
                 topEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5 ||
 		    ( wouldPassThrough && src.top > target.bottom ),
-                bottomEdge: ( ( leftOrRightAligned || betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5 )||
+                bottomEdge: ( ( leftOrRightAligned || betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5 ) ||
 		    ( wouldPassThrough && src.bottom < target.top ),
 		exact: ( leftAndRightAligned && topAndBottomAligned ),
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
@@ -220,29 +204,33 @@ Game.Entity = Class.extend({
         switch ( entity.type ) {
         case 'Terrain.Land':
 	    if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
-                    this.velocity.y = 0;
-                    this.pos.y = entity.pos.y - entity.height;
-                }
-                if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
-                    this.velocity.y = 0;
-                    this.pos.y = entity.pos.y + entity.height;
-                }
-                if ( this.velocity.x < 0 && collisionType == 'leftEdge' ) {
+                this.velocity.y = 0;
+                this.futurePos.y = entity.pos.y - this.height;
+            }/*
+            if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
+                this.velocity.y = 0;
+                this.futurePos.y = entity.pos.y + entity.height;
+            }
+	  
+              if ( collisionType == 'leftEdge' ) {
+              this.velocity.x = 0;
+              this.futurePos.x = entity.pos.x + entity.width;
+              }
+	      
+                if ( collisionType == 'rightEdge' ) {
                     this.velocity.x = 0;
-                    this.pos.x = entity.pos.x + entity.width;
+                    this.futurePos.x = entity.pos.x - entity.width;
                 }
-                if ( this.velocity.x > 0 && collisionType == 'rightEdge' ) {
-                    this.velocity.x = 0;
-                    this.pos.x = entity.pos.x - entity.width;
-                }
-                break;
-            default: break;
+*/
+            break;
+        default: break;
         }
     },
     applyGravity: function( timeDiff ) {
         var gravitationalForce = this.gravity.multiply( timeDiff );
-        if ( !this.hasCollisionWith( 'Terrain.Land' ).bottomEdge ) {
-            this.velocity = this.velocity.add( gravitationalForce );
-        }
+      //  if ( !this.hasCollisionWith( 'Terrain.Land' ).bottomEdge ) {
+        //    this.velocity = this.velocity.add( gravitationalForce );
+//        }
+	this.velocity = this.velocity.add( gravitationalForce );
     }
 });

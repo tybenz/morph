@@ -85,9 +85,9 @@ var Game = {
             Game.toBeDestroyed.splice( i, 1 );
         }
 
-        //Call each entity's update function
+        // Generate each entity's next coordinates.
         for ( var i = 0; i < entities.length; i++ ) {
-            entities[i].update( timeDiff );
+	    entities[ i ].generateNextCoords( timeDiff );
 	}
 
         //Shift viewport if hero's pos is past the shift boundary
@@ -98,51 +98,55 @@ var Game = {
         }
 	////////// Collision Detection ////////
 	// Keep entity list sorted on x, ascending.
-	Game.currentLevel.entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
+	entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
 
-	// List of entities to check Game.currentLevel.entities[ i ] against.
-	var activeList = new Array( Game.currentLevel.entities[ 0 ] );
+	// List of entities to check entities[ i ] against
+	var activeList = new Array( entities[ 0 ] );
 
-	// List of possible collisions.
+	// List of possible collisions
 	var possibleCollisions = new Array();
 	
-	for ( var i = 1; i < Game.currentLevel.entities.length; i++ ) {
+	for ( var i = 1; i < entities.length; i++ ) {
 	    for ( var j = activeList.length - 1; j >= 0; j-- ) {
 		
-		// Is there a possible collision?
-		if ( Game.currentLevel.entities[ i ].pos.x <= ( activeList[ j ].pos.x + Game.unit ) &&
-		    Game.currentLevel.entities[ i ] != activeList[ j ] ) {
-		    
-		    // It's safer to not interleave collision detection with entity updates. 
-		    possibleCollisions.push( [ Game.currentLevel.entities[ i ], activeList[ j ] ] );
-
-		// If the current entity is past this activeList entity, then we know it
-		// doesn't collide with subsequent entities in Game.currentLevel.entities.
-		} else activeList.splice( j, 1 );
+		if ( entities[ i ].pos.x > ( activeList[ j ].pos.x + activeList[ j ].width ) ) {
+		    // The current entity is past this activeList entity -- we know it
+		    // won't collide with the rest of the entities.
+		    activeList.splice( j, 1 );
+		    continue;		    
+		} else if ( entities[ i ] != activeList[ j ] ) {
+		    // It's possible that there is a collision (their x coordinates are close).
+		    possibleCollisions.push( [ entities[ i ], activeList[ j ] ] );
+		}
 	    }
-
 	    // Place the current entity into activeList.
-	    activeList.push(Game.currentLevel.entities[ i ]);
+	    activeList.push(entities[ i ]);
 	}
 	
-	// Update entities after gathering all collision-detection data.
-	for ( i in possibleCollisions ) {
+	// Fine-grained collision detection.
+	for ( var i = 0; i < possibleCollisions.length; i++ ) {
 	    var entityPair = possibleCollisions[ i ];
 	    if ( entityPair[ 0 ] instanceof Game.Entity && entityPair[ 1 ] instanceof Game.Entity ) {
 		Game.collider( entityPair[ 0 ], entityPair[ 1 ], timeDiff );
 	    }
 	}
-
+	
+	// Update each entity.
+	for ( var i = 0; i < entities.length; i++ ) {
+	    entities[ i ].update( timeDiff );
+	}
 	
     },
     //The collider is where entities interact
     //Pass it two entities - if they have collisions we call
     //each of their collision handlers
     collider: function( a, b, timeDiff ) {
-        var i, aCollisions = a.getCollisions( b, timeDiff ),
+        var i, 
+	aCollisions = a.getCollisions( b, timeDiff ),
         bCollisions = b.getCollisions( a, timeDiff );
 
 	for ( i in aCollisions ) {
+	    // Not too sure when aCollisions[i] would be anything but a true/false.
             if ( aCollisions[i] && !( aCollisions[i] instanceof Game.Entity ) ) {
                 a.collideWith( b, i );
             }
