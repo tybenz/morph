@@ -24,7 +24,7 @@ Game.Entity = Class.extend({
             this.pos = new Game.Vector( 0, 0 );
         }
         this.velocity = new Game.Vector( 0, 0 );
-        this.gravity = new Game.Vector( 0, 0.001 ); // Changed to test collisions
+        this.gravity = new Game.Vector( 0, 0.01 ); // Changed to test collisions
 
 	this.futurePos = this.pos;
 
@@ -135,7 +135,7 @@ Game.Entity = Class.extend({
         }
     },
     //Two entities -> collision dictionary or false if no collision
-    getCollisions: function( entity, timeDiff ) {
+    getCollisions: function( entity ) {
 	
 	var src = {
                 top: Math.round( this.pos.y ),
@@ -154,25 +154,33 @@ Game.Entity = Class.extend({
                 left: Math.round( entity.pos.x ),
                 right: Math.round( entity.pos.x + entity.width )
             },
-            betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) || ( src.right < target.right && src.right > target.left ),
-            betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) || ( src.bottom < target.bottom && src.bottom > target.top ),
-            leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
-            topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
-            leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
-	    wouldPassThrough = ( src.right < target.left && src.futureLeft > target.right ) || ( src.left > target.right && src.futureRight < target.left ) ||
-	                       (src.bottom < target.top && src.futureTop > target.bottom) || (src.top > target.bottom && src.futureBottom < target.top) ,
+        betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) || 
+	    ( src.right < target.right && src.right > target.left ),
+        betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) || 
+	    ( src.bottom < target.bottom && src.bottom > target.top ),
+        leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
+        topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
+        leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
+	skipRight = src.right < target.left && src.futureLeft > target.right,
+	skipLeft = src.left > target.right && src.futureRight < target.left,
+	skipDown = src.bottom < target.top && src.futureTop > target.top,
+	skipUp = src.top > target.bottom && src.futureBottom < target.top,
 
-            collisions = {
-                rightEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < 5 ||
-		    ( wouldPassThrough && src.right < target.left ),
-                leftEdge: ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5 ||
-    		    ( wouldPassThrough && src.left > target.right ),
-                topEdge: ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5 ||
-		    ( wouldPassThrough && src.top > target.bottom ),
-                bottomEdge: ( ( leftOrRightAligned || betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < 5 ) ||
-		    ( wouldPassThrough && src.bottom < target.top ),
+	collisions = {
+		// Here, instead of handling skips with these types, it may be better to shrink the velocities 
+		// to as big as possible w/ out skipping. As it is here, we may get jumpier behavior.
+                rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < 5 ) || skipRight,
+                leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5 ) || skipLeft,
+                topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5 ) || skipUp,
+
+	    // Not yet sure how to make this best.
+		// ** Took out leftOrRightAligned ** from bottomEdge
+		bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && 
+			      ( Math.abs( target.top - src.bottom ) < 5 || ( this.pos.y < this.futurePos.y && betweenTopAndBottom ) ) ) || 
+		            skipDown,
 		exact: ( leftAndRightAligned && topAndBottomAligned ),
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
+	    // These should maybe be switched?
                 overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
                 overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
             };
@@ -206,22 +214,20 @@ Game.Entity = Class.extend({
 	    if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
                 this.velocity.y = 0;
                 this.futurePos.y = entity.pos.y - this.height;
-            }/*
+            }
             if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
                 this.velocity.y = 0;
                 this.futurePos.y = entity.pos.y + entity.height;
             }
-	  
-              if ( collisionType == 'leftEdge' ) {
-              this.velocity.x = 0;
-              this.futurePos.x = entity.pos.x + entity.width;
-              }
-	      
-                if ( collisionType == 'rightEdge' ) {
-                    this.velocity.x = 0;
-                    this.futurePos.x = entity.pos.x - entity.width;
-                }
-*/
+	    // For heroes this gets doubly handled.
+	    if ( collisionType == 'leftEdge' ) {
+		this.velocity.x = 0;
+		this.futurePos.x = entity.pos.x + entity.width;
+            }
+	    if ( collisionType == 'rightEdge' ) {
+                this.velocity.x = 0;
+                this.futurePos.x = entity.pos.x - entity.width;
+            }
             break;
         default: break;
         }

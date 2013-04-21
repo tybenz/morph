@@ -90,13 +90,8 @@ var Game = {
 	    entities[ i ].generateNextCoords( timeDiff );
 	}
 
-        //Shift viewport if hero's pos is past the shift boundary
-        if ( Game.hero.pos.x > Game.viewportShiftBoundary ) {
-            for ( var i = Game.hero.pos.x; i > Game.viewportShiftBoundary; i -= Game.unit ) {
-                Game.viewportOffset += Game.unit;
-            }
-        }
 	////////// Collision Detection ////////
+/*
 	// Keep entity list sorted on x, ascending.
 	entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
 
@@ -127,34 +122,66 @@ var Game = {
 	for ( var i = 0; i < possibleCollisions.length; i++ ) {
 	    var entityPair = possibleCollisions[ i ];
 	    if ( entityPair[ 0 ] instanceof Game.Entity && entityPair[ 1 ] instanceof Game.Entity ) {
-		Game.collider( entityPair[ 0 ], entityPair[ 1 ], timeDiff );
+		Game.collider( entityPair[ 0 ], entityPair[ 1 ] );
 	    }
 	}
+*/
+	/////////// Naive detection
+	 var a, b, i, j, aX, bX,
+            gameUnit = Game.unit;
+        for ( i = 0; i < Game.currentLevel.entities.length; i++ ) {
+            a = Game.currentLevel.entities[i];
+            aX = a.pos.x;
+            for ( j = 0; j < Game.currentLevel.entities.length; j++ ) {
+                b = Game.currentLevel.entities[j];
+                bX = b.pos.x;
+                if ( a != b && aX <= ( bX + gameUnit ) && aX >= ( bX - gameUnit * 2 ) ) {
+                    Game.collider( a, b );
+                }
+            }
+        }
 	
 	// Update each entity.
 	for ( var i = 0; i < entities.length; i++ ) {
-	    entities[ i ].update( timeDiff );
+	    entities[ i ].update();
 	}
+
+	
+        //Shift viewport if hero's pos is past the shift boundary
+        if ( Game.hero.pos.x > Game.viewportShiftBoundary ) {
+            for ( var i = Game.hero.pos.x; i > Game.viewportShiftBoundary; i -= Game.unit ) {
+                Game.viewportOffset += Game.unit;
+            }
+        }
 	
     },
     //The collider is where entities interact
     //Pass it two entities - if they have collisions we call
     //each of their collision handlers
-    collider: function( a, b, timeDiff ) {
-        var i, 
-	aCollisions = a.getCollisions( b, timeDiff ),
-        bCollisions = b.getCollisions( a, timeDiff );
+    collider: function( a, b ) {
+	/* // Useful debugging print statements
+	if ( b.type == 'Hero.Man' && b.pos.y < b.futurePos.y && a.pos.x == b.pos.x && b.pos.y > 300) {
+//	    console.log("Possible collision between " + a.type + " at " + a.pos.x + " " + a.pos.y + " & " + b.type + " at " + b.pos.x + " " + b.pos.y);
+	    console.log("Land top -> " + a.pos.y + " Land bottom -> " + (a.pos.y + a.height) + " Man's bottom edge is " + (b.pos.y + b.height) + " and top edge will be at " + b.futurePos.y);
+	}
+*/
+        var collisionType, 
+	// Obtain collision dictionaries for the two objects.
+	aCollisions = a.getCollisions( b ),
+        bCollisions = b.getCollisions( a );
 
-	for ( i in aCollisions ) {
-	    // Not too sure when aCollisions[i] would be anything but a true/false.
-            if ( aCollisions[i] && !( aCollisions[i] instanceof Game.Entity ) ) {
-                a.collideWith( b, i );
+	// Adjust the objects because of collision.
+	
+	for ( collisionType in aCollisions ) {
+	    // Not too sure when aCollisions[collisionType] would be anything but a true/false.
+            if ( aCollisions[ collisionType ] && !( aCollisions[collisionType] instanceof Game.Entity ) ) {
+                a.collideWith( b, collisionType );
             }
         }
-	
-	for ( i in bCollisions ) {
-            if ( bCollisions[i] && !( bCollisions[i] instanceof Game.Entity ) ) {
-                b.collideWith( a, i );
+
+	for ( collisionType in bCollisions ) {
+	    if ( bCollisions[ collisionType ] && !( bCollisions[collisionType] instanceof Game.Entity ) ) {
+                b.collideWith( a, collisionType );
             }
         }
     },

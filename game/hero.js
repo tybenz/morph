@@ -143,7 +143,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
         'up': function() {
             //jump
             if ( !this.disableJump ) {
-		var jumpForce = new Game.Vector( 0, -1 );
+		var jumpForce = new Game.Vector( 0, -7 );
 		this.velocity = this.velocity.add( jumpForce );
             }
         },
