@@ -72,12 +72,12 @@ var Game = {
 
             drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
 	    
-	    for ( var j = entities.length - 1; j >= 0; j++ ) {
+	    for ( var j = entities.length - 1; j >= 0; j-- ) {
                 if ( entities[j] == Game.toBeDestroyed[i] ) {
                     entities.splice( j, 1 ); 
                 }
             }
-            for ( var j = drawLayer.length - 1; j >= 0; j++ ) {
+            for ( var j = drawLayer.length - 1; j >= 0; j-- ) {
                 if ( drawLayer[j] == Game.toBeDestroyed[i] ) {
                     drawLayer.splice( j, 1 );
                 }
