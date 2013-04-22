@@ -154,6 +154,9 @@ Game.Entity = Class.extend({
                 left: Math.round( entity.pos.x ),
                 right: Math.round( entity.pos.x + entity.width )
             },
+
+	COLLISION_BUFFER = 5,
+	
         betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) || 
 	    ( src.right < target.right && src.right > target.left ),
         betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) || 
@@ -161,23 +164,21 @@ Game.Entity = Class.extend({
         leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
         topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
         leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
-	skipRight = src.right < target.left && src.futureLeft > target.right,
-	skipLeft = src.left > target.right && src.futureRight < target.left,
-	skipDown = src.bottom < target.top && src.futureTop > target.top,
-	skipUp = src.top > target.bottom && src.futureBottom < target.top,
+
+	skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
+	    ( src.futureLeft > target.right || src.futureRight >= target.left + COLLISION_BUFFER ),
+	skipLeft = ( betweenTopAndBottom || topAndBottomAligned ) && src.left > target.right && 
+	    ( src.futureRight < target.left || src.futureLeft <= target.right - COLLISION_BUFFER ),
+	skipDown = ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom < target.top && 
+	    ( src.futureTop > target.bottom || src.futureBottom >= target.top + COLLISION_BUFFER ),
+	skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
+	    ( src.futureBottom < target.top || src.futureTop <= target.bottom - COLLISION_BUFFER ),
 
 	collisions = {
-		// Here, instead of handling skips with these types, it may be better to shrink the velocities 
-		// to as big as possible w/ out skipping. As it is here, we may get jumpier behavior.
-                rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < 5 ) || skipRight,
-                leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < 5 ) || skipLeft,
-                topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < 5 ) || skipUp,
-
-	    // Not yet sure how to make this best.
-		// ** Took out leftOrRightAligned ** from bottomEdge
-		bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && 
-			      ( Math.abs( target.top - src.bottom ) < 5 || ( this.pos.y < this.futurePos.y && betweenTopAndBottom ) ) ) || 
-		            skipDown,
+                rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
+                leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
+                topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
+		bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
 		exact: ( leftAndRightAligned && topAndBottomAligned ),
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
 	    // These should maybe be switched?

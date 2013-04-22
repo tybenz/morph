@@ -159,13 +159,8 @@ var Game = {
     //Pass it two entities - if they have collisions we call
     //each of their collision handlers
     collider: function( a, b ) {
-	/* // Useful debugging print statements
-	if ( b.type == 'Hero.Man' && b.pos.y < b.futurePos.y && a.pos.x == b.pos.x && b.pos.y > 300) {
-//	    console.log("Possible collision between " + a.type + " at " + a.pos.x + " " + a.pos.y + " & " + b.type + " at " + b.pos.x + " " + b.pos.y);
-	    console.log("Land top -> " + a.pos.y + " Land bottom -> " + (a.pos.y + a.height) + " Man's bottom edge is " + (b.pos.y + b.height) + " and top edge will be at " + b.futurePos.y);
-	}
-*/
         var collisionType, 
+	
 	// Obtain collision dictionaries for the two objects.
 	aCollisions = a.getCollisions( b ),
         bCollisions = b.getCollisions( a );
