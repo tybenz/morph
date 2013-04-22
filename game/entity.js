@@ -164,6 +164,11 @@ Game.Entity = Class.extend({
         leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
         topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
         leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
+	
+	movingRight = src.right < src.futureRight,
+	movingLeft = src.left > src.futureLeft,
+	movingUp = src.top > src.futureTop,
+	movingDown = src.bottom < src.futureBottom,
 
 	skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
 	    ( src.futureLeft > target.right || src.futureRight >= target.left + COLLISION_BUFFER ),
@@ -174,17 +179,23 @@ Game.Entity = Class.extend({
 	skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
 	    ( src.futureBottom < target.top || src.futureTop <= target.bottom - COLLISION_BUFFER ),
 
+	// The problem with only allowing collisions when this is moving, is that what happens when
+	// this is NOT moving and it gets hit? The offending entity must be able to handle 
+	// the behavior of this too!
 	collisions = {
-                rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
-                leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
-                topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
-		bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
-		exact: ( leftAndRightAligned && topAndBottomAligned ),
-                overlapping: betweenTopAndBottom && betweenLeftAndRight,
-	    // These should maybe be switched?
-                overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
-                overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
-            };
+            rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && movingRight &&
+			 Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
+            leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && movingLeft && 
+			Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
+            topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && movingUp &&
+		       Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
+	    bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && movingDown &&
+			  Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
+	    exact: ( leftAndRightAligned && topAndBottomAligned ),
+            overlapping: betweenTopAndBottom && betweenLeftAndRight,
+            overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
+            overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
+        };
         // We iterate through all collision types, if we any are set to true
         // we return the entire object. Otherwise we return an empty object.
         for ( var i in collisions ) {
@@ -220,7 +231,6 @@ Game.Entity = Class.extend({
                 this.velocity.y = 0;
                 this.futurePos.y = entity.pos.y + entity.height;
             }
-	    // For heroes this gets doubly handled.
 	    if ( collisionType == 'leftEdge' ) {
 		this.velocity.x = 0;
 		this.futurePos.x = entity.pos.x + entity.width;
