@@ -15,7 +15,7 @@ task :generate do
   exec(<<-CMD)
     set -e
     jekyll --no-auto --pygments;
-    sass --update _sass:_site/css -f -r ./_sass/bourbon/lib/bourbon.rb;
+    sass --update _sass:_site/css -f;
     git checkout gh-pages;
     cp -r _site/* .;
     rm -Rf _site;
