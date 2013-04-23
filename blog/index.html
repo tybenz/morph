@@ -1,0 +1,37 @@
+---
+layout: default
+nav: blog
+title: Blog
+---
+
+{% for post in paginator.posts %}
+  {% if post.hidden != true %}
+      <article class="post">
+          <div class="post-header">
+                <p class="date">{{ post.date | date:"%Y%m%d%H%M%S" }}</p>
+                <h1><a href="{{ post.url }}">{{ post.title }}</a></h1>
+          </div>
+          <div class="post-body">
+            {{ post.content }}
+          </div>
+      </article>
+  {% endif %}
+{% endfor %}
+
+<!-- Pagination links -->
+<div class="pagination">
+  <a href="/" class="previous button"><span>Newer</span></a>
+  <a href="/" class="next button"><span>Older</span></a>
+  <!--
+  {% if paginator.previous_page %}
+      {% if paginator.previous_page == 1 %}
+        <a href="/" class="previous button"><span>Newer</span></a>
+      {% else %}
+        <a href="/page{{paginator.previous_page}}" class="previous button"><span>Newer</span></a>
+      {% endif %}
+  {% endif %}
+  {% if paginator.next_page %}
+    <a href="/page{{paginator.next_page}}" class="next button"><span>Older</span></a>
+  {% endif %}
+  -->
+</div>

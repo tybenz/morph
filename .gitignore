@@ -1,1 +1,5 @@
 .DS_Store
+.sass-cache
+css/*
+_cache/*
+_site/*

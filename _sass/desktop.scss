@@ -1,0 +1,45 @@
+@import 'bourbon/bourbon';
+@import 'neat/neat';
+
+.logo, .nav-control {
+  font-size: 3em;
+}
+
+.container {
+  margin: 0 2.5em;
+}
+
+header {
+  height: 4.3em;
+  @include animation(none);
+  &.nav-open {
+    height: 4.3em;
+    @include animation(none);
+  }
+  &.nav-close {
+    height: 4.3em;
+    @include animation(none);
+  }
+}
+
+header .nav-control {
+  display: none;
+}
+
+header br {
+  display: none;
+}
+
+header nav {
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+}
+
+#sign-up .field {
+  @include span-columns(6);
+}
+
+.pagination .button {
+  @include span-columns(6);
+}
