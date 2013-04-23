@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Morph</title>
+
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" type="text/css" href="css/ui.css" />
+    <link rel="stylesheet" type="text/css" href="css/uni05.css" />
+</head>
+<body>
+
+<div class="buffer"></div>
+<div id="game">
+</div>
+    
+</body>
+<script type="text/javascript" charset="utf-8" src="lib/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="lib/inherit.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/utils.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/game.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/vector.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/sprite.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/entity.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/level.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/hero.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/enemy.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/terrain.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/interactable.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/machine.js"></script>
+<script type="text/javascript" charset="utf-8" src="game/inventory.js"></script>
+<script type="text/javascript" charset="utf-8">
+$(function() {
+    Game.init( 0 );
+});
+</script>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Morph | Design</title>
+<link rel="shortcut icon" href="img/favicon.png">
+
+<link rel="stylesheet" type="text/css" href="/css/app.css" />
+<link rel="stylesheet" type="text/css" href="/css/ui.css" />
+<link rel="stylesheet" type="text/css" href="/css/design.css" />
+<link rel="stylesheet" type="text/css" href="/css/uni05.css" />
+
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/webpro.min.js"></script>
+<script type="text/javascript" src="/js/vmouse.js"></script>
+<script type="text/javascript" charset="utf-8">
+    $(function() {
+        var tg = new WebPro.Widget.TabGroup( '.thumbs .selector', { checkedClass: 'active' } ),
+            pg = new WebPro.Widget.PanelGroup( '.panel', { activeClass: 'active', tabGroups: [ tg ] } );
+    });
+</script>
+</head>
+<body>
+
+<div id="buffer"></div>
+<div id="game">
+    <div id="block" class="panel active">
+        <img src="/img/morph/block.png" alt="" />
+        <div class="text">
+            <h1>Morph</h1>
+            <p>This is Morph. He's a block who can jump on enemies to kill them. He's also a shape shifter. His different forms are more than just cosmetic. They also give him different abilities which can help him move around and defeat obstacles on his adventure.</p>
+        </div>
+    </div>
+    <div id="man" class="panel">
+        <img src="/img/morph/man.png" alt="" />
+        <div class="text">
+            <h1>Man</h1>
+            <p>He can turn into a man who has the strength and arms to pick up heavy objects and throw/drop them on his opponents</p>
+        </div>
+    </div>
+    <div id="frog" class="panel">
+        <img src="/img/morph/froglick.png" alt="" />
+        <img src="/img/morph/frogtongue.png" alt="" />
+        <div class="text">
+            <h1>Frog</h1>
+            <p>He can also turn into a frog so that he's able to jump over long gaps and use his tongue as a meelee attack</p>
+        </div>
+    </div>
+    <div id="boat"  class="panel">
+        <img src="/img/morph/boat.png" alt="" />
+        <div class="text">
+            <h1>Boat</h1>
+            <p>As a boat, he can travel over water, and fire cannon balls at enemy ships.</p>
+        </div>
+    </div>
+    <div id="plane" class="panel">
+        <img src="/img/morph/plane.png" alt="" />
+        <div class="text">
+            <h1>Plane</h1>
+            <p>In airplane mode, he can fly through the sky and shoot enemy targets. This comes in handy when morph reaches a dead end and the only way to go is up.</p>
+        </div>
+    </div>
+    <div id="jellyfish" class="panel">
+        <img src="/img/morph/jellyfish.png" alt="" />
+        <div class="text">
+            <h1>Jellyfish</h1>
+            <p>His jellyfish form allows him to explore underwater areas. </p>
+        </div>
+    </div>
+    <div id="clock" class="panel">
+        <img src="/img/morph/clock.png" alt="" />
+        <div class="text">
+            <h1>Clock</h1>
+            <p>As a clock, Morph has the ability to stop TIME. This comes in handy when surrounded by a group of enemies that move way too quickly to kill.</p>
+        </div>
+    </div>
+    <div id="flame" class="panel">
+        <img src="/img/morph/flame.png" alt="" />
+        <div class="text">
+            <h1>Flame</h1>
+            <p>This is Morph as a flame (his only colorful mode). This mode allows morph to melt stuff. Lots of stuff. Enemies, trapdoors, and, of course, the terrain around him.</p>
+        </div>
+    </div>
+    <div id="monster" class="panel">
+        <img src="/img/enemy/monster.png" alt="" />
+        <div class="text">
+            <h1>Monster</h1>
+            <p>Morph must face many enemies along his quest. The most commonplace of which, are monsters. These suckers bite. And morph has to decide to kill them as a man with heavy objects, as a block with a good ol-fashioned jump, or as one of his many other forms. The combinations are endless.</p>
+        </div>
+    </div>
+    <div id="turret" class="panel">
+        <img src="/img/enemy/turret.png" alt="" />
+        <div class="text">
+            <h1>Turret</h1>
+            <p>Turrets are turrets. Gotta smash them from above.</p>
+        </div>
+    </div>
+    <div id="bird" class="panel">
+        <img src="/img/enemy/bird.png" alt="" />
+        <div class="text">
+            <h1>Bird</h1>
+            <p>Birds attack from above or while Morph is flying as an airplane.</p>
+        </div>
+    </div>
+    <div id="sub" class="panel">
+        <img src="/img/enemy/sub.png" alt="" />
+        <div class="text">
+            <h1>Sub</h1>
+            <p>Submarines are purely underwater enemies. But they're torpedos are deadly.</p>
+        </div>
+    </div>
+    <div id="robot" class="panel">
+        <img src="/img/enemy/robot.png" alt="" />
+        <div class="text">
+            <h1>Robot</h1>
+            <p>Robots are robots. Haven't decided what they do yet.</p>
+        </div>
+    </div>
+    <div id="boss" class="panel">
+        <img src="/img/enemy/boss.png" alt="" />
+        <img class="small-morph2 move" src="/img/morph/man-left.png" alt="" />
+        <div class="text">
+            <h1>Boss</h1>
+            <p>This is the boss. Not sure what to name him yet. He's a badass though. He can morph too. Into lots of stuff. He's also considerably bigger than Morph.</p>
+        </div>
+    </div>
+    <div id="machine" class="panel">
+        <img src="/img/morph/machine.png" alt="" />
+        <img class="small-morph" src="/img/morph/man.png" alt="" />
+        <div class="text">
+            <h1>Machine</h1>
+            <p>These machines are what make the game of Morph challenging. Morph can only shape shift using these machines which are placed randomly throughout the world. Choose your form wisely when you come upon one of these bad boys.</p>
+        </div>
+    </div>
+    <div class="thumbs-wrapper">
+        <div class="thumbs">
+            <div class="thumbs-inner">
+                <a href="#block" class="selector active">
+                    <img src="/img/morph/block.png" alt="" />
+                </a>
+                <a href="#man" class="selector">
+                    <img src="/img/morph/man.png" alt="" />
+                </a>
+                <a href="#frog" class="selector">
+                    <img src="/img/morph/frog.png" alt="" />
+                </a>
+                <a href="#boat" class="selector">
+                    <img src="/img/morph/boat.png" alt="" />
+                </a>
+                <a href="#plane" class="selector">
+                    <img src="/img/morph/plane.png" alt="" />
+                </a>
+                <a href="#jellyfish" class="selector">
+                    <img src="/img/morph/jellyfish.png" alt="" />
+                </a>
+                <a href="#clock" class="selector">
+                    <img src="/img/morph/clock.png" alt="" />
+                </a>
+                <a href="#flame" class="selector">
+                    <img src="/img/morph/flame.png" alt="" />
+                </a>
+                <a href="#monster" class="selector">
+                    <img src="/img/enemy/monster.png" alt="" />
+                </a>
+                <a href="#turret" class="selector">
+                    <img src="/img/enemy/turret.png" alt="" />
+                </a>
+                <a href="#bird" class="selector">
+                    <img src="/img/enemy/bird.png" alt="" />
+                </a>
+                <a href="#sub" class="selector">
+                    <img src="/img/enemy/sub.png" alt="" />
+                </a>
+                <a href="#robot" class="selector">
+                    <img src="/img/enemy/robot.png" alt="" />
+                </a>
+                <a href="#boss" class="selector">
+                    <img src="/img/enemy/boss.png" alt="" />
+                </a>
+                <a href="#machine" class="selector">
+                    <img src="/img/morph/machine.png" alt="" />
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

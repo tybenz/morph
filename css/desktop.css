@@ -1,0 +1,53 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.logo, .nav-control {
+  font-size: 3em; }
+
+.container {
+  margin: 0 2.5em; }
+
+header {
+  height: 4.3em;
+  -webkit-animation: none;
+  -moz-animation: none;
+  animation: none; }
+  header.nav-open {
+    height: 4.3em;
+    -webkit-animation: none;
+    -moz-animation: none;
+    animation: none; }
+  header.nav-close {
+    height: 4.3em;
+    -webkit-animation: none;
+    -moz-animation: none;
+    animation: none; }
+
+header .nav-control {
+  display: none; }
+
+header br {
+  display: none; }
+
+header nav {
+  position: absolute;
+  right: 0;
+  bottom: 5px; }
+
+#sign-up .field {
+  display: block;
+  float: left;
+  margin-right: 2.35765%;
+  width: 48.82117%; }
+  #sign-up .field:last-child {
+    margin-right: 0; }
+
+.pagination .button {
+  display: block;
+  float: left;
+  margin-right: 2.35765%;
+  width: 48.82117%; }
+  .pagination .button:last-child {
+    margin-right: 0; }
