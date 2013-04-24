@@ -20,7 +20,9 @@
       $navControl = $( '.nav-control' ),
       toggleClosed = false;
     $header.on( 'click', function( evt ) {
-      evt.preventDefault();
+      if ( evt.target.href == '#' ) {
+        evt.preventDefault();
+      }
       if ( $header.hasClass( 'nav-open' ) ) {
         toggleClosed = true;
       }

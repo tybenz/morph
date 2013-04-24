@@ -1,5 +1,6 @@
 pygments: true
 paginate: 2
+safe: false
 permalink: /blog/post/:title
 exclude: ['Gemfile','Gemfile.lock','Rakefile','.git']
 markdown: rdiscount

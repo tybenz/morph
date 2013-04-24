@@ -20,18 +20,14 @@ title: Blog
 
 <!-- Pagination links -->
 <div class="pagination">
-  <a href="/" class="previous button"><span>Newer</span></a>
-  <a href="/" class="next button"><span>Older</span></a>
-  <!--
   {% if paginator.previous_page %}
       {% if paginator.previous_page == 1 %}
-        <a href="/" class="previous button"><span>Newer</span></a>
+        <a href="/blog" class="previous button"><span>Newer</span></a>
       {% else %}
-        <a href="/page{{paginator.previous_page}}" class="previous button"><span>Newer</span></a>
+        <a href="/blog/page{{paginator.previous_page}}" class="previous button"><span>Newer</span></a>
       {% endif %}
   {% endif %}
   {% if paginator.next_page %}
-    <a href="/page{{paginator.next_page}}" class="next button"><span>Older</span></a>
+    <a href="/blog/page{{paginator.next_page}}" class="next button"><span>Older</span></a>
   {% endif %}
-  -->
 </div>

@@ -10,8 +10,6 @@ $black: #111;
 $green: #0f0;
 $darkGrey: #222;
 $grey: #444;
-$red: #f00;
-$cyan: #0ff;
 
 @mixin eight-bit {
   font-family: $headingFamily;
@@ -189,6 +187,7 @@ header nav ul {
 }
 
 iframe {
+  border: none;
   width: 100%;
   overflow: hidden;
 }
@@ -293,7 +292,6 @@ video {
 }
 
 footer {
-  margin-top: 4em;
   padding: 0.6em 0 1.1em;
   overflow: hidden;
   background-color: $darkGrey;
@@ -303,49 +301,16 @@ footer {
   font-size: 0.8em;
 }
 
-form .field {
-  position: relative;
-  margin-bottom: 1em;
-  label {
-    text-transform: uppercase;
-    @include eight-bit;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-  }
-  input[type=text], input[type=email], textarea {
-    border: 1px solid $green;
-    background-color: black;
-    outline: none;
-    @include eight-bit;
-    padding: 10px;
-    width: 100%;
-  }
-  &.focus {
-    input[type=text], input[type=email], textarea {
-      border-color: $cyan;
-    }
-  }
-}
-
 .button {
   display: inline-block;
   color: white;
   padding: 0.5em 1em;
   border: none;
-  @include eight-bit;
   text-transform: uppercase;
-  border: 1px solid $green;
+  border: 1px solid lime;
   background-color: black;
   text-align: center;
-}
-
-.row {
-  @include outer-container;
-}
-
-#sign-up .button {
-  width: 200px;
+  @include eight-bit;
 }
 
 .pagination {
@@ -360,4 +325,37 @@ form .field {
   .next:after {
     content: " ->";
   }
+}
+
+form .field {
+  position: relative;
+  margin-bottom: 1em;
+  label {
+    text-transform: uppercase;
+    font-family: "uni05", monospace;
+    letter-spacing: -0.15em;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+  input[type=text], form .field input[type=email], form .field textarea {
+    border: 1px solid lime;
+    background-color: black;
+    outline: none;
+    font-family: "uni05", monospace;
+    letter-spacing: -0.15em;
+    padding: 10px;
+    width: 100%;
+  }
+  &.focus input[type=text], &.focus input[type=email], &.focus textarea {
+    border-color: cyan;
+  }
+}
+
+#sign-up .button {
+  width: 200px;
+}
+
+.row {
+  @include outer-container;
 }
