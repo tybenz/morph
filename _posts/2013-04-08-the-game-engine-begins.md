@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2013-04-08 10:23:34
-title: "HTML5 2D Game Engine"
+title: The Game Engine Begins
 ---
 I am not a game developer... yet. But I&#8217;ve had an idea for a 2D
 platforming game floating around in my head for a few years now and I

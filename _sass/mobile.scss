@@ -314,7 +314,8 @@ footer {
 }
 
 .pagination {
-  margin-top: 3em;
+  margin: 3em 0;
+  @include outer-container;
   .button {
     width: 100%;
     margin-bottom: 1em;
