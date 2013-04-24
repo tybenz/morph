@@ -48,7 +48,7 @@ desc "Publish gh-pages to the appropriate repo/branch"
 task :publish do
   exec(<<-CMD)
     set -e
-    git push origin gh-pages:gh-pages
+    git push website gh-pages:master
   CMD
 end
 
