@@ -26,8 +26,8 @@ Game.Entity.Hero = Game.Entity.extend({
     },
     //Handling user input
     generateNextCoords: function( timeDiff ) {
-	this._super( timeDiff );
-	if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
+        this._super( timeDiff );
+        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
             this.move.left.call( this );
             Game.keysDown[ 37 ] = 'locked';
         }
@@ -123,8 +123,8 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                 this.activeSprite = MAN_RIGHT;
             }
             this.futurePos.x += Game.unit;
-	    this.invalidateRect( this.futurePos.x, this.futurePos.y );
-	},
+            this.invalidateRect( this.futurePos.x, this.futurePos.y );
+        },
         'left': function() {
             //var collisions = this.hasCollisionWith( 'Terrain.Land' );
             this.direction = 'left';
@@ -134,13 +134,13 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                 this.activeSprite = MAN_LEFT;
             }
             this.futurePos.x -= Game.unit;
-	    this.invalidateRect( this.futurePos.x, this.futurePos.y );
-	},
+            this.invalidateRect( this.futurePos.x, this.futurePos.y );
+        },
         'up': function() {
             //jump
             if ( !this.disableJump ) {
-		var jumpForce = new Game.Vector( 0, -3 );
-		this.velocity = this.velocity.add( jumpForce );
+                var jumpForce = new Game.Vector( 0, -3 );
+                this.velocity = this.velocity.add( jumpForce );
             }
         },
         'down': function() {
@@ -237,29 +237,20 @@ Game.Entity.Hero.Block = Game.Entity.Hero.extend({
     type: 'Hero.Block',
     move: {
         'right': function() {
+            console.log('right');
             var collisions = this.hasCollisionWith( 'Terrain.Land' );
             this.direction = 'right';
-            if ( this.holding ) {
-                this.activeSprite = MAN_HOLDING_RIGHT;
-            } else {
-                this.activeSprite = MAN_RIGHT;
-            }
             if ( !collisions || !collisions.rightEdge ) {
+                this.futurePos.x += Game.unit;
                 this.invalidateRect( this.pos.x + Game.unit, this.pos.y );
-                this.pos.x += Game.unit;
             }
         },
         'left': function() {
             var collisions = this.hasCollisionWith( 'Terrain.Land' );
             this.direction = 'left';
-            if ( this.holding ) {
-                this.activeSprite = MAN_HOLDING_LEFT;
-            } else {
-                this.activeSprite = MAN_LEFT;
-            }
             if ( !collisions || !collisions.leftEdge ) {
+                this.futurePos.x -= Game.unit;
                 this.invalidateRect( this.pos.x - Game.unit, this.pos.y );
-                this.pos.x -= Game.unit;
             }
         },
         'up': function() {

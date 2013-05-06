@@ -100,7 +100,7 @@ Game.Entity = Class.extend({
         }
 
         //Change position based on velocity
-	// Maybe x's position change should go here too.
+        // Maybe x's position change should go here too.
         var positionChange = this.velocity.multiply(timeDiff)
         this.futurePos = this.pos.add( positionChange );
 	
@@ -113,7 +113,6 @@ Game.Entity = Class.extend({
 	// All we do is give the entity it's next coordinates.
 	this.pos = this.futurePos
     },
-    go: true,
     invalidateRect: function() {
         var newX = this.futurePos.x,
             newY = this.futurePos.y,
@@ -139,60 +138,59 @@ Game.Entity = Class.extend({
     getCollisions: function( entity ) {
 	
 	var src = {
-                top: Math.round( this.pos.y ),
-                bottom: Math.round( this.pos.y + this.height ),
-                left: Math.round( this.pos.x ),
-                right: Math.round( this.pos.x + this.width ),
+            top: Math.round( this.pos.y ),
+            bottom: Math.round( this.pos.y + this.height ),
+            left: Math.round( this.pos.x ),
+            right: Math.round( this.pos.x + this.width ),
+            futureTop: Math.round( this.futurePos.y ),
+            futureBottom: Math.round( this.futurePos.y + this.height ),
+            futureLeft: Math.round( this.futurePos.x ),
+            futureRight: Math.round( this.futurePos.x + this.width ) 
+        },
+        target = {
+            top: Math.round( entity.pos.y ),
+            bottom: Math.round( entity.pos.y + entity.height ),
+            left: Math.round( entity.pos.x ),
+            right: Math.round( entity.pos.x + entity.width )
+        },
 
-	        futureTop: Math.round( this.futurePos.y ),
-                futureBottom: Math.round( this.futurePos.y + this.height ),
-                futureLeft: Math.round( this.futurePos.x ),
-                futureRight: Math.round( this.futurePos.x + this.width ) 
-	   },
-            target = {
-                top: Math.round( entity.pos.y ),
-                bottom: Math.round( entity.pos.y + entity.height ),
-                left: Math.round( entity.pos.x ),
-                right: Math.round( entity.pos.x + entity.width )
-            },
+        COLLISION_BUFFER = 5,
 
-	COLLISION_BUFFER = 5,
-	
-        betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) || 
-	    ( src.right < target.right && src.right > target.left ),
-        betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) || 
-	    ( src.bottom < target.bottom && src.bottom > target.top ),
+        betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) ||
+            ( src.right < target.right && src.right > target.left ),
+        betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) ||
+            ( src.bottom < target.bottom && src.bottom > target.top ),
         leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
         topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
         leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
-	
-	movingRight = src.right < src.futureRight,
-	movingLeft = src.left > src.futureLeft,
-	movingUp = src.top > src.futureTop,
-	movingDown = src.bottom < src.futureBottom,
 
-	skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
-	    ( src.futureLeft > target.right || src.futureRight >= target.left + COLLISION_BUFFER ),
-	skipLeft = ( betweenTopAndBottom || topAndBottomAligned ) && src.left > target.right && 
-	    ( src.futureRight < target.left || src.futureLeft <= target.right - COLLISION_BUFFER ),
-	skipDown = ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom < target.top && 
-	    ( src.futureTop > target.bottom || src.futureBottom >= target.top + COLLISION_BUFFER ),
-	skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
-	    ( src.futureBottom < target.top || src.futureTop <= target.bottom - COLLISION_BUFFER ),
+        movingRight = src.right < src.futureRight,
+        movingLeft = src.left > src.futureLeft,
+        movingUp = src.top > src.futureTop,
+        movingDown = src.bottom < src.futureBottom,
 
-	// The problem with only allowing collisions when this is moving, is that what happens when
-	// this is NOT moving and it gets hit? The offending entity must be able to handle 
-	// the behavior of this too!
-	collisions = {
+        skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
+            ( src.futureLeft > target.right || src.futureRight >= target.left + COLLISION_BUFFER ),
+        skipLeft = ( betweenTopAndBottom || topAndBottomAligned ) && src.left > target.right && 
+            ( src.futureRight < target.left || src.futureLeft <= target.right - COLLISION_BUFFER ),
+        skipDown = ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom < target.top && 
+            ( src.futureTop > target.bottom || src.futureBottom >= target.top + COLLISION_BUFFER ),
+        skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
+            ( src.futureBottom < target.top || src.futureTop <= target.bottom - COLLISION_BUFFER ),
+
+        // The problem with only allowing collisions when this is moving, is that what happens when
+        // this is NOT moving and it gets hit? The offending entity must be able to handle 
+        // the behavior of this too!
+        collisions = {
             rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && movingRight &&
-			 Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
-            leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && movingLeft && 
-			Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
+                Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
+            leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && movingLeft &&
+                Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
             topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && movingUp &&
-		       Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
-	    bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && movingDown &&
-			  Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
-	    exact: ( leftAndRightAligned && topAndBottomAligned ),
+                Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
+            bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && movingDown &&
+                Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
+            exact: ( leftAndRightAligned && topAndBottomAligned ),
             overlapping: betweenTopAndBottom && betweenLeftAndRight,
             overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
             overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
@@ -223,32 +221,29 @@ Game.Entity = Class.extend({
     //By default entities stop moving when they hit land
     collideWith: function( entity, collisionType ) {
         switch ( entity.type ) {
-        case 'Terrain.Land':
-	    if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
-                this.velocity.y = 0;
-                this.futurePos.y = entity.pos.y - this.height;
-            }
-            if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
-                this.velocity.y = 0;
-                this.futurePos.y = entity.pos.y + entity.height;
-            }
-	    if ( collisionType == 'leftEdge' ) {
-		this.velocity.x = 0;
-		this.futurePos.x = entity.pos.x + entity.width;
-            }
-	    if ( collisionType == 'rightEdge' ) {
-                this.velocity.x = 0;
-                this.futurePos.x = entity.pos.x - entity.width;
-            }
-            break;
-        default: break;
+            case 'Terrain.Land':
+                if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
+                    this.velocity.y = 0;
+                    this.futurePos.y = entity.pos.y - this.height;
+                }
+                if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
+                    this.velocity.y = 0;
+                    this.futurePos.y = entity.pos.y + entity.height;
+                }
+                if ( collisionType == 'leftEdge' ) {
+                    this.velocity.x = 0;
+                    this.futurePos.x = entity.pos.x + entity.width;
+                }
+                if ( collisionType == 'rightEdge' ) {
+                    this.velocity.x = 0;
+                    this.futurePos.x = entity.pos.x - entity.width;
+                }
+                break;
+            default: break;
         }
     },
     applyGravity: function( timeDiff ) {
         var gravitationalForce = this.gravity.multiply( timeDiff );
-      //  if ( !this.hasCollisionWith( 'Terrain.Land' ).bottomEdge ) {
-        //    this.velocity = this.velocity.add( gravitationalForce );
-//        }
-	this.velocity = this.velocity.add( gravitationalForce );
+        this.velocity = this.velocity.add( gravitationalForce );
     }
 });
