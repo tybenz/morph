@@ -25,7 +25,7 @@ Game.Entity = Class.extend({
             this.pos = new Game.Vector( 0, 0 );
         }
         this.velocity = new Game.Vector( 0, 0 );
-        this.gravity = new Game.Vector( 0, 0.01 ); // Changed to test collisions
+        this.gravity = new Game.Vector( 0, 0.001 ); // Changed to test collisions
 
         this.futurePos = this.pos;
 
@@ -110,8 +110,8 @@ Game.Entity = Class.extend({
         }
     },
     update: function() {
-	// All we do is give the entity it's next coordinates.
-	this.pos = this.futurePos
+        // All we do is give the entity it's next coordinates.
+        this.pos = new Game.Vector( this.futurePos.x, this.futurePos.y );
     },
     invalidateRect: function() {
         var newX = this.futurePos.x,
@@ -137,71 +137,78 @@ Game.Entity = Class.extend({
     //Two entities -> collision dictionary or false if no collision
     getCollisions: function( entity ) {
 	
-	var src = {
-            top: Math.round( this.pos.y ),
-            bottom: Math.round( this.pos.y + this.height ),
-            left: Math.round( this.pos.x ),
-            right: Math.round( this.pos.x + this.width ),
-            futureTop: Math.round( this.futurePos.y ),
-            futureBottom: Math.round( this.futurePos.y + this.height ),
-            futureLeft: Math.round( this.futurePos.x ),
-            futureRight: Math.round( this.futurePos.x + this.width ) 
-        },
-        target = {
-            top: Math.round( entity.pos.y ),
-            bottom: Math.round( entity.pos.y + entity.height ),
-            left: Math.round( entity.pos.x ),
-            right: Math.round( entity.pos.x + entity.width )
-        },
+        var src = {
+                top: Math.round( this.pos.y ),
+                bottom: Math.round( this.pos.y + this.height ),
+                left: Math.round( this.pos.x ),
+                right: Math.round( this.pos.x + this.width ),
+                futureTop: Math.round( this.futurePos.y ),
+                futureBottom: Math.round( this.futurePos.y + this.height ),
+                futureLeft: Math.round( this.futurePos.x ),
+                futureRight: Math.round( this.futurePos.x + this.width ) 
+            },
+            target = {
+                top: Math.round( entity.pos.y ),
+                bottom: Math.round( entity.pos.y + entity.height ),
+                left: Math.round( entity.pos.x ),
+                right: Math.round( entity.pos.x + entity.width )
+            },
 
-        COLLISION_BUFFER = 5,
+            COLLISION_BUFFER = 5,
 
-        betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) ||
-            ( src.right < target.right && src.right > target.left ),
-        betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) ||
-            ( src.bottom < target.bottom && src.bottom > target.top ),
-        leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
-        topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
-        leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
+            betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) ||
+                ( src.right < target.right && src.right > target.left ),
+            betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) ||
+                ( src.bottom < target.bottom && src.bottom > target.top ),
+            leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
+            topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
+            leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
 
-        movingRight = src.right < src.futureRight,
-        movingLeft = src.left > src.futureLeft,
-        movingUp = src.top > src.futureTop,
-        movingDown = src.bottom < src.futureBottom,
+            movingRight = src.right < src.futureRight,
+            movingLeft = src.left > src.futureLeft,
+            movingUp = src.top > src.futureTop,
+            movingDown = src.bottom < src.futureBottom,
 
-        skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
-            ( src.futureLeft > target.right || src.futureRight >= target.left + COLLISION_BUFFER ),
-        skipLeft = ( betweenTopAndBottom || topAndBottomAligned ) && src.left > target.right && 
-            ( src.futureRight < target.left || src.futureLeft <= target.right - COLLISION_BUFFER ),
-        skipDown = ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom < target.top && 
-            ( src.futureTop > target.bottom || src.futureBottom >= target.top + COLLISION_BUFFER ),
-        skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
-            ( src.futureBottom < target.top || src.futureTop <= target.bottom - COLLISION_BUFFER ),
+            skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
+                ( src.futureLeft > target.right || src.futureRight >= target.left ),
+            skipLeft = ( betweenTopAndBottom || topAndBottomAligned ) && src.left > target.right && 
+                ( src.futureRight < target.left || src.futureLeft <= target.right ),
+            skipDown = ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom < target.top && 
+                ( src.futureTop > target.bottom || src.futureBottom >= target.top ),
+            skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
+                ( src.futureBottom < target.top || src.futureTop <= target.bottom ),
 
-        // The problem with only allowing collisions when this is moving, is that what happens when
-        // this is NOT moving and it gets hit? The offending entity must be able to handle 
-        // the behavior of this too!
-        collisions = {
-            rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && movingRight &&
-                Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
-            leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) && movingLeft &&
-                Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
-            topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && movingUp &&
-                Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
-            bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) && movingDown &&
-                Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
-            exact: ( leftAndRightAligned && topAndBottomAligned ),
-            overlapping: betweenTopAndBottom && betweenLeftAndRight,
-            overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
-            overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
-        };
-        // We iterate through all collision types, if we any are set to true
-        // we return the entire object. Otherwise we return an empty object.
+            // The problem with only allowing collisions when this is moving, is that what happens when
+            // this is NOT moving and it gets hit? The offending entity must be able to handle 
+            // the behavior of this too!
+            collisions = {
+                rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) &&
+                    Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
+                leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) &&
+                    Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
+                topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) &&
+                    Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
+                bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) &&
+                    Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
+                exact: ( leftAndRightAligned && topAndBottomAligned ),
+                overlapping: betweenTopAndBottom && betweenLeftAndRight,
+                overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
+                overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
+            };
+
+        // If there are any collisions we build an object of only those that are true
+        // If none, we return false
+        var returnCollisions = {},
+            count = 0;
         for ( var i in collisions ) {
             if ( collisions[i] ) {
-                collisions.entity = entity;
-                return collisions;
+                returnCollisions.entity = entity;
+                returnCollisions[i] = collisions[i];
+                count++;
             }
+        }
+        if ( count ) {
+            return returnCollisions;
         }
         return false;
     },
@@ -211,6 +218,9 @@ Game.Entity = Class.extend({
         for ( ; i < Game.currentLevel.entities.length; i++ ) {
             entity = Game.currentLevel.entities[i];
             collisions = this.getCollisions( entity );
+            if ( this.type == 'Hero.Man' && entity.type == 'Interactable.Rock' ) {
+                console.log(collisions);
+            }
             if ( collisions && entity.type == entityType ) {
                 return collisions;
             }
@@ -219,24 +229,19 @@ Game.Entity = Class.extend({
     },
     //Collision handler -> to be extended by derived entities
     //By default entities stop moving when they hit land
-    collideWith: function( entity, collisionType ) {
+    collideWith: function( entity, collisionTypes ) {
         switch ( entity.type ) {
             case 'Terrain.Land':
-                if ( this.velocity.y > 0 && collisionType == 'bottomEdge' ) {
+                if ( this.velocity.y > 0 && 'bottomEdge' in collisionTypes ) {
                     this.velocity.y = 0;
                     this.futurePos.y = entity.pos.y - this.height;
                 }
-                if ( this.velocity.y < 0 && collisionType == 'topEdge' ) {
+                if ( this.velocity.y < 0 && 'topEdge' in collisionTypes ) {
                     this.velocity.y = 0;
                     this.futurePos.y = entity.pos.y + entity.height;
                 }
-                if ( collisionType == 'leftEdge' ) {
-                    this.velocity.x = 0;
-                    this.futurePos.x = entity.pos.x + entity.width;
-                }
-                if ( collisionType == 'rightEdge' ) {
-                    this.velocity.x = 0;
-                    this.futurePos.x = entity.pos.x - entity.width;
+                if ( 'exact' in collisionTypes ) {
+                    this.futurePos.x = entity.pos.x;
                 }
                 break;
             default: break;

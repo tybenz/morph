@@ -26,13 +26,13 @@ Game.Entity.Enemy = Game.Entity.extend({
     },
     actions: [],
     sequence: [], //sequence of moves/actions
-    collideWith: function( entity, collisionType ) {
-        if ( ( entity.type == 'Interactable.Rock' && collisionType.indexOf( 'Edge' ) == -1 )
+    collideWith: function( entity, collisionTypes ) {
+        if ( ( entity.type == 'Interactable.Rock' && ( 'overlapping' in collisionTypes || 'overlappingVertical' in collisionTypes || 'overlappingHorizontal' in collisionTypes ) )
             || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.pos.y < this.pos.y ) ) {
 
             this.state = 'dying';
         }
-        this._super( entity, collisionType );
+        this._super( entity, collisionTypes );
     }
 });
 

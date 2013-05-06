@@ -56,16 +56,16 @@ Game.Entity.Hero = Game.Entity.extend({
             }, 1000 );
         }
     },
-    collideWith: function( entity, collisionType ) {
+    collideWith: function( entity, collisionTypes ) {
         var entityType = entity.type;
         switch ( entity.type ) {
             case 'Terrain.Land':
-                if ( collisionType == 'bottomEdge' ) {
+                if ( 'bottomEdge' in collisionTypes ) {
                     this.disableJump = false;
                 }
                 break;
             case 'Interactable.Coin':
-                if ( collisionType == 'exact' && entity.visible ) {
+                if ( 'exact' in collisionTypes && entity.visible ) {
                     entity.visible = false;
                     Game.score.incrementHealth();
                 }
@@ -73,12 +73,12 @@ Game.Entity.Hero = Game.Entity.extend({
             default: break;
         }
         if ( entityType.indexOf( 'Enemy' ) == 0 && entity.state != 'dying'
-            && ( collisionType == 'exact' || collisionType == 'overlapping' || collisionType == 'overlappingVertical' || collisionType == 'overlappingHorizontal' )
+            && ( 'exact' in collisionTypes || 'overlapping' in collisionTypes || 'overlappingVertical' in collisionTypes || 'overlappingHorizontal' in collisionTypes )
             && this.takingDamage != 'locked' ) {
 
             this.takingDamage = true;
         }
-        this._super( entity, collisionType );
+        this._super( entity, collisionTypes );
     }
 });
 
@@ -86,6 +86,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     type: 'Hero.Man',
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
+        //spacebar
         if ( !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
             Game.keysDown[ 32 ] = 'locked';
             if ( this.holding ) {
@@ -139,7 +140,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
         'up': function() {
             //jump
             if ( !this.disableJump ) {
-                var jumpForce = new Game.Vector( 0, -3 );
+                var jumpForce = new Game.Vector( 0, -0.5 );
                 this.velocity = this.velocity.add( jumpForce );
             }
         },
@@ -166,13 +167,13 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             this.activeSprite -= 2;
         }
     },
-    collideWith: function( entity, collisionType ) {
+    collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Interactable.Rock' ) {
-            if ( collisionType == 'topEdge' && !this.holding ) {
+            if ( 'topEdge' in collisionTypes && !this.holding ) {
                 this.actions.pickup.call( this, entity );
             }
         }
-        this._super( entity, collisionType );
+        this._super( entity, collisionTypes );
     },
     bitmaps: [
         [

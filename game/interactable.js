@@ -12,14 +12,14 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         this.velocity = new Game.Vector( 0, 0 );
         this._super( x, y );
     },
-    collideWith: function( entity, collisionType ) {
+    collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Hero.Man' ) {
-            if ( this.velocity.y > 0 && ( collisionType == 'bottomEdge' ) ) {
+            if ( this.velocity.y > 0 && ( 'bottomEdge' in collisionTypes ) ) {
                 this.velocity.y = 0;
                 this.futurePos.y = entity.pos.y - entity.height;
             }
         }
-        this._super( entity, collisionType );
+        this._super( entity, collisionTypes );
     },
     update: function( timeDiff ) {
         var frictionalForce;

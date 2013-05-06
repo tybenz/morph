@@ -140,24 +140,18 @@ var Game = {
     //Pass it two entities - if they have collisions we call
     //each of their collision handlers
     collider: function( a, b ) {
-        var collisionType,
             // Obtain collision dictionaries for the two objects.
-            aCollisions = a.getCollisions( b ),
+        var aCollisions = a.getCollisions( b ),
             bCollisions = b.getCollisions( a );
 
         // Adjust the objects because of collision.
 	
-        for ( collisionType in aCollisions ) {
-            // Not too sure when aCollisions[collisionType] would be anything but a true/false.
-            if ( aCollisions[ collisionType ] && !( aCollisions[collisionType] instanceof Game.Entity ) ) {
-                a.collideWith( b, collisionType );
-            }
+        if ( aCollisions ) {
+            a.collideWith( b, aCollisions );
         }
 
-        for ( collisionType in bCollisions ) {
-            if ( bCollisions[ collisionType ] && !( bCollisions[collisionType] instanceof Game.Entity ) ) {
-                b.collideWith( a, collisionType );
-            }
+        if ( bCollisions ) {
+            b.collideWith( a, bCollisions );
         }
     },
     //Add entity to the removal queue
