@@ -16,7 +16,7 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         if ( entity.type == 'Hero.Man' ) {
             if ( this.velocity.y > 0 && ( collisionType == 'bottomEdge' ) ) {
                 this.velocity.y = 0;
-                this.pos.y = entity.pos.y - entity.height;
+                this.futurePos.y = entity.pos.y - entity.height;
             }
         }
         this._super( entity, collisionType );

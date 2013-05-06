@@ -25,21 +25,19 @@ Game.Entity.Hero = Game.Entity.extend({
         Game.transformed = true;
     },
     //Handling user input
-    update: function( timeDiff ) {
-        this._super( timeDiff );
-        if ( !Game.keysLocked ) {
-            if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
-                this.move.left.call( this );
-                Game.keysDown[ 37 ] = 'locked';
-            }
-            if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
-                this.move.right.call( this );
-                Game.keysDown[ 39 ] = 'locked';
-            }
-            if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
-                this.move.up.call( this, timeDiff );
-                Game.keysDown[ 38 ] = 'locked';
-            }
+    generateNextCoords: function( timeDiff ) {
+	this._super( timeDiff );
+	if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
+            this.move.left.call( this );
+            Game.keysDown[ 37 ] = 'locked';
+        }
+        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
+            this.move.right.call( this );
+            Game.keysDown[ 39 ] = 'locked';
+        }
+        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
+            this.move.up.call( this, timeDiff );
+            Game.keysDown[ 38 ] = 'locked';
         }
         //Lose health and blink when hitting an enemy
         //When in blinking state cannot take more damage
@@ -86,7 +84,7 @@ Game.Entity.Hero = Game.Entity.extend({
 
 Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     type: 'Hero.Man',
-    update: function( timeDiff ) {
+    generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
         if ( !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
             Game.keysDown[ 32 ] = 'locked';
@@ -117,36 +115,32 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     },
     move: {
         'right': function() {
-            var collisions = this.hasCollisionWith( 'Terrain.Land' );
+            //var collisions = this.hasCollisionWith( 'Terrain.Land' );
             this.direction = 'right';
             if ( this.holding ) {
                 this.activeSprite = MAN_HOLDING_RIGHT;
             } else {
                 this.activeSprite = MAN_RIGHT;
             }
-            if ( !collisions || !collisions.rightEdge ) {
-                this.invalidateRect( this.pos.x + Game.unit, this.pos.y );
-                this.pos.x += Game.unit;
-            }
-        },
+            this.futurePos.x += Game.unit;
+	    this.invalidateRect( this.futurePos.x, this.futurePos.y );
+	},
         'left': function() {
-            var collisions = this.hasCollisionWith( 'Terrain.Land' );
+            //var collisions = this.hasCollisionWith( 'Terrain.Land' );
             this.direction = 'left';
             if ( this.holding ) {
                 this.activeSprite = MAN_HOLDING_LEFT;
             } else {
                 this.activeSprite = MAN_LEFT;
             }
-            if ( !collisions || !collisions.leftEdge ) {
-                this.invalidateRect( this.pos.x - Game.unit, this.pos.y );
-                this.pos.x -= Game.unit;
-            }
-        },
+            this.futurePos.x -= Game.unit;
+	    this.invalidateRect( this.futurePos.x, this.futurePos.y );
+	},
         'up': function() {
             //jump
             if ( !this.disableJump ) {
-                var jumpForce = new Game.Vector( 0, -7 );
-                this.velocity = this.velocity.add( jumpForce );
+		var jumpForce = new Game.Vector( 0, -3 );
+		this.velocity = this.velocity.add( jumpForce );
             }
         },
         'down': function() {
