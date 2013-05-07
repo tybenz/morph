@@ -43,3 +43,35 @@ header nav {
 .pagination .button {
   @include span-columns(6);
 }
+
+.sprite-demo .popup {
+  position: absolute;
+  z-index: 10;
+  top: 150px;
+  font-size: 0.8em;
+  line-height: 1.4em;
+  background: #000;
+  padding: 1em;
+  width: 300px;
+  border: 1px solid #0f0;
+  &:before {
+    position: absolute;
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 1px solid #0f0;
+    @include transform(rotate(45deg));
+    background-color: #000;
+    z-index: -1;
+    top: -12px;
+  }
+  &:after {
+    content: '';
+    background: black;
+    width: 30px;
+    height: 20px;
+    position: absolute;
+    top: -1px;
+    left: 11px;
+  }
+}
