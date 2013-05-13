@@ -8,6 +8,16 @@ var MAN_RIGHT = 0,
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
     drawLayer: 3,
+    init: function( x, y ) {
+        this._super( x, y );
+        this.animationStates = {
+                blinking: {
+                    delta: 70,
+                    sequence: [ 'initial', 'invisible' ],
+                    times: 'infinite'
+                }
+            };
+    },
     right: function() {
         this.direction = 'right';
         if ( !this.adjacentTo( 'Terrain.Land', 'right' ) ) {
@@ -22,13 +32,6 @@ Game.Entity.Hero = Game.Entity.extend({
     },
     up: function() {},
     down: function() {},
-    animationStates: {
-        blinking: {
-            delta: 70,
-            sequence: [ 'initial', 'invisible' ],
-            times: 'infinite'
-        }
-    },
     transform: function( newType, timeDiff ) {
         var newHero = new newType( this.pos.x, this.pos.y );
         Game.destroyEntity( this );
@@ -63,7 +66,9 @@ Game.Entity.Hero = Game.Entity.extend({
                 this.state = 'dying';
             }
             setTimeout( function() {
-                hero.takingDamage = false; hero.state = '';
+                hero.takingDamage = false;
+                hero.state = '';
+                hero.visible = true;
             }, 1000 );
         }
     },
