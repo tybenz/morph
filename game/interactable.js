@@ -14,9 +14,10 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
     },
     collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Hero.Man' ) {
-            if ( this.velocity.y > 0 && ( 'bottomEdge' in collisionTypes ) ) {
+            if ( this.velocity.y > 0 && collisionTypes ) {
                 this.velocity.y = 0;
-                this.futurePos.y = entity.pos.y - entity.height;
+                this.pos.y = entity.pos.y - entity.height;
+                entity.actions.pickup.call( entity, this );
             }
         }
         this._super( entity, collisionTypes );
@@ -28,7 +29,8 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         } else {
             frictionalForce = ( new Game.Vector( 0.0004, 0 ) ).multiply( timeDiff );
         }
-        if ( this.hasCollisionWith( 'Terrain.Land' ).bottomEdge && this.velocity.x != 0 ) {
+        // TODO - only apply when on top of ground
+        if ( this.velocity.x != 0 ) {
             this.velocity = this.velocity.add( frictionalForce );
         }
         if ( Math.abs( this.velocity.x ) < 0.05 ) {

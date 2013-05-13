@@ -122,9 +122,18 @@ var Game = {
             }
         }
 
+        /*
         // Update each entity.
         for ( var i = 0; i < entities.length; i++ ) {
             entities[ i ].update();
+        }
+        */
+
+        for ( var i = 0; i < entities.length; i++ ) {
+            var ent = entities[ i ];
+            if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated ) {
+                ent.invalidateRect();
+            }
         }
 
 	

@@ -55,7 +55,7 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
             }
         };
     },
-    update: function( timeDiff ) {
+    generateNextCoords: function( timeDiff ) {
         if ( this.activeSprite == 11 ) {
             this.visible = false;
             Game.destroyEntity( this );
@@ -220,11 +220,12 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
             }
         };
     },
-    update: function( timeDiff ) {
+    generateNextCoords: function( timeDiff ) {
         if ( this.state == 'dying' ) {
             this.ignoreGravity = false;
         }
-        if ( this.state == 'dying' && this.hasCollisionWith( 'Terrain.Land' ).bottomEdge ) {
+        // TODO - check for on top of ground to destroy entity
+        if ( this.state == 'dying' && this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
             this.visible = false;
             Game.destroyEntity( this );
         }

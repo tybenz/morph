@@ -8,8 +8,20 @@ var MAN_RIGHT = 0,
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
     drawLayer: 3,
-    //Move object required by all derived versions of the hero
-    move: {},
+    right: function() {
+        this.direction = 'right';
+        if ( !this.adjacentTo( 'Terrain.Land', 'right' ) ) {
+            this.pos.x += Game.unit;
+        }
+    },
+    left: function() {
+        this.direction = 'left';
+        if ( !this.adjacentTo( 'Terrain.Land', 'left' ) ) {
+            this.pos.x -= Game.unit;
+        }
+    },
+    up: function() {},
+    down: function() {},
     animationStates: {
         blinking: {
             delta: 70,
@@ -22,21 +34,20 @@ Game.Entity.Hero = Game.Entity.extend({
         Game.destroyEntity( this );
         Game.currentLevel.entities.push( newHero );
         Game.hero = newHero;
-        Game.transformed = true;
     },
     //Handling user input
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
         if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
-            this.move.left.call( this );
+            this.left();
             Game.keysDown[ 37 ] = 'locked';
         }
         if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
-            this.move.right.call( this );
+            this.right();
             Game.keysDown[ 39 ] = 'locked';
         }
         if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
-            this.move.up.call( this, timeDiff );
+            this.up();
             Game.keysDown[ 38 ] = 'locked';
         }
         //Lose health and blink when hitting an enemy
@@ -60,7 +71,7 @@ Game.Entity.Hero = Game.Entity.extend({
         var entityType = entity.type;
         switch ( entity.type ) {
             case 'Terrain.Land':
-                if ( 'bottomEdge' in collisionTypes ) {
+                if ( this.velocity.y > 0 ) {
                     this.disableJump = false;
                 }
                 break;
@@ -114,38 +125,27 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             this.holding.pos.x = this.pos.x;
         }
     },
-    move: {
-        'right': function() {
-            //var collisions = this.hasCollisionWith( 'Terrain.Land' );
-            this.direction = 'right';
-            if ( this.holding ) {
-                this.activeSprite = MAN_HOLDING_RIGHT;
-            } else {
-                this.activeSprite = MAN_RIGHT;
-            }
-            this.futurePos.x += Game.unit;
-            this.invalidateRect( this.futurePos.x, this.futurePos.y );
-        },
-        'left': function() {
-            //var collisions = this.hasCollisionWith( 'Terrain.Land' );
-            this.direction = 'left';
-            if ( this.holding ) {
-                this.activeSprite = MAN_HOLDING_LEFT;
-            } else {
-                this.activeSprite = MAN_LEFT;
-            }
-            this.futurePos.x -= Game.unit;
-            this.invalidateRect( this.futurePos.x, this.futurePos.y );
-        },
-        'up': function() {
-            //jump
-            if ( !this.disableJump ) {
-                var jumpForce = new Game.Vector( 0, -0.5 );
-                this.velocity = this.velocity.add( jumpForce );
-            }
-        },
-        'down': function() {
-            //down for plane and jellyfish
+    right: function() {
+        this._super();
+        if ( this.holding ) {
+            this.activeSprite = MAN_HOLDING_RIGHT;
+        } else {
+            this.activeSprite = MAN_RIGHT;
+        }
+    },
+    left: function() {
+        this._super();
+        if ( this.holding ) {
+            this.activeSprite = MAN_HOLDING_LEFT;
+        } else {
+            this.activeSprite = MAN_LEFT;
+        }
+    },
+    up: function() {
+        //jump
+        if ( !this.disableJump ) {
+            var jumpForce = new Game.Vector( 0, -0.4 );
+            this.velocity = this.velocity.add( jumpForce );
         }
     },
     //Interacting with rock
@@ -154,7 +154,11 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             this.holding = entity;
             entity.pos.y = this.pos.y - this.height;
             entity.pos.x = this.pos.x;
-            this.activeSprite += 2;
+            if ( this.direction == 'right' ) {
+                this.activeSprite = MAN_HOLDING_RIGHT;
+            } else if ( this.direction == 'left' ) {
+                this.activeSprite = MAN_HOLDING_LEFT;
+            }
         },
         throw: function() {
             if ( this.direction == 'right' ) {
@@ -166,14 +170,6 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             this.holding = false;
             this.activeSprite -= 2;
         }
-    },
-    collideWith: function( entity, collisionTypes ) {
-        if ( entity.type == 'Interactable.Rock' ) {
-            if ( 'topEdge' in collisionTypes && !this.holding ) {
-                this.actions.pickup.call( this, entity );
-            }
-        }
-        this._super( entity, collisionTypes );
     },
     bitmaps: [
         [
@@ -236,33 +232,17 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
 
 Game.Entity.Hero.Block = Game.Entity.Hero.extend({
     type: 'Hero.Block',
-    move: {
-        'right': function() {
-            console.log('right');
-            var collisions = this.hasCollisionWith( 'Terrain.Land' );
-            this.direction = 'right';
-            if ( !collisions || !collisions.rightEdge ) {
-                this.futurePos.x += Game.unit;
-                this.invalidateRect( this.pos.x + Game.unit, this.pos.y );
-            }
-        },
-        'left': function() {
-            var collisions = this.hasCollisionWith( 'Terrain.Land' );
-            this.direction = 'left';
-            if ( !collisions || !collisions.leftEdge ) {
-                this.futurePos.x -= Game.unit;
-                this.invalidateRect( this.pos.x - Game.unit, this.pos.y );
-            }
-        },
-        'up': function() {
-            //jump
-            if ( !this.disableJump ) {
-                var jumpForce = new Game.Vector( 0, -0.5 );
-                this.velocity = this.velocity.add( jumpForce );
-            }
-        },
-        'down': function() {
-            //down for plane and jellyfish
+    up: function() {
+        if ( !this.disableJump ) {
+            var jumpForce = new Game.Vector( 0, -0.5 );
+            this.velocity = this.velocity.add( jumpForce );
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+        //Only perform one jump at a time
+        if ( this.velocity.y < 0 ) {
+            this.disableJump = true;
         }
     },
     bitmaps: [

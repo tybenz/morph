@@ -27,7 +27,7 @@ Game.Entity = Class.extend({
         this.velocity = new Game.Vector( 0, 0 );
         this.gravity = new Game.Vector( 0, 0.001 ); // Changed to test collisions
 
-        this.futurePos = this.pos;
+        this.oldPos = this.pos;
 
         //Iterate through an array of bitmaps and cache them as images
         for ( i in this.bitmaps ) {
@@ -92,7 +92,8 @@ Game.Entity = Class.extend({
     },
     generateNextCoords: function( timeDiff ) {
         //Bool that will tell us if the entity animated
-        var animated = this.animate( timeDiff );
+        this.animated = this.animate( timeDiff );
+        this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
 
         //Gravity
         if ( !this.ignoreGravity ) {
@@ -102,22 +103,13 @@ Game.Entity = Class.extend({
         //Change position based on velocity
         // Maybe x's position change should go here too.
         var positionChange = this.velocity.multiply(timeDiff)
-        this.futurePos = this.pos.add( positionChange );
-	
-        //invalidateRect if the entity moved or animated
-        if ( this.futurePos.x != this.pos.x || this.futurePos.y != this.pos.y || animated || this.transformed ) {
-            this.invalidateRect();
-        }
-    },
-    update: function() {
-        // All we do is give the entity it's next coordinates.
-        this.pos = new Game.Vector( this.futurePos.x, this.futurePos.y );
+        this.pos = this.pos.add( positionChange );
     },
     invalidateRect: function() {
-        var newX = this.futurePos.x,
-            newY = this.futurePos.y,
-            oldX = this.pos.x,
-            oldY = this.pos.y,
+        var newX = this.pos.x,
+            newY = this.pos.y,
+            oldX = this.oldPos.x,
+            oldY = this.oldPos.y,
             width = this.width,
             height = this.height,
             top = oldY <= newY ? oldY : newY,
@@ -136,16 +128,15 @@ Game.Entity = Class.extend({
     },
     //Two entities -> collision dictionary or false if no collision
     getCollisions: function( entity ) {
-	
         var src = {
                 top: Math.round( this.pos.y ),
                 bottom: Math.round( this.pos.y + this.height ),
                 left: Math.round( this.pos.x ),
                 right: Math.round( this.pos.x + this.width ),
-                futureTop: Math.round( this.futurePos.y ),
-                futureBottom: Math.round( this.futurePos.y + this.height ),
-                futureLeft: Math.round( this.futurePos.x ),
-                futureRight: Math.round( this.futurePos.x + this.width ) 
+                oldTop: Math.round( this.oldPos.y ),
+                oldBototm: Math.round( this.oldPos.y + this.height ),
+                oldLeft: Math.round( this.oldPos.x ),
+                oldRight: Math.round( this.oldPos.x + this.width )
             },
             target = {
                 top: Math.round( entity.pos.y ),
@@ -164,24 +155,25 @@ Game.Entity = Class.extend({
             topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
             leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
 
-            movingRight = src.right < src.futureRight,
-            movingLeft = src.left > src.futureLeft,
-            movingUp = src.top > src.futureTop,
-            movingDown = src.bottom < src.futureBottom,
+            movingRight = src.oldRight < src.right,
+            movingLeft = src.oldLeft > src.left,
+            movingUp = src.oldTop > src.top,
+            movingDown = src.oldBottom < src.bottom,
 
             skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
-                ( src.futureLeft > target.right || src.futureRight >= target.left ),
+                ( src.left > target.oldRight || src.right >= target.oldLeft ),
             skipLeft = ( betweenTopAndBottom || topAndBottomAligned ) && src.left > target.right && 
-                ( src.futureRight < target.left || src.futureLeft <= target.right ),
+                ( src.right < target.oldLeft || src.left <= target.oldRight ),
             skipDown = ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom < target.top && 
-                ( src.futureTop > target.bottom || src.futureBottom >= target.top ),
+                ( src.top > target.oldBottom || src.bottom >= target.oldTop ),
             skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
-                ( src.futureBottom < target.top || src.futureTop <= target.bottom ),
+                ( src.bottom < target.oldTop || src.top <= target.oldBottom ),
 
             // The problem with only allowing collisions when this is moving, is that what happens when
             // this is NOT moving and it gets hit? The offending entity must be able to handle 
             // the behavior of this too!
             collisions = {
+                /*
                 rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) &&
                     Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
                 leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) &&
@@ -190,10 +182,11 @@ Game.Entity = Class.extend({
                     Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
                 bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) &&
                     Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
-                exact: ( leftAndRightAligned && topAndBottomAligned ),
+                */
+                exact: leftAndRightAligned && topAndBottomAligned,
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
-                overlappingVertical: leftAndRightAligned && betweenTopAndBottom,
-                overlappingHorizontal: topAndBottomAligned && betweenLeftAndRight
+                overlappingVertical: leftAndRightAligned && ( betweenTopAndBottom || skipDown || skipUp ),
+                overlappingHorizontal: topAndBottomAligned && ( betweenLeftAndRight || skipRight || skipLeft )
             };
 
         // If there are any collisions we build an object of only those that are true
@@ -212,17 +205,73 @@ Game.Entity = Class.extend({
         }
         return false;
     },
+    getAdjacents: function( entity ) {
+        var src = {
+                top: Math.round( this.oldPos.y ),
+                bottom: Math.round( this.oldPos.y + this.height ),
+                left: Math.round( this.oldPos.x ),
+                right: Math.round( this.oldPos.x + this.width ),
+            },
+            target = {
+                top: Math.round( entity.oldPos.y ),
+                bottom: Math.round( entity.oldPos.y + entity.height ),
+                left: Math.round( entity.oldPos.x ),
+                right: Math.round( entity.oldPos.x + entity.width )
+            },
+            betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) ||
+                ( src.right < target.right && src.right > target.left ),
+            betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) ||
+                ( src.bottom < target.bottom && src.bottom > target.top ),
+            leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
+            topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
+            directions = {
+                top: ( betweenLeftAndRight || leftAndRightAligned ) && src.top == target.bottom,
+                bottom: ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom == target.top,
+                left: ( betweenTopAndBottom || topAndBottomAligned ) && src.left == target.right,
+                right: ( betweenTopAndBottom || topAndBottomAligned ) && src.right == target.left
+            };
+        // If there are any entities adjacent, we build an object of only those that are true
+        // If none, we return false
+        var returnDirections = {},
+            count = 0;
+        for ( var i in directions ) {
+            if ( directions[i] ) {
+                returnDirections.entity = entity;
+                returnDirections[i] = directions[i];
+                count++;
+            }
+        }
+        if ( count ) {
+            return returnDirections;
+        }
+        return false;
+    },
     //Checks all entities for collision with a specific type
     hasCollisionWith: function( entityType ) {
         var i = 0, collisions;
         for ( ; i < Game.currentLevel.entities.length; i++ ) {
             entity = Game.currentLevel.entities[i];
             collisions = this.getCollisions( entity );
-            if ( this.type == 'Hero.Man' && entity.type == 'Interactable.Rock' ) {
-                console.log(collisions);
-            }
             if ( collisions && entity.type == entityType ) {
                 return collisions;
+            }
+        }
+        return false;
+    },
+    adjacentTo: function( entityType, direction ) {
+        var i = 0, directions,
+            top, bottom, left, right;
+        for ( ; i < Game.currentLevel.entities.length; i++ ) {
+            entity = Game.currentLevel.entities[i];
+            if ( entity.type == entityType ) {
+                directions = this.getAdjacents( entity );
+                if ( direction ) {
+                    if ( directions && direction in directions ) {
+                        return true;
+                    }
+                } else if ( directions ) {
+                    return directions;
+                }
             }
         }
         return false;
@@ -232,23 +281,26 @@ Game.Entity = Class.extend({
     collideWith: function( entity, collisionTypes ) {
         switch ( entity.type ) {
             case 'Terrain.Land':
-                if ( this.velocity.y > 0 && 'bottomEdge' in collisionTypes ) {
+                if ( this.velocity.y > 0 && collisionTypes ) {
                     this.velocity.y = 0;
-                    this.futurePos.y = entity.pos.y - this.height;
+                    if ( this.oldPos.y % Game.unit == 0 ) {
+                        this.pos.y = this.oldPos.y;
+                    } else {
+                        this.pos.y = entity.pos.y - this.height;
+                    }
                 }
-                if ( this.velocity.y < 0 && 'topEdge' in collisionTypes ) {
+                if ( this.velocity.y < 0 && collisionTypes ) {
                     this.velocity.y = 0;
-                    this.futurePos.y = entity.pos.y + entity.height;
-                }
-                if ( 'exact' in collisionTypes ) {
-                    this.futurePos.x = entity.pos.x;
+                    this.pos.y = entity.pos.y + this.height;
                 }
                 break;
             default: break;
         }
     },
     applyGravity: function( timeDiff ) {
-        var gravitationalForce = this.gravity.multiply( timeDiff );
-        this.velocity = this.velocity.add( gravitationalForce );
+        if ( !this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+            var gravitationalForce = this.gravity.multiply( timeDiff );
+            this.velocity = this.velocity.add( gravitationalForce );
+        }
     }
 });
