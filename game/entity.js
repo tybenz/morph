@@ -225,6 +225,7 @@ Game.Entity = Class.extend({
             leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
             topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
             directions = {
+                exact: leftAndRightAligned && topAndBottomAligned,
                 top: ( betweenLeftAndRight || leftAndRightAligned ) && src.top == target.bottom,
                 bottom: ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom == target.top,
                 left: ( betweenTopAndBottom || topAndBottomAligned ) && src.left == target.right,

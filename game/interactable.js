@@ -22,19 +22,21 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         }
         this._super( entity, collisionTypes );
     },
-    update: function( timeDiff ) {
+    generateNextCoords: function( timeDiff ) {
         var frictionalForce;
         if ( this.velocity.x >= 0 ) {
-            frictionalForce = ( new Game.Vector( -0.0004, 0 ) ).multiply( timeDiff );
+            frictionalForce = ( new Game.Vector( -0.0003, 0 ) ).multiply( timeDiff );
         } else {
-            frictionalForce = ( new Game.Vector( 0.0004, 0 ) ).multiply( timeDiff );
+            frictionalForce = ( new Game.Vector( 0.0003, 0 ) ).multiply( timeDiff );
         }
         // TODO - only apply when on top of ground
-        if ( this.velocity.x != 0 ) {
-            this.velocity = this.velocity.add( frictionalForce );
-        }
-        if ( Math.abs( this.velocity.x ) < 0.05 ) {
-            this.velocity.x = 0;
+        if ( this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+            if ( this.velocity.x != 0 ) {
+                this.velocity = this.velocity.add( frictionalForce );
+            }
+            if ( Math.abs( this.velocity.x ) < 0.05 ) {
+                this.velocity.x = 0;
+            }
         }
         this._super( timeDiff );
     },

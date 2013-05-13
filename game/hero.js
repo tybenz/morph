@@ -108,14 +108,13 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             if ( this.holding ) {
                 this.actions.throw.call( this );
             } else {
-                var collisions = this.hasCollisionWith( 'Interactable.Rock' );
+                var adjacent = this.adjacentTo( 'Interactable.Rock' );
+                if ( adjacent ) {
+                    this.actions.pickup.call( this, adjacent.entity );
+                }
+                var collisions = this.hasCollisionWith( 'Machine' );
                 if ( collisions ) {
-                    this.actions.pickup.call( this, collisions.entity );
-                } else {
-                    collisions = this.hasCollisionWith( 'Machine' );
-                    if ( collisions ) {
-                        this.transform( Game.Entity.Hero.Block, timeDiff );
-                    }
+                    this.transform( Game.Entity.Hero.Block, timeDiff );
                 }
             }
         }
