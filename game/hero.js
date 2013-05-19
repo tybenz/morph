@@ -107,9 +107,12 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             if ( this.holding ) {
                 this.actions.throw.call( this );
             } else {
-                var adjacent = this.adjacentTo( 'Interactable.Rock' );
+                var adjacent = this.adjacentTo( 'Interactable.Rock' ),
+                    collision = this.hasCollisionWith( 'Interactable.Rock' );
                 if ( adjacent ) {
                     this.actions.pickup.call( this, adjacent.entity );
+                } else if ( collision ) {
+                    this.actions.pickup.call( this, collision.entity );
                 }
                 var collisions = this.hasCollisionWith( 'Machine' );
                 if ( collisions ) {

@@ -20,6 +20,15 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
                 entity.actions.pickup.call( entity, this );
             }
         }
+        if ( entity.type == 'Terrain.Land' ) {
+            if ( this.velocity.x > 0 && this.velocity.y == 0 && collisionTypes ) {
+                this.velocity.x = 0;
+                this.pos.x = entity.pos.x - entity.width;
+            } else if ( this.velocity.x < 0 && this.velocity.y == 0 && collisionTypes ) {
+                this.velocity.x = 0;
+                this.pos.x = entity.pos.x + entity.width;
+            }
+        }
         this._super( entity, collisionTypes );
     },
     generateNextCoords: function( timeDiff ) {
