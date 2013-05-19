@@ -27,13 +27,6 @@
 	left: 5px;
 }
 
-#hearts .heart {
-	float: left;
-	background-image: url(../sprites/item/heart.png);
-	width: 18px;
-	height: 18px;
-}
-
 #hud-header-right {
 	position: absolute;
 	top: 5px;
