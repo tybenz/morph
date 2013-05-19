@@ -1,0 +1,48 @@
+#panel {
+  height: 420px;
+  width: 58px;
+  padding: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -580px;
+  margin-top: -225px;
+  border: 1px solid #0f0;
+}
+
+#tools {
+  padding-bottom: 10px;
+  border-bottom: 1px solid white;
+  overflow: hidden;
+}
+
+#sprites {
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.sprite, .tool {
+  float: left;
+  padding: 3px;
+}
+
+.sprite img, .tool img {
+  display: block;
+}
+
+.sprite:nth-child(2n), .tool:nth-child(2n) {
+  margin-left: 10px;
+}
+
+.sprite.active, .tool.active {
+  padding: 2px;
+  border: 1px solid #0f0;
+}
+
+#rectangle-tool {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  border: 2px solid white;
+  display: none;
+  position: absolute;
+}

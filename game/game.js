@@ -9,6 +9,7 @@ var Game = {
     keysDown: {},
     //Image count for loading sprites
     imageCount: 1,
+    paused: false,
     init: function( level ) {
         //Initialize viewport size
         Game.viewportWidth = Game.viewportTileWidth * Game.unit;
@@ -28,9 +29,25 @@ var Game = {
 
         Game.resize();
 
+        //Initialize drawLayers
+        Game.initDrawLayers();
+
         //Load level and sprites
         Game.currentLevel = Game.Levels[ level ];
         Game.loadLevel();
+    },
+    initDrawLayers: function() {
+        //Layers for rendering - specified by each entity
+        Game.drawLayers = [
+            //Terrain
+            [],
+            //Interactables
+            [],
+            //Enemies
+            [],
+            //Hero
+            []
+        ];
     },
     startLoop: function() {
         //Start event listeners and main loop
@@ -43,14 +60,16 @@ var Game = {
 
         // Initial render
         // Make sure all entities get rendered on first render.
-        Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
+        Game.invalidateRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
         for ( var i in Game.currentLevel.entities ) {
             Game.currentLevel.entities[i].render();
         }
 
+        // Set last update to null so a pause/unpause doesn't
+        // result in a jump on the screen
+        Game.lastUpdate = null;
         //Start the actual loop
-        Game.then = Date.now();  // Game.then used?
-        requestAnimationFrame(Game.loop); 
+        Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     loop: function( timestamp ) {
         //We update and render each loop
@@ -60,7 +79,7 @@ var Game = {
             Game.render( timeDiff );
         }
         Game.lastUpdate = timestamp;
-        requestAnimationFrame( Game.loop );
+        Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     update: function( timeDiff ) {
 	
@@ -167,17 +186,6 @@ var Game = {
     destroyEntity: function( entity ) {
         Game.toBeDestroyed.push( entity );
     },
-    //Layers for rendering - specified by each entity
-    drawLayers: [
-        //Terrain
-        [],
-        //Interactables
-        [],
-        //Enemies
-        [],
-        //Hero
-        []
-    ],
     //Used in rendering - anytime an entities animates or moves position
     //We add them to the invalidRect for that update
     invalidateRect: function( top, right, bottom, left ) {
@@ -267,6 +275,8 @@ var Game = {
     },
     //Iterate through level grid and instantiate all entities based on class name
     loadLevel: function() {
+        Game.hero = null;
+        Game.currentLevel.entities = [];
         for ( i in Game.currentLevel.grid ) {
             for ( j in Game.currentLevel.grid[ i ] ) {
                 entityString = Game.currentLevel.grid[ i ][ j ];
@@ -283,8 +293,15 @@ var Game = {
     keyDownListener: function( evt ) {
         //Prevent default on up and down so the
         //browser doesn't attempt to scroll the page
-        if ( evt.keyCode == '38' || evt.keyCode == '40' ) {
+        if ( evt.keyCode == 38 || evt.keyCode == 40 ) {
             evt.preventDefault();
+        }
+        if ( evt.keyCode == 80 ) { // "P" key
+            if ( Game.paused ) {
+                Game.resume();
+            } else {
+                Game.pause();
+            }
         }
         if ( Game.keysDown[ evt.keyCode ] != 'locked' ) {
             Game.keysDown[ evt.keyCode ] = true;
@@ -292,6 +309,15 @@ var Game = {
     },
     keyUpListener: function( evt ) {
         delete Game.keysDown[ evt.keyCode ];
+    },
+    pause: function() {
+        Game.paused = true;
+        cancelAnimationFrame( Game.requestID );
+    },
+    resume: function() {
+        Game.paused = false;
+        Game.lastUpdate = null;
+        Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     imageLoaded: function( img ) {
         if ( Game.imageCount < Game.currentLevel.entityCount ) {
@@ -371,9 +397,16 @@ var Game = {
             }
         }
     },
+    stop: function() {
+        cancelAnimationFrame( Game.requestID );
+        Game.initDrawLayers();
+        Game.hasStarted = false;
+    },
     resize: function() {
-        $( '#game' ).width( Game.viewportWidth ).height( Game.viewportHeight );
-        $( '#game' ).css( 'top', '-' + Game.viewportHeight / 2 + 'px' );
+        var $game = $( '#game' );
+        $game.width( Game.viewportWidth )
+        $game.height( Game.viewportHeight );
+        $game.css( 'top', '-' + Game.viewportHeight / 2 + 'px' );
     }
 };
 Game.viewportTileWidth = 50;
