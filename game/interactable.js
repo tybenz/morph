@@ -72,3 +72,27 @@ Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
         ]
     ]
 });
+
+Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
+    type: 'Interactable.Bullet',
+    drawLayer: 0,
+    ignoreGravity: true,
+    collideWith: function( entity, collisionTypes ) {
+        if ( entity.type == 'Terrain.Land' ) {
+            Game.destroyEntity( this );
+        }
+    },
+    bitmaps: [
+        [
+            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ]
+    ]
+});

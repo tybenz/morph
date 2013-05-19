@@ -88,8 +88,7 @@ Game.Entity.Hero = Game.Entity.extend({
                 break;
             default: break;
         }
-        if ( entityType.indexOf( 'Enemy' ) == 0 && entity.state != 'dying'
-            && ( 'exact' in collisionTypes || 'overlapping' in collisionTypes || 'overlappingVertical' in collisionTypes || 'overlappingHorizontal' in collisionTypes )
+        if ( ( entityType.indexOf( 'Enemy' ) == 0 || entityType == 'Interactable.Bullet' ) && entity.state != 'dying'
             && this.takingDamage != 'locked' ) {
 
             this.takingDamage = true;

@@ -3,6 +3,7 @@
 Game.Entity.Terrain = Game.Entity.extend({
     type: 'Terrain',
     ignoreGravity: true,
+    drawLayer: 1,
     portal: null // portal to another level?
 });
 

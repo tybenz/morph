@@ -39,6 +39,8 @@ var Game = {
     initDrawLayers: function() {
         //Layers for rendering - specified by each entity
         Game.drawLayers = [
+            //Bullets,
+            [],
             //Terrain
             [],
             //Interactables
