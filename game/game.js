@@ -15,7 +15,10 @@ var Game = {
         Game.viewportWidth = Game.viewportTileWidth * Game.unit;
         Game.viewportHeight = Game.viewportTileHeight * Game.unit;
         Game.viewportOffset = 0;
-        Game.viewportShiftBoundary = Game.viewportWidth / 2 - ( 3 * Game.unit );
+        Game.viewportShiftBoundary = {
+            left: Game.viewportWidth / 2 - ( 3 * Game.unit ),
+            right: Game.viewportWidth / 2 + ( 3 * Game.unit )
+        };
 
         //Prepare canvas
         Game.canvas = document.createElement( 'canvas' );
@@ -34,6 +37,7 @@ var Game = {
 
         //Load level and sprites
         Game.currentLevel = Game.Levels[ level ];
+        Game.viewportShiftBuffer = Game.currentLevel.width - Game.viewportWidth;
         Game.loadLevel();
     },
     initDrawLayers: function() {
@@ -143,28 +147,19 @@ var Game = {
             }
         }
 
-        /*
-        // Update each entity.
-        for ( var i = 0; i < entities.length; i++ ) {
-            entities[ i ].update();
-        }
-        */
-
         for ( var i = 0; i < entities.length; i++ ) {
             var ent = entities[ i ];
             if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated ) {
                 ent.invalidateRect();
             }
         }
-
 	
         //Shift viewport if hero's pos is past the shift boundary
-        if ( Game.hero.pos.x > Game.viewportShiftBoundary ) {
-            for ( var i = Game.hero.pos.x; i > Game.viewportShiftBoundary; i -= Game.unit ) {
-                Game.viewportOffset += Game.unit;
-            }
+        if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
+            Game.viewportShift = true;
+            Game.viewportShiftBoundary.left += Game.unit;
+            Game.viewportOffset += Game.unit;
         }
-	
     },
     //The collider is where entities interact
     //Pass it two entities - if they have collisions we call
@@ -213,23 +208,63 @@ var Game = {
             Game.invalidRect.right = right;
         }
     },
+    displayInvalidRect: function() {
+        var left = $( Game.canvas ).offset().left + Game.invalidRect.left - Game.viewportOffset,
+            top = $( Game.canvas ).offset().top + Game.invalidRect.top,
+            width = Game.invalidRect.right - Game.invalidRect.left,
+            height = Game.invalidRect.bottom - Game.invalidRect.top,
+            box = $( '#invalid-rect' );
+        if ( box.length ) {
+            box.css( 'left', left + 'px' );
+            box.css( 'top', top + 'px' );
+            box.width( width );
+            box.height( height );
+        } else {
+            box = $( '<div id="invalid-rect" style="border: 1px solid red;position:absolute;left:'+left+'px;top:'+top+'px;width:'+width+'px;height:'+height+'px"></div>' );
+            $( 'body' ).append( box );
+        }
+    },
     //Called every update - uses the invalidRect to set a clip
     //so we only re-render entities that have changed
     render: function() {
         var i, j;
 
+        // Handle viewport shift
+        if ( Game.viewportShift ) {
+            Game.viewportShift = false;
+            // Blit pixels
+            var imageData = Game.ctx.getImageData( Game.unit, 0, Game.viewportWidth - Game.unit, Game.viewportHeight );
+            Game.ctx.putImageData( imageData, 0, 0 );
+            Game.ctx.clearRect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
+
+            // Bring in next column
+            Game.ctx.save();
+            Game.ctx.beginPath();
+            Game.ctx.rect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
+            Game.ctx.clip();
+            Game.ctx.closePath();
+
+            Game.ctx.fillStyle = '#000';
+            Game.ctx.fillRect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
+
+            for ( i = 0; i < Game.drawLayers.length; i++ ) {
+                for ( j = 0; j < Game.drawLayers[i].length; j++ ) {
+                    Game.drawLayers[i][j].render();
+                }
+            }
+
+            Game.ctx.restore();
+        }
+
         if ( Game.invalidRect ) {
-            var invalidLeft = Game.invalidRect.left - Game.unit,
-                invalidTop = Game.invalidRect.top - Game.unit,
-                invalidWidth = Game.invalidRect.right - invalidLeft + Game.unit * 2,
-                invalidHeight = Game.invalidRect.bottom - invalidTop + Game.unit * 2;
-            /*
-            //Show invalidRect
-            var left = $( Game.canvas ).offset().left + invalidLeft;
-            var top = $( Game.canvas ).offset().top + invalidTop;
-            var box = $('<div style="border: 1px solid red;position:absolute;left:'+left+'px;top:'+top+'px;width:'+invalidWidth+'px;height:'+invalidHeight+'px"></div>');
-            $('body').append(box);
-            */
+            var invalidLeft = Game.invalidRect.left - Game.viewportOffset,
+                invalidTop = Game.invalidRect.top,
+                invalidWidth = Game.invalidRect.right - Game.viewportOffset - invalidLeft,
+                invalidHeight = Game.invalidRect.bottom - invalidTop;
+
+            if ( Game.debugInvalidRect ) {
+                Game.displayInvalidRect();
+            }
 
             //Save canvas context before setting clip
             Game.ctx.save();
@@ -409,7 +444,8 @@ var Game = {
         $game.width( Game.viewportWidth )
         $game.height( Game.viewportHeight );
         $game.css( 'top', '-' + Game.viewportHeight / 2 + 'px' );
-    }
+    },
+    debugInvalidRect: false
 };
 Game.viewportTileWidth = 50;
 Game.viewportTileHeight = 25;

@@ -123,7 +123,7 @@ Game.Entity = Class.extend({
     render: function() {
         //Render the activeSprite
         if ( this.visible ) {
-            Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.pos.x, this.pos.y );
+            Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
         }
     },
     //Two entities -> collision dictionary or false if no collision
