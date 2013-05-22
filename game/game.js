@@ -16,8 +16,8 @@ var Game = {
         Game.viewportHeight = Game.viewportTileHeight * Game.unit;
         Game.viewportOffset = 0;
         Game.viewportShiftBoundary = {
-            left: Game.viewportWidth / 2 - ( 3 * Game.unit ),
-            right: Game.viewportWidth / 2 + ( 3 * Game.unit )
+            left: Game.viewportWidth / 2 + ( 3 * Game.unit ),
+            right: Game.viewportWidth / 2 - ( 3 * Game.unit )
         };
 
         //Prepare canvas
@@ -156,9 +156,17 @@ var Game = {
 	
         //Shift viewport if hero's pos is past the shift boundary
         if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
-            Game.viewportShift = true;
+            Game.viewportShiftLeft = true;
             Game.viewportShiftBoundary.left += Game.unit;
+            Game.viewportShiftBoundary.right += Game.unit;
             Game.viewportOffset += Game.unit;
+        } else if ( Game.hero.pos.x <= Game.viewportShiftBoundary.right && Game.viewportOffset ) {
+            Game.viewportShiftRight = true;
+            Game.viewportShiftBoundary.left -= Game.unit;
+            Game.viewportShiftBoundary.right -= Game.unit;
+            if ( Game.viewportOffset - Game.unit >= 0 ) {
+                Game.viewportOffset -= Game.unit;
+            }
         }
     },
     //The collider is where entities interact
@@ -227,40 +235,40 @@ var Game = {
     //Called every update - uses the invalidRect to set a clip
     //so we only re-render entities that have changed
     render: function() {
-        var i, j;
-
-        // Handle viewport shift
-        if ( Game.viewportShift ) {
-            Game.viewportShift = false;
-            // Blit pixels
-            var imageData = Game.ctx.getImageData( Game.unit, 0, Game.viewportWidth - Game.unit, Game.viewportHeight );
-            Game.ctx.putImageData( imageData, 0, 0 );
-            Game.ctx.clearRect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
-
-            // Bring in next column
-            Game.ctx.save();
-            Game.ctx.beginPath();
-            Game.ctx.rect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
-            Game.ctx.clip();
-            Game.ctx.closePath();
-
-            Game.ctx.fillStyle = '#000';
-            Game.ctx.fillRect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
-
-            for ( i = 0; i < Game.drawLayers.length; i++ ) {
-                for ( j = 0; j < Game.drawLayers[i].length; j++ ) {
-                    Game.drawLayers[i][j].render();
-                }
-            }
-
-            Game.ctx.restore();
-        }
+        var i, j, imageData,
+            invalidLeft, invalidTop,
+            invalidWidth, invalidHeight;
 
         if ( Game.invalidRect ) {
-            var invalidLeft = Game.invalidRect.left - Game.viewportOffset,
-                invalidTop = Game.invalidRect.top,
-                invalidWidth = Game.invalidRect.right - Game.viewportOffset - invalidLeft,
-                invalidHeight = Game.invalidRect.bottom - invalidTop;
+            invalidLeft = Game.invalidRect.left - Game.viewportOffset;
+            invalidTop = Game.invalidRect.top;
+            invalidWidth = Game.invalidRect.right - Game.viewportOffset - invalidLeft;
+            invalidHeight = Game.invalidRect.bottom - invalidTop;
+
+            // Handle viewport shift
+            if ( Game.viewportShiftLeft ) {
+                Game.viewportShiftLeft = false;
+                // Blit pixels
+                imageData = Game.ctx.getImageData( Game.unit, 0, Game.viewportWidth - Game.unit, Game.viewportHeight );
+                Game.ctx.putImageData( imageData, 0, 0 );
+                Game.ctx.clearRect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
+
+                invalidTop = 0;
+                invalidWidth = Game.viewportWidth - invalidLeft;
+                invalidHeight = Game.viewportHeight;
+            } else if ( Game.viewportShiftRight ) {
+                Game.viewportShiftRight = false;
+
+                // Blit pixels
+                imageData = Game.ctx.getImageData( 0, 0, Game.viewportWidth - Game.unit, Game.viewportHeight );
+                Game.ctx.putImageData( imageData, Game.unit, 0 );
+                Game.ctx.clearRect( 0, 0, Game.unit, Game.viewportHeight );
+
+                invalidLeft = 0;
+                invalidTop = 0;
+                invalidWidth = Game.invalidRect.right;
+                invalidHeight = Game.viewportHeight;
+            }
 
             if ( Game.debugInvalidRect ) {
                 Game.displayInvalidRect();
