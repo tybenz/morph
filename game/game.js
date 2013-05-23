@@ -30,7 +30,9 @@ var Game = {
         //Initialize extra sprites
         Game.extraSprites.init();
 
-        Game.resize();
+        if ( !Game.skipResize ) {
+            Game.resize();
+        }
 
         //Initialize drawLayers
         Game.initDrawLayers();

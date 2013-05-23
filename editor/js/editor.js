@@ -393,12 +393,15 @@ Editor = {
         window.open( 'data:text/json,' + encodeURIComponent( json ) );
     },
     preview: function() {
+        Editor.$canvas.hide();
         Game.Levels.push( new Game.Level( this.level ) );
+        Game.skipResize = true;
         Game.init( Game.Levels.length - 1 );
     },
     stopPreview: function() {
         Game.stop();
         Game.Levels.pop();
         Editor.$game.find( 'canvas:last' ).remove();
+        Editor.$canvas.show();
     }
 };
