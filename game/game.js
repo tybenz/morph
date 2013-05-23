@@ -308,10 +308,12 @@ var Game = {
             Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.unit * 2 );
 
             for ( i = 0; i < Game.score.maxHealth; i++ ) {
-                if ( i < Game.score.health ) {
-                    Game.ctx.drawImage( Game.extraSprites.sprites.heart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
-                } else {
-                    Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, i * Game.unit + Game.unit / 2, Game.unit / 2 );
+                if ( i % 2 == 0 && i < Game.score.health ) {
+                    Game.ctx.drawImage( Game.extraSprites.sprites.heart, Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                } else if ( i == Game.score.health && i % 2 == 1 ) {
+                    Game.ctx.drawImage( Game.extraSprites.sprites.halfHeart, Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                } else if ( i % 2 == 0 ) {
+                    Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
                 }
             }
 
@@ -414,6 +416,17 @@ var Game = {
                 [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
                 [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
             ],
+            halfHeart: [
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "transparent", "#ffffff", "#ffffff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ffffff", "#ffffff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ffffff", "#ffffff", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "#ff55ff", "#ff55ff", "#ffffff", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "#ff55ff", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+            ],
             emptyHeart: [
                 [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
                 [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
@@ -429,8 +442,8 @@ var Game = {
     },
     //Score to represent game logic
     score: {
-        health: 5,
-        maxHealth: 5,
+        health: 10,
+        maxHealth: 10,
         decrementHealth: function() {
             if ( this.health > 0 ) {
                 this.health--;
