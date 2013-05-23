@@ -9,6 +9,8 @@ Editor = {
     $sprites: $( '#sprites' ),
     $tools: $( '#tools' ),
     $rectangle: $( '#rectangle-tool' ),
+    $addColumn: $( '#add-column' ),
+    $removeColumn: $( '#remove-column' ),
     totalImages: 0,
     activeTool: 'fill',
     init: function() {
@@ -46,6 +48,10 @@ Editor = {
         this.$sprites.on( 'click', '.sprite', Editor.selectSprite );
 
         this.$tools.on( 'click', '.tool', Editor.selectTool );
+
+        this.$addColumn.on( 'click', Editor.addColumn );
+
+        this.$removeColumn.on( 'click', Editor.removeColumn );
 
         $( document ).on( 'keydown', function( evt ) {
             if ( evt.keyCode == 83 && ( evt.ctrlKey || evt.metaKey ) ) {
@@ -145,7 +151,7 @@ Editor = {
         }
     },
     dropSprite: function( dt, dx, dy ) {
-        x = Math.floor( ( dx + dt.startX - Editor.$game.offset().left ) / Game.unit );
+        x = Math.floor( ( dx + dt.startX - Editor.$game.offset().left + Editor.$game.scrollLeft() ) / Game.unit );
         y = Math.floor( ( dy + dt.startY - Editor.$game.offset().top ) / Game.unit );
 
         if ( x >= 0 && x < Editor.width && y >= 0 && y < Editor.height ) {
@@ -188,6 +194,26 @@ Editor = {
                 }
             }
         }
+    },
+    addColumn: function() {
+        var i;
+        for ( i in Editor.level ) {
+            Editor.level[i].push( 'blank' );
+        }
+        Editor.width++;
+
+        Editor.canvas.width = Editor.width * Game.unit;
+        Editor.drawLevel();
+    },
+    removeColumn: function() {
+        var i;
+        for ( i in Editor.level ) {
+            Editor.level[i].pop();
+        }
+        Editor.width--;
+
+        Editor.canvas.width = Editor.width * Game.unit;
+        Editor.drawLevel();
     },
     initSprites: function () {
         var gameObjects = [

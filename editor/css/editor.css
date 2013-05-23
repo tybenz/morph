@@ -1,12 +1,30 @@
+#game-wrapper {
+  overflow: hidden;
+  width: 900px;
+  height: 465px;
+  margin: 0 auto;
+  position: relative;
+  top: -225px;
+  box-shadow: 0 0 0 1px #0f0;
+}
+
+#game {
+  box-shadow: none;
+  top: 0;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding-bottom: 15px;
+}
+
 #panel {
-  height: 420px;
+  height: 435px;
   width: 58px;
   padding: 15px;
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-left: -580px;
-  margin-top: -225px;
+  margin-left: -550px;
+  margin-top: -226px;
   border: 1px solid #0f0;
 }
 
@@ -45,4 +63,21 @@
   border: 2px solid white;
   display: none;
   position: absolute;
+}
+
+#add-column, #remove-column {
+  border: 1px solid white;
+  padding: 3px 8px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  margin-top: -226px;
+  margin-right: -485px;
+  font-family: monospace;
+  font-size: 1.3em;
+}
+
+#remove-column {
+  margin-top: -190px;
 }
