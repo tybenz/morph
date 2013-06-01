@@ -34,7 +34,7 @@ Game.Entity.Enemy = Game.Entity.extend({
 
         var move = this.moves[ this.activeMove ];
 
-        if ( ( Date.now() - this.lastMove ) > move.delta ) {
+        if ( this.state != 'dying' && ( Date.now() - this.lastMove ) > move.delta ) {
             this.moved = false;
             if ( move.until.call( this ) ) {
                 this.activeMove++;
@@ -48,7 +48,7 @@ Game.Entity.Enemy = Game.Entity.extend({
         }
     },
     collideWith: function( entity, collisionTypes ) {
-        if ( ( entity.type == 'Interactable.Rock' && collisionTypes )
+        if ( ( entity.type == 'Interactable.Rock' && ( entity.velocity.x > 0 || entity.velocity.y > 0 ) && collisionTypes )
             || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.pos.y < this.pos.y ) ) {
 
             this.state = 'dying';
@@ -559,16 +559,16 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
         this.moves = [
             {
                 delta: 500,
-                move: function() { this.pos.x += Game.unit; this.moved = true; },
+                move: function() { this.pos.x -= Game.unit; this.moved = true; },
                 until: function() {
-                    return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' );
+                    return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' );
                 }
             },
             {
                 delta: 500,
-                move: function() { this.pos.x -= Game.unit; this.moved = true; },
+                move: function() { this.pos.x += Game.unit; this.moved = true; },
                 until: function() {
-                    return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' );
+                    return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' );
                 }
             }
         ];
