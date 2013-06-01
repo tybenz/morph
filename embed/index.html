@@ -39,10 +39,10 @@ Game.viewportTileHeight = 20;
 Game.viewportWidth = Game.viewportTileWidth * Game.unit;
 Game.viewportHeight = Game.viewportTileHeight * Game.unit;
 Game.resize();
-var level = 1;
+var level = 'Embed';
 if ( location.toString().match(/level\=mini/) ) {
   Game.unit = 90;
-  level = 2;
+  level = 'Mini';
   Game.viewportTileWidth = 8;
   Game.viewportTileHeight = 4;
   Game.viewportWidth = Game.viewportTileWidth * Game.unit;

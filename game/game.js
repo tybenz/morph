@@ -90,6 +90,10 @@ var Game = {
         Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     update: function( timeDiff ) {
+        if ( Game.hero.pos.x >= ( Game.currentLevel.width - Game.hero.width ) && Game.currentLevel.next ) {
+            Game.currentLevel.loadNextLevel();
+            return;
+        }
 	
         var entities = Game.currentLevel.entities;
 
