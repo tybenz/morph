@@ -28,6 +28,25 @@ Game.Entity.Enemy = Game.Entity.extend({
     },
     actions: [],
     sequence: [], //sequence of moves/actions
+    performNextMove: function() {
+        this.activeMove = this.activeMove || 0;
+        this.lastMove = this.lastMove || Date.now();
+
+        var move = this.moves[ this.activeMove ];
+
+        if ( ( Date.now() - this.lastMove ) > move.delta ) {
+            this.moved = false;
+            if ( move.until.call( this ) ) {
+                this.activeMove++;
+                this.activeMove %= this.moves.length;
+            }
+
+            move = this.moves[ this.activeMove ];
+
+            move.move.call( this );
+            this.lastMove = Date.now();
+        }
+    },
     collideWith: function( entity, collisionTypes ) {
         if ( ( entity.type == 'Interactable.Rock' && collisionTypes )
             || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.pos.y < this.pos.y ) ) {
@@ -537,13 +556,30 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
                 times: 'infinite'
             }
         };
+        this.moves = [
+            {
+                delta: 500,
+                move: function() { this.pos.x += Game.unit; this.moved = true; },
+                until: function() {
+                    return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' );
+                }
+            },
+            {
+                delta: 500,
+                move: function() { this.pos.x -= Game.unit; this.moved = true; },
+                until: function() {
+                    return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' );
+                }
+            }
+        ];
     },
     generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
         if ( this.activeSprite == 11 ) {
             this.visible = false;
             Game.destroyEntity( this );
         }
-        this._super( timeDiff );
+        this.performNextMove();
     },
     bitmaps: [
         [

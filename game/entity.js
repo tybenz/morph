@@ -277,6 +277,21 @@ Game.Entity = Class.extend({
         }
         return false;
     },
+    adjacentToLevelEdge: function( direction ) {
+        switch( direction ) {
+            case 'left':
+                return this.pos.x <= 0;
+            case 'right':
+                return ( this.pos.x + this.width ) >= Game.currentLevel.width;
+            case 'top':
+                return this.pos.y <= 0;
+                break;
+            case 'bottom':
+                return ( this.pos.y + this.height ) >= Game.currentLevel.height;
+                break;
+            default: return false;
+        }
+    },
     //Collision handler -> to be extended by derived entities
     //By default entities stop moving when they hit land
     collideWith: function( entity, collisionTypes ) {

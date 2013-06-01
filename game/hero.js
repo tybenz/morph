@@ -20,13 +20,13 @@ Game.Entity.Hero = Game.Entity.extend({
     },
     right: function() {
         this.direction = 'right';
-        if ( !this.adjacentTo( 'Terrain.Land', 'right' ) ) {
+        if ( !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
             this.pos.x += Game.unit;
         }
     },
     left: function() {
         this.direction = 'left';
-        if ( !this.adjacentTo( 'Terrain.Land', 'left' ) ) {
+        if ( !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
             this.pos.x -= Game.unit;
         }
     },
