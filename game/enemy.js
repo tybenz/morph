@@ -1,13 +1,21 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-var MONSTER_OPEN = 0,
-    MONSTER_CLOSING = 1,
-    MONSTER_GNASHED = 2,
-    MONSTER_CLOSED = 3,
-    WINGS_UP = 0,
-    WINGS_DOWN = 1,
-    TURRET_LEFT = 0,
-    TURRET_RIGHT = 1;
+TURRET_INTERVAL = 1000;
+TURRET_SPEED = -1;
+QUICK_TURRET_INTERVAL = 800;
+QUICK_TURRET_SPEED = -0.8;
+SMART_TURRET_INTERVAL = 400;
+SMART_TURRET_SPEED = -0.6;
+
+
+MONSTER_OPEN = 0;
+MONSTER_CLOSING = 1;
+MONSTER_GNASHED = 2;
+MONSTER_CLOSED = 3;
+WINGS_UP = 0;
+WINGS_DOWN = 1;
+TURRET_LEFT = 0;
+TURRET_RIGHT = 1;
 
 Game.Entity.Enemy = Game.Entity.extend({
     type: 'Enemy',
@@ -28,6 +36,12 @@ Game.Entity.Enemy = Game.Entity.extend({
     },
     actions: [],
     sequence: [], //sequence of moves/actions
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+        if ( this.moves ) {
+            this.performNextMove();
+        }
+    },
     performNextMove: function() {
         this.activeMove = this.activeMove || 0;
         this.lastMove = this.lastMove || Date.now();
@@ -59,8 +73,8 @@ Game.Entity.Enemy = Game.Entity.extend({
 
 Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
     type: 'Enemy.Turret',
-    shotInterval: 1000,
-    bulletSpeed: -0.5,
+    shotInterval: TURRET_INTERVAL,
+    bulletSpeed: TURRET_SPEED,
     init: function( x, y ) {
         this._super( x, y );
         this.lastShot = Date.now();
@@ -71,6 +85,13 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
                 times: 1
             }
         };
+        this.moves = [
+            {
+                delta: this.shotInterval,
+                move: this.__proto__.attack,
+                until: function() { return true; }
+            }
+        ];
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
@@ -78,18 +99,18 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
         if ( this.activeSprite == 9 ) {
             this.visible = false;
             Game.destroyEntity( this );
-        } else {
-            this.attack();
         }
     },
     attack: function() {
-        this.shooting = true;
-        if ( this.state == 'dying' ) {
-            this.shooting = false;
-        } else {
-            if ( this.shooting && ( Date.now() - this.lastShot ) > this.shotInterval ) {
-                this.lastShot = Date.now();
-                this.shoot();
+        if ( this.state != 'dying' ) {
+            this.shooting = true;
+            if ( this.state == 'dying' ) {
+                this.shooting = false;
+            } else {
+                if ( this.shooting && ( Date.now() - this.lastShot ) > this.shotInterval ) {
+                    this.lastShot = Date.now();
+                    this.shoot();
+                }
             }
         }
     },
@@ -240,8 +261,8 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
 });
 
 Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
-    shotInterval: 500,
-    bulletSpeed: -0.8,
+    shotInterval: QUICK_TURRET_INTERVAL,
+    bulletSpeed: QUICK_TURRET_SPEED,
     attack: function( timeDiff ) {
         if ( this.state != 'dying' ) {
             if ( Math.abs( Game.hero.pos.y - this.pos.y ) < Game.unit * 2 ) {
@@ -389,6 +410,8 @@ Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
 });
 
 Game.Entity.Enemy.Turret.Smart = Game.Entity.Enemy.Turret.extend({
+    shotInterval: SMART_TURRET_INTERVAL,
+    bulletSpeed: SMART_TURRET_SPEED,
     attack: function( timeDiff ) {
         if ( this.state != 'dying' ) {
             this.lockTarget();
@@ -579,7 +602,6 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
             this.visible = false;
             Game.destroyEntity( this );
         }
-        this.performNextMove();
     },
     bitmaps: [
         [
