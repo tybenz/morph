@@ -155,6 +155,10 @@ var Game = {
 
         for ( var i = 0; i < entities.length; i++ ) {
             var ent = entities[ i ];
+            if ( Game.still ) {
+                ent.pos.x = ent.oldPos.x;
+                ent.pos.y = ent.oldPos.y;
+            }
             if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated ) {
                 ent.invalidateRect();
             }

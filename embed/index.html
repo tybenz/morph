@@ -51,6 +51,9 @@ if ( location.toString().match(/level\=mini/) ) {
   Game.keysLocked = true;
   Game.resize();
 }
+if ( location.toString().match( /still=true/ ) ) {
+  Game.still = true;
+}
 $(function() {
   $( '.start-game' ).click( function( evt ) {
     evt.preventDefault();
