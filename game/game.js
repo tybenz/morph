@@ -30,6 +30,10 @@ var Game = {
         //Initialize extra sprites
         Game.extraSprites.init();
 
+        if ( Game.clickStep ) {
+            document.onclick = Game.nextGameFrame;
+        }
+
         if ( !Game.skipResize ) {
             Game.resize();
         }
@@ -81,13 +85,20 @@ var Game = {
     },
     loop: function( timestamp ) {
         //We update and render each loop
+        var timeDiff;
         if ( Game.lastUpdate ) {
-            var timeDiff = timestamp - Game.lastUpdate;
+            if ( !Game.clickStep ) {
+                timeDiff = timestamp - Game.lastUpdate;
+            } else {
+                timeDiff = 300;
+            }
             Game.update( timeDiff );
             Game.render( timeDiff );
         }
         Game.lastUpdate = timestamp;
-        Game.requestID = requestAnimationFrame( Game.loop ); 
+        if ( !Game.clickStep ) {
+            Game.requestID = requestAnimationFrame( Game.loop ); 
+        }
     },
     update: function( timeDiff ) {
         if ( Game.hero.pos.x >= ( Game.currentLevel.width - Game.hero.width ) && Game.currentLevel.next ) {
@@ -475,6 +486,9 @@ var Game = {
         $game.width( Game.viewportWidth )
         $game.height( Game.viewportHeight );
         $game.css( 'top', '-' + Game.viewportHeight / 2 + 'px' );
+    },
+    nextGameFrame: function() {
+        Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     debugInvalidRect: false
 };

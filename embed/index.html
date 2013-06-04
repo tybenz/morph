@@ -54,6 +54,12 @@ if ( location.toString().match(/level\=mini/) ) {
 if ( location.toString().match( /still=true/ ) ) {
   Game.still = true;
 }
+if ( location.toString().match( /clickstep=true/ ) ) {
+  Game.clickStep = true;
+}
+if ( location.toString().match( /debugrect=true/ ) ) {
+  Game.debugInvalidRect = true;
+}
 $(function() {
   $( '.start-game' ).click( function( evt ) {
     evt.preventDefault();
