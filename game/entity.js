@@ -197,6 +197,7 @@ Game.Entity = Class.extend({
         if ( count ) {
             return returnCollisions;
         }
+
         return false;
     },
     getAdjacents: function( entity ) {
