@@ -101,9 +101,15 @@ Game.Entity = Class.extend({
         }
 
         //Change position based on velocity
-        // Maybe x's position change should go here too.
-        var positionChange = this.velocity.multiply(timeDiff)
+        var positionChange = this.velocity.multiply( timeDiff );
         this.pos = this.pos.add( positionChange );
+        if ( this.type == 'Interactable.Bullet' ) {
+            /*
+                OLD 468 324 entity.js:107
+                VELOCITY -0.6 0.13636363636363635 entity.js:108
+                POS 458.336400000524 326.19627272715366 
+            */
+        }
     },
     invalidateRect: function() {
         var newX = this.pos.x,
@@ -145,8 +151,6 @@ Game.Entity = Class.extend({
                 right: Math.round( entity.pos.x + entity.width )
             },
 
-            COLLISION_BUFFER = 5,
-
             betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) ||
                 ( src.right < target.right && src.right > target.left ),
             betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) ||
@@ -173,16 +177,6 @@ Game.Entity = Class.extend({
             // this is NOT moving and it gets hit? The offending entity must be able to handle 
             // the behavior of this too!
             collisions = {
-                /*
-                rightEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) &&
-                    Math.abs( target.left - src.right ) < COLLISION_BUFFER ) || skipRight,
-                leftEdge: ( ( betweenTopAndBottom || topAndBottomAligned ) &&
-                    Math.abs( target.right - src.left ) < COLLISION_BUFFER ) || skipLeft,
-                topEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) &&
-                    Math.abs( target.bottom - src.top ) < COLLISION_BUFFER ) || skipUp,
-                bottomEdge: ( ( betweenLeftAndRight || leftAndRightAligned ) &&
-                    Math.abs( target.top - src.bottom ) < COLLISION_BUFFER ) || skipDown,
-                */
                 exact: leftAndRightAligned && topAndBottomAligned,
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
                 overlappingVertical: leftAndRightAligned && ( betweenTopAndBottom || skipDown || skipUp ),

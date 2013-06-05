@@ -34,8 +34,6 @@ Game.Entity.Enemy = Game.Entity.extend({
             //down for plane and jellyfish
         }
     },
-    actions: [],
-    sequence: [], //sequence of moves/actions
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
         if ( this.moves ) {
@@ -88,7 +86,7 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
         this.moves = [
             {
                 delta: this.shotInterval,
-                move: this.__proto__.attack,
+                move: this.__proto__.shoot,
                 until: function() { return true; }
             }
         ];
@@ -99,19 +97,6 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
         if ( this.activeSprite == 9 ) {
             this.visible = false;
             Game.destroyEntity( this );
-        }
-    },
-    attack: function() {
-        if ( this.state != 'dying' ) {
-            this.shooting = true;
-            if ( this.state == 'dying' ) {
-                this.shooting = false;
-            } else {
-                if ( this.shooting && ( Date.now() - this.lastShot ) > this.shotInterval ) {
-                    this.lastShot = Date.now();
-                    this.shoot();
-                }
-            }
         }
     },
     lockTarget: function() {
@@ -263,21 +248,8 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
 Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
     shotInterval: QUICK_TURRET_INTERVAL,
     bulletSpeed: QUICK_TURRET_SPEED,
-    attack: function( timeDiff ) {
-        if ( this.state != 'dying' ) {
-            if ( Math.abs( Game.hero.pos.y - this.pos.y ) < Game.unit * 2 ) {
-                this.lockTarget();
-                this.shooting = true;
-            } else {
-                this.shooting = false;
-            }
-            if ( this.shooting && ( Date.now() - this.lastShot ) > this.shotInterval ) {
-                this.lastShot = Date.now();
-                this.shoot();
-            }
-        }
-    },
     shoot: function() {
+        this.lockTarget();
         if ( this.direction == 'left' ) {
             this.createBullet( this.pos.x, this.pos.y, this.bulletSpeed, 0 );
         } else {
@@ -412,16 +384,9 @@ Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
 Game.Entity.Enemy.Turret.Smart = Game.Entity.Enemy.Turret.extend({
     shotInterval: SMART_TURRET_INTERVAL,
     bulletSpeed: SMART_TURRET_SPEED,
-    attack: function( timeDiff ) {
-        if ( this.state != 'dying' ) {
-            this.lockTarget();
-            if ( ( Date.now() - this.lastShot ) > this.shotInterval ) {
-                this.lastShot = Date.now();
-                this.shoot();
-            }
-        }
-    },
     shoot: function() {
+        this.lockTarget();
+
         var heroX = Game.hero.pos.x,
             heroY = Game.hero.pos.y,
             myX = this.pos.x,
