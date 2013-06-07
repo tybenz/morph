@@ -850,3 +850,185 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
         ]
     ]
 });
+
+var SPIDER_FALLING = 8,
+    SPIDER_WALKING_1 = 0,
+    SPIDER_WALKING_2 = 1,
+    SPIDER_WALKING_3 = 2,
+    SPIDER_WALKING_4 = 3,
+    SPIDER_WALKING_5 = 4,
+    SPIDER_WALKING_6 = 5,
+    SPIDER_WALKING_7 = 6,
+    SPIDER_WALKING_8 = 7;
+
+Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
+    ignoreGravity: true,
+    init: function( x, y ) {
+        this._super( x, y );
+        this.animationStates = {
+            'walking_left': {
+                delta: 180,
+                sequence: [ SPIDER_WALKING_1, SPIDER_WALKING_2, SPIDER_WALKING_3, SPIDER_WALKING_4 ],
+                times: 'infinite'
+            },
+            'walking_right': {
+                delta: 180,
+                sequence: [ SPIDER_WALKING_5, SPIDER_WALKING_6, SPIDER_WALKING_7, SPIDER_WALKING_8 ],
+                times: 'infinite'
+            },
+            'falling': {
+                delta: 1000,
+                sequence: [ SPIDER_FALLING ],
+                times: 'infinite'
+            }
+        }
+        this.moves = [
+            {
+                delta: 0,
+                move: function() {
+                    this.state = 'walking_left';
+                    this.velocity.x = -0.06;
+                },
+                until: function() {
+                    var land = this.adjacentTo( 'Terrain.Land', 'top' ).entity,
+                        edgePiece;
+                    if ( land ) {
+                        edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentToLevelEdge( 'left' );
+                        if ( edgePiece && this.pos.x <= land.pos.x ) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+            },
+            {
+                delta: 0,
+                move: function() {
+                    this.state = 'walking_right';
+                    this.velocity.x = 0.06;
+                },
+                until: function() {
+                    var land = this.adjacentTo( 'Terrain.Land', 'top' ).entity,
+                        edgePiece;
+                    if ( land ) {
+                        edgePiece = !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentToLevelEdge( 'right' );
+                        if ( edgePiece && this.pos.x >= land.pos.x ) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        ];
+    },
+    generateNextCoords: function( timeDiff ) {
+        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Game.unit ) {
+            this.state = 'falling';
+            this.ignoreGravity = false;
+        }
+        this._super( timeDiff );
+    },
+    bitmaps: [
+        [
+            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
+            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "transparent", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
+            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "#ff0000", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
+            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
+            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "rgba(0,0,0,0)", "#ff0000", "transparent", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#ff0000" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
+            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ],
+        [
+            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent" ],
+            [ "#ff0000", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "#ff0000" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
+            [ "#ff0000", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "#ff0000" ],
+            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent" ]
+        ]
+    ]
+});

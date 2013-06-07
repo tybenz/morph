@@ -263,7 +263,7 @@ Game.Entity = Class.extend({
                 directions = this.getAdjacents( entity );
                 if ( direction ) {
                     if ( directions && direction in directions ) {
-                        return true;
+                        return directions;
                     }
                 } else if ( directions ) {
                     return directions;
