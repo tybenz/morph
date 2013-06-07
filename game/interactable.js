@@ -107,3 +107,28 @@ Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
         ]
     ]
 });
+
+Game.Entity.Interactable.Egg = Game.Entity.Interactable.extend({
+    type: 'Interactable.Egg',
+    width: 6,
+    height: 8,
+    drawLayer: 0,
+    collideWith: function( entity, collisionTypes ) {
+        if ( entity.type == 'Terrain.Land' ) {
+            Game.destroyEntity( this );
+        }
+    },
+    bitmaps: [
+        [
+            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+        ]
+    ]
+});

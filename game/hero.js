@@ -88,9 +88,10 @@ Game.Entity.Hero = Game.Entity.extend({
                 break;
             default: break;
         }
-        if ( ( entityType.indexOf( 'Enemy' ) == 0 || entityType == 'Interactable.Bullet' ) && entity.state != 'dying'
-            && this.takingDamage != 'locked' ) {
 
+        var hit = entityType.indexOf( 'Enemy' ) == 0 || entityType == 'Interactable.Bullet' || entityType == 'Interactable.Egg';
+
+        if ( hit && entity.state != 'dying' && this.takingDamage != 'locked' ) {
             this.takingDamage = true;
         }
         this._super( entity, collisionTypes );

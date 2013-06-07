@@ -113,6 +113,7 @@ var Game = {
             drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
             for ( var j = entities.length - 1; j >= 0; j-- ) {
                 if ( entities[j] == Game.toBeDestroyed[i] ) {
+                    entities[j].invalidateRect();
                     entities.splice( j, 1 ); 
                 }
             }

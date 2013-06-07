@@ -725,6 +725,27 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
                 times: 1
             }
         };
+        this.moves = [
+            {
+                delta: 500,
+                move: this.__proto__.dropEgg,
+                until: function() { return false }
+            }
+        ];
+    },
+    dropEgg: function() {
+        // TODO - calculate when to lay the egg based on vertical distance form hero
+        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < Game.unit * 4 ) {
+            var eggWidth = Game.Entity.Interactable.Egg.prototype.width,
+                x = this.pos.x + ( Game.unit - eggWidth ) / 2,
+                y = this.pos.y + this.height,
+                xVelocity = this.velocity.x,
+                yVelocity = 0,
+                egg = new Game.Entity.Interactable.Egg( x, y );
+
+            Game.currentLevel.entities.push( egg );
+            egg.velocity = new Game.Vector( xVelocity, yVelocity );
+        }
     },
     generateNextCoords: function( timeDiff ) {
         if ( this.state == 'dying' ) {
