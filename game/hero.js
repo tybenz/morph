@@ -93,7 +93,7 @@ Game.Entity.Hero = Game.Entity.extend({
                     this.disableJump = false;
                 }
                 break;
-            case 'Interactable.Coin':
+            case 'Interactable.Heart':
                 if ( 'exact' in collisionTypes && entity.visible ) {
                     entity.visible = false;
                     Game.score.incrementHealth();

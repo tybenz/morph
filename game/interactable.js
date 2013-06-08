@@ -58,6 +58,12 @@ Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
     ignoreGravity: true
 });
 
+Game.Entity.Interactable.Heart = Game.Entity.Interactable.extend({
+    type: 'Interactable.Heart',
+    initialSprite: 'heart',
+    ignoreGravity: true
+});
+
 Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
     type: 'Interactable.Bullet',
     initialSprite: 'bullet',
