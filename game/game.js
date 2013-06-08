@@ -91,6 +91,9 @@ var Game = {
         //Start event listeners and main loop
         addEventListener( 'keydown', Game.keyDownListener, false );
         addEventListener( 'keyup', Game.keyUpListener, false );
+        if ( Modernizr.touch ) {
+            Game.initTouchButtons();
+        }
 
         //Background
         Game.ctx.fillStyle = '#000';
@@ -108,6 +111,106 @@ var Game = {
         Game.lastUpdate = null;
         //Start the actual loop
         Game.requestID = requestAnimationFrame( Game.loop ); 
+    },
+    initTouchButtons: function() {
+        $( 'body' ).addClass( 'touch' );
+
+        //Prepare touch buttons
+        Game.$leftButton = $( 'button.direction.left' );
+        Game.$upButton = $( 'button.direction.up' );
+        Game.$rightButton = $( 'button.direction.right' );
+        Game.$actionButton = $( 'button.action' );
+        Game.$pauseButton = $( 'button.pause' );
+
+        // right button
+        Game.$rightButton.on( 'vmousedown', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 39,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyDownListener( evt );
+        });
+        Game.$rightButton.on( 'vmouseup', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 39,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyUpListener( evt );
+        });
+
+        // left button
+        Game.$leftButton.on( 'vmousedown', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 37,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyDownListener( evt );
+        });
+        Game.$leftButton.on( 'vmouseup', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 37,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyUpListener( evt );
+        });
+
+        // up button
+        Game.$upButton.on( 'vmousedown', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 38,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyDownListener( evt );
+        });
+        Game.$upButton.on( 'vmouseup', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 38,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyUpListener( evt );
+        });
+
+        // pause button
+        Game.$pauseButton.on( 'vmousedown', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 80,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyDownListener( evt );
+        });
+        Game.$pauseButton.on( 'vmouseup', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 80,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyUpListener( evt );
+        });
+
+        // action button
+        Game.$actionButton.on( 'vmousedown', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 32,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyDownListener( evt );
+        });
+        Game.$actionButton.on( 'vmouseup', function( evt ) {
+            evt.preventDefault();
+            var evt = {
+                keyCode: 32,
+                preventDefault: function( evt ) {}
+            };
+            Game.keyUpListener( evt );
+        });
     },
     loop: function( timestamp ) {
         //We update and render each loop

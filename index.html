@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" href="img/favicon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/morphdev.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/morphdev.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/morphdev.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/morphdev.png" />
+
     <title>Morph</title>
 
     <link rel="stylesheet" type="text/css" href="css/app.css" />
@@ -13,9 +21,21 @@
 <div class="buffer"></div>
 <div id="game">
 </div>
+
+<div class="left-controls">
+  <button class="action"></button>
+  <button class="direction up"></button>
+  <button class="pause"></button>
+</div>
+<div class="right-controls">
+  <button class="direction left"></button>
+  <button class="direction right"></button>
+</div>
     
 </body>
 <script type="text/javascript" charset="utf-8" src="lib/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="lib/vmouse.js"></script>
+<script type="text/javascript" charset="utf-8" src="lib/modernizr.js"></script>
 <script type="text/javascript" charset="utf-8" src="lib/inherit.js"></script>
 <script type="text/javascript" charset="utf-8" src="game/utils.js"></script>
 <script type="text/javascript" charset="utf-8" src="game/game.js"></script>
@@ -31,6 +51,7 @@
 <script type="text/javascript" charset="utf-8" src="game/inventory.js"></script>
 <script type="text/javascript" charset="utf-8">
 $(function() {
+    Game.skipResize = true;
     Game.init( 'intro' );
 });
 </script>

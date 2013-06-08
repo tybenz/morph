@@ -34,6 +34,10 @@ a {
   box-shadow: 0 0 0 1px #0f0;
 }
 
+body.touch #game {
+  top: -300px;
+}
+
 #game canvas {
   position: absolute;
   top: 0;
@@ -58,4 +62,50 @@ a {
   height: 100px;
   position: relative;
   top: -50px;
+}
+
+.left-controls, .right-controls {
+  display: none;
+  position: absolute;
+  bottom: 40px;
+}
+
+body.touch .left-controls, body.touch .right-controls {
+  display: block;
+}
+
+.left-controls {
+  left: 40px;
+}
+
+.right-controls {
+  right: 40px;
+}
+
+button {
+  width: 90px;
+  height: 90px;
+  background-size: 90px 90px;
+  border: none;
+  background-color: transparent;
+}
+
+button.direction.left {
+  background-image: url(../img/button-left.png);
+}
+
+button.direction.up {
+  background-image: url(../img/button-up.png);
+}
+
+button.direction.right {
+  background-image: url(../img/button-right.png);
+}
+
+button.action {
+  background-image: url(../img/button-action.png);
+}
+
+button.pause {
+  background-image: url(../img/button-pause.png);
 }
