@@ -87,26 +87,28 @@ var Game = {
         ];
     },
     startLoop: function() {
-        //Start event listeners and main loop
-        addEventListener( 'keydown', Game.keyDownListener, false );
-        addEventListener( 'keyup', Game.keyUpListener, false );
-
-        //Background
-        Game.ctx.fillStyle = '#000';
-        Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
-
-        // Initial render
-        // Make sure all entities get rendered on first render.
-        Game.invalidateRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
-        for ( var i in Game.currentLevel.entities ) {
-            Game.currentLevel.entities[i].render();
+        if ( !Game.Editing ) {
+            //Start event listeners and main loop
+            addEventListener( 'keydown', Game.keyDownListener, false );
+            addEventListener( 'keyup', Game.keyUpListener, false );
+    
+            //Background
+            Game.ctx.fillStyle = '#000';
+            Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
+    
+            // Initial render
+            // Make sure all entities get rendered on first render.
+            Game.invalidateRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
+            for ( var i in Game.currentLevel.entities ) {
+                Game.currentLevel.entities[i].render();
+            }
+    
+            // Set last update to null so a pause/unpause doesn't
+            // result in a jump on the screen
+            Game.lastUpdate = null;
+            //Start the actual loop
+            Game.requestID = requestAnimationFrame( Game.loop ); 
         }
-
-        // Set last update to null so a pause/unpause doesn't
-        // result in a jump on the screen
-        Game.lastUpdate = null;
-        //Start the actual loop
-        Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     loop: function( timestamp ) {
         //We update and render each loop

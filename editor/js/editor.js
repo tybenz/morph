@@ -1,5 +1,7 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+Game.Editing = true;
+
 Editor = {
     width: 50,
     height: 25,
@@ -216,59 +218,47 @@ Editor = {
         Editor.drawLevel();
     },
     initSprites: function () {
+        Game.initSprites();
+
         var gameObjects = [
                 Game.Entity.Terrain,
-                Game.Entity.Hero.Man,
+                Game.Entity.Hero,
                 Game.Entity.Enemy,
-                Game.Entity.Interactable
+                Game.Entity.Interactable.Rock,
+                Game.Entity.Machine
             ],
             i, j, k,
-            obj, bitmap, type,
+            obj, sprite, type,
             tempCanvas, tempContext,
-            dataURL, currentSprite,
+            currentSprite,
             rectSize = Game.unit / 9;
 
         for ( i in gameObjects ) {
             obj = gameObjects[i];
-            if ( obj.prototype && obj.prototype.bitmaps ) {
-                if ( obj.prototype.bitmaps[0] ) {
-                    bitmap = obj.prototype.bitmaps[0];
-                    type = obj.prototype.type.toLowerCase();
-                    this.bitmaps[ type ] = bitmap;
-                }
+            sprite = obj.prototype ? obj.prototype.initialSprite : null;
+            if ( sprite ) {
+                type = obj.prototype.type.toLowerCase();
+                this.sprites[ type ] = Game.Sprites[ sprite ];
+                this.$sprites.append( '<div class="sprite ' + ( type == 'terrain.land' ? 'active' : '' ) + '" data-type="' + type + '"><img src="' + this.sprites[ type ].src + '"></div>' );
             }
             for ( j in obj ) {
-                if ( obj[j].prototype && obj[j].prototype.bitmaps ) {
-                    if ( obj[j].prototype.bitmaps[0] ) {
-                        bitmap = obj[j].prototype.bitmaps[0];
-                        type = obj[j].prototype.type.toLowerCase();
-                        this.bitmaps[ type ] = bitmap;
+                sprite = obj[j].prototype ? obj[j].prototype.initialSprite : null;
+                if ( sprite ) {
+                    type = obj[j].prototype.type.toLowerCase();
+                    this.sprites[ type ] = Game.Sprites[ sprite ];
+                    this.$sprites.append( '<div class="sprite ' + ( type == 'terrain.land' ? 'active' : '' ) + '" data-type="' + type + '"><img src="' + this.sprites[ type ].src + '"></div>' );
+                }
+                for ( k in obj[j] ) {
+                    sprite = obj[j][k].prototype ? obj[j][k].prototype.initialSprite : null;
+                    if ( sprite ) {
+                        type = obj[j][k].prototype.type.toLowerCase();
+                        this.sprites[ type ] = Game.Sprites[ sprite ];
+                        this.$sprites.append( '<div class="sprite ' + ( type == 'terrain.land' ? 'active' : '' ) + '" data-type="' + type + '"><img src="' + this.sprites[ type ].src + '"></div>' );
                     }
                 }
             }
         }
-
-        var i = 0;
-        for ( var j in this.bitmaps ) { i++; }
-        this.totalImages += i;
-
-        for ( i in this.bitmaps ) {
-            currentSprite = this.bitmaps[ i ];
-            tempCanvas = document.createElement( 'canvas' );
-            tempCanvas.height = currentSprite.length * rectSize;
-            tempCanvas.width = currentSprite[0].length * rectSize;
-            tempContext = tempCanvas.getContext( '2d' );
-            for ( j in currentSprite ) {
-                for ( k in currentSprite[ j ] ) {
-                    tempContext.fillStyle = currentSprite[ j ][ k ];
-                    tempContext.fillRect( k * rectSize, j * rectSize, rectSize, rectSize );
-                }
-            }
-            dataURL = tempCanvas.toDataURL( 'image/png' );
-            this.sprites[i] = this.createSprite( dataURL );
-
-            this.$sprites.append( '<div class="sprite ' + ( i == 'terrain.land' ? 'active' : '' ) + '" data-type="' + i + '"><img src="' + dataURL + '"></div>' );
-        }
+        this.initEditing();
     },
     initTools: function() {
         var i, j, k,
@@ -278,7 +268,6 @@ Editor = {
 
         i = 0;
         for ( var j in this.tools ) { i++; }
-        this.totalImages += i;
 
         for ( var i in this.tools ) {
             currentTool = this.tools[ i ];
@@ -370,18 +359,8 @@ Editor = {
     sprites: {},
     bitmaps: {},
     spriteCount: 0,
-    imageLoaded: function() {
-        if ( this.spriteCount >= this.totalImages - 1 ) {
-            this.initEditing();
-            return;
-        }
-        this.spriteCount++;
-    },
     createSprite: function( path ) {
         var image = new Image();
-        image.onload = function() {
-            Editor.imageLoaded();
-        };
         image.src = path;
         return image;
     },
