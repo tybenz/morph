@@ -230,93 +230,98 @@ var Game = {
         }
     },
     update: function( timeDiff ) {
-        if ( Game.hero.pos.x >= ( Game.currentLevel.width - Game.hero.width ) && Game.currentLevel.next ) {
-            Game.currentLevel.loadNextLevel();
-            return;
-        }
-	
-        var entities = Game.currentLevel.entities;
+        if ( Game.transforming ) {
+            Game.hero.generateNextCoords( timeDiff );
+            Game.hero.invalidateRect();
+        } else {
+            if ( Game.hero.pos.x >= ( Game.currentLevel.width - Game.hero.width ) && Game.currentLevel.next ) {
+                Game.currentLevel.loadNextLevel();
+                return;
+            }
 
-        //Destroy entities that are queued for removal
-        for ( var i = Game.toBeDestroyed.length - 1; i >= 0; i-- ) {
-            drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
-            for ( var j = entities.length - 1; j >= 0; j-- ) {
-                if ( entities[j] == Game.toBeDestroyed[i] ) {
-                    entities[j].invalidateRect();
-                    entities.splice( j, 1 ); 
+            var entities = Game.currentLevel.entities;
+
+            //Destroy entities that are queued for removal
+            for ( var i = Game.toBeDestroyed.length - 1; i >= 0; i-- ) {
+                drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
+                for ( var j = entities.length - 1; j >= 0; j-- ) {
+                    if ( entities[j] == Game.toBeDestroyed[i] ) {
+                        entities[j].invalidateRect();
+                        entities.splice( j, 1 ); 
+                    }
+                }
+                for ( var j = drawLayer.length - 1; j >= 0; j-- ) {
+                    if ( drawLayer[j] == Game.toBeDestroyed[i] ) {
+                        drawLayer.splice( j, 1 );
+                    }
+                }
+                Game.toBeDestroyed.splice( i, 1 );
+            }
+
+            // Generate each entity's next coordinates.
+            for ( var i = 0; i < entities.length; i++ ) {
+                entities[ i ].generateNextCoords( timeDiff );
+            }
+
+            ////////// Collision Detection ////////
+
+            // Keep entity list sorted on x, ascending.
+            entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
+
+            // List of entities to check entities[ i ] against
+            var activeList = new Array( entities[ 0 ] );
+
+            // List of possible collisions
+            var possibleCollisions = new Array();
+
+            for ( var i = 1; i < entities.length; i++ ) {
+                for ( var j = activeList.length - 1; j >= 0; j-- ) {
+                    if ( entities[ i ].pos.x > ( activeList[ j ].pos.x + activeList[ j ].width ) ) {
+                        // The current entity is past this activeList entity -- we know it
+                        // won't collide with the rest of the entities.
+                        activeList.splice( j, 1 );
+                        continue;		    
+                    } else if ( entities[ i ] != activeList[ j ] ) {
+                        // It's possible that there is a collision (their x coordinates are close).
+                        possibleCollisions.push( [ entities[ i ], activeList[ j ] ] );
+                    }
+                }
+                // Place the current entity into activeList.
+                activeList.push(entities[ i ]);
+            }
+
+            // Fine-grained collision detection.
+            for ( var i = 0; i < possibleCollisions.length; i++ ) {
+                var entityPair = possibleCollisions[ i ];
+                if ( entityPair[ 0 ] instanceof Game.Entity && entityPair[ 1 ] instanceof Game.Entity ) {
+                    Game.collider( entityPair[ 0 ], entityPair[ 1 ] );
                 }
             }
-            for ( var j = drawLayer.length - 1; j >= 0; j-- ) {
-                if ( drawLayer[j] == Game.toBeDestroyed[i] ) {
-                    drawLayer.splice( j, 1 );
+
+            for ( var i = 0; i < entities.length; i++ ) {
+                var ent = entities[ i ];
+                if ( Game.still ) {
+                    ent.pos.x = ent.oldPos.x;
+                    ent.pos.y = ent.oldPos.y;
+                }
+                if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated ) {
+                    ent.invalidateRect();
                 }
             }
-            Game.toBeDestroyed.splice( i, 1 );
-        }
-
-        // Generate each entity's next coordinates.
-        for ( var i = 0; i < entities.length; i++ ) {
-            entities[ i ].generateNextCoords( timeDiff );
-        }
-
-        ////////// Collision Detection ////////
-
-        // Keep entity list sorted on x, ascending.
-        entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
-
-        // List of entities to check entities[ i ] against
-        var activeList = new Array( entities[ 0 ] );
-
-        // List of possible collisions
-        var possibleCollisions = new Array();
-
-        for ( var i = 1; i < entities.length; i++ ) {
-            for ( var j = activeList.length - 1; j >= 0; j-- ) {
-                if ( entities[ i ].pos.x > ( activeList[ j ].pos.x + activeList[ j ].width ) ) {
-                    // The current entity is past this activeList entity -- we know it
-                    // won't collide with the rest of the entities.
-                    activeList.splice( j, 1 );
-                    continue;		    
-                } else if ( entities[ i ] != activeList[ j ] ) {
-                    // It's possible that there is a collision (their x coordinates are close).
-                    possibleCollisions.push( [ entities[ i ], activeList[ j ] ] );
+        
+            //Shift viewport if hero's pos is past the shift boundary
+            if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
+                Game.viewportShiftLeft = true;
+                Game.viewportShiftBoundary.left += Game.unit;
+                Game.viewportShiftBoundary.right += Game.unit;
+                Game.viewportOffset += Game.unit;
+            } else if ( Game.hero.pos.x <= Game.viewportShiftBoundary.right && Game.viewportOffset ) {
+                Game.viewportShiftRight = true;
+                Game.viewportShiftBoundary.left -= Game.unit;
+                Game.viewportShiftBoundary.right -= Game.unit;
+                if ( Game.viewportOffset - Game.unit >= 0 ) {
+                    Game.viewportOffset -= Game.unit;
                 }
-            }
-            // Place the current entity into activeList.
-            activeList.push(entities[ i ]);
-        }
-
-        // Fine-grained collision detection.
-        for ( var i = 0; i < possibleCollisions.length; i++ ) {
-            var entityPair = possibleCollisions[ i ];
-            if ( entityPair[ 0 ] instanceof Game.Entity && entityPair[ 1 ] instanceof Game.Entity ) {
-                Game.collider( entityPair[ 0 ], entityPair[ 1 ] );
-            }
-        }
-
-        for ( var i = 0; i < entities.length; i++ ) {
-            var ent = entities[ i ];
-            if ( Game.still ) {
-                ent.pos.x = ent.oldPos.x;
-                ent.pos.y = ent.oldPos.y;
-            }
-            if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated ) {
-                ent.invalidateRect();
-            }
-        }
-	
-        //Shift viewport if hero's pos is past the shift boundary
-        if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
-            Game.viewportShiftLeft = true;
-            Game.viewportShiftBoundary.left += Game.unit;
-            Game.viewportShiftBoundary.right += Game.unit;
-            Game.viewportOffset += Game.unit;
-        } else if ( Game.hero.pos.x <= Game.viewportShiftBoundary.right && Game.viewportOffset ) {
-            Game.viewportShiftRight = true;
-            Game.viewportShiftBoundary.left -= Game.unit;
-            Game.viewportShiftBoundary.right -= Game.unit;
-            if ( Game.viewportOffset - Game.unit >= 0 ) {
-                Game.viewportOffset -= Game.unit;
             }
         }
     },
@@ -516,6 +521,12 @@ var Game = {
         Game.paused = false;
         Game.lastUpdate = null;
         Game.requestID = requestAnimationFrame( Game.loop ); 
+    },
+    transform: function() {
+        Game.transforming = true;
+    },
+    doneTransforming: function() {
+        Game.transforming = false;
     },
     imageLoaded: function( img ) {
         if ( Game.imageCount < Game.totalSprites ) {

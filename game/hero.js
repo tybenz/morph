@@ -11,12 +11,17 @@ Game.Entity.Hero = Game.Entity.extend({
     init: function( x, y ) {
         this._super( x, y );
         this.animationStates = {
-                blinking: {
-                    delta: 70,
-                    sequence: [ 'initial', 'invisible' ],
-                    times: 'infinite'
-                }
-            };
+            blinking: {
+                delta: 70,
+                sequence: [ 'initial', 'invisible' ],
+                times: 'infinite'
+            },
+            transforming: {
+                delta: 80,
+                sequence: [ 'hero-scramble-1', 'hero-scramble-2', 'hero-scramble-3', 'hero-scramble-4', 'hero-scramble-5' ],
+                times: 'infinite'
+            }
+        };
     },
     right: function() {
         this.direction = 'right';
@@ -33,25 +38,33 @@ Game.Entity.Hero = Game.Entity.extend({
     up: function() {},
     down: function() {},
     transform: function( newType, timeDiff ) {
-        var newHero = new newType( this.pos.x, this.pos.y );
-        Game.destroyEntity( this );
-        Game.currentLevel.entities.push( newHero );
-        Game.hero = newHero;
+        var self = this;
+        this.state = 'transforming';
+        Game.transform();
+        setTimeout( function() {
+            var newHero = new newType( self.pos.x, self.pos.y );
+            Game.destroyEntity( self );
+            Game.currentLevel.entities.push( newHero );
+            Game.hero = newHero;
+            Game.doneTransforming();
+        }, 1000 );
     },
     //Handling user input
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
-        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
-            this.left();
-            Game.keysDown[ 37 ] = 'locked';
-        }
-        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
-            this.right();
-            Game.keysDown[ 39 ] = 'locked';
-        }
-        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
-            this.up();
-            Game.keysDown[ 38 ] = 'locked';
+        if ( !Game.transforming ) {
+            if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
+                this.left();
+                Game.keysDown[ 37 ] = 'locked';
+            }
+            if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
+                this.right();
+                Game.keysDown[ 39 ] = 'locked';
+            }
+            if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
+                this.up();
+                Game.keysDown[ 38 ] = 'locked';
+            }
         }
         //Lose health and blink when hitting an enemy
         //When in blinking state cannot take more damage
@@ -89,7 +102,7 @@ Game.Entity.Hero = Game.Entity.extend({
             default: break;
         }
 
-        var hit = entityType.indexOf( 'Enemy' ) == 0 || entityType == 'Interactable.Bullet' || entityType == 'Interactable.Egg';
+        var hit = entityType.indexOf( 'Enemy' ) == 0 || entityType == 'Interactable.Bullet' || ( entityType == 'Interactable.Egg' && entity.oldPos.y < this.pos.y );
 
         if ( hit && entity.state != 'dying' && this.takingDamage != 'locked' ) {
             this.takingDamage = true;
@@ -117,7 +130,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                     this.actions.pickup.call( this, collision.entity );
                 }
                 var collisions = this.hasCollisionWith( 'Machine' );
-                if ( collisions ) {
+                if ( collisions && this.pos.x == collisions.entity.pos.x ) {
                     this.transform( Game.Entity.Hero.Block, timeDiff );
                 }
             }
