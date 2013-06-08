@@ -46,8 +46,9 @@ var Game = {
         Game.viewportShiftBuffer = Game.currentLevel.width - Game.viewportWidth;
         Game.loadLevel();
     },
-    totalSprites: 0,
     initSprites: function() {
+        Game.totalSprites = 0;
+
         var i, j, k,
             tempCanvas, tempContext,
             dataURL, currentSprite,
@@ -87,28 +88,26 @@ var Game = {
         ];
     },
     startLoop: function() {
-        if ( !Game.Editing ) {
-            //Start event listeners and main loop
-            addEventListener( 'keydown', Game.keyDownListener, false );
-            addEventListener( 'keyup', Game.keyUpListener, false );
-    
-            //Background
-            Game.ctx.fillStyle = '#000';
-            Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
-    
-            // Initial render
-            // Make sure all entities get rendered on first render.
-            Game.invalidateRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
-            for ( var i in Game.currentLevel.entities ) {
-                Game.currentLevel.entities[i].render();
-            }
-    
-            // Set last update to null so a pause/unpause doesn't
-            // result in a jump on the screen
-            Game.lastUpdate = null;
-            //Start the actual loop
-            Game.requestID = requestAnimationFrame( Game.loop ); 
+        //Start event listeners and main loop
+        addEventListener( 'keydown', Game.keyDownListener, false );
+        addEventListener( 'keyup', Game.keyUpListener, false );
+
+        //Background
+        Game.ctx.fillStyle = '#000';
+        Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
+
+        // Initial render
+        // Make sure all entities get rendered on first render.
+        Game.invalidateRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
+        for ( var i in Game.currentLevel.entities ) {
+            Game.currentLevel.entities[i].render();
         }
+
+        // Set last update to null so a pause/unpause doesn't
+        // result in a jump on the screen
+        Game.lastUpdate = null;
+        //Start the actual loop
+        Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     loop: function( timestamp ) {
         //We update and render each loop

@@ -357,8 +357,6 @@ Editor = {
         ]
     },
     sprites: {},
-    bitmaps: {},
-    spriteCount: 0,
     createSprite: function( path ) {
         var image = new Image();
         image.src = path;
@@ -373,13 +371,15 @@ Editor = {
     },
     preview: function() {
         Editor.$canvas.hide();
-        Game.Levels.push( new Game.Level( this.level ) );
+        Game.Levels.preview = new Game.Level( null, this.level );
         Game.skipResize = true;
-        Game.init( Game.Levels.length - 1 );
+        Game.Editing = false;
+        Game.init( 'preview' );
     },
     stopPreview: function() {
         Game.stop();
-        Game.Levels.pop();
+        Game.Editing = true;
+        delete Game.Levels[ 'preview' ];
         Editor.$game.find( 'canvas:last' ).remove();
         Editor.$canvas.show();
     }

@@ -3,7 +3,9 @@
 Game.Sprite = function( path ) {
     var image = new Image();
     image.onload = function() {
-        Game.imageLoaded();
+        if ( !Game.Editing ) {
+            Game.imageLoaded();
+        }
     };
     image.src = path;
     return image;
