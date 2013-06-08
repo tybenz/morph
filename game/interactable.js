@@ -8,6 +8,7 @@ Game.Entity.Interactable = Game.Entity.extend({
 
 Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
     type: 'Interactable.Rock',
+    initialSprite: 'rock',
     init: function( x, y ) {
         this.velocity = new Game.Vector( 0, 0 );
         this._super( x, y );
@@ -48,42 +49,18 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
             }
         }
         this._super( timeDiff );
-    },
-    bitmaps: [
-        [
-            [ "transparent", "transparent", "transparent", "#777777", "#777777", "#777777", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#777777", "#777777", "#777777", "#777777", "#777777", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "transparent" ],
-            [ "rgba(0,0,0,0)", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ],
-            [ "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ],
-            [ "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ],
-            [ "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ],
-            [ "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ],
-            [ "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777", "#777777" ]
-        ]
-    ]
+    }
 });
 
 Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
     type: 'Interactable.Coin',
-    ignoreGravity: true,
-    bitmaps: [
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ffff00", "#ffff00", "#ffff00", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ffff00", "#ffffff", "#ffffff", "#ffff00", "#ffff00", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ffff00", "#ffff00", "#ffff00", "#ffffff", "#ffff00", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ffff00", "#ffff00", "#ffff00", "#ffffff", "#ffff00", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ffff00", "#ffff00", "#ffff00", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent"  ]
-        ]
-    ]
+    initialSprite: 'coin',
+    ignoreGravity: true
 });
 
 Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
     type: 'Interactable.Bullet',
+    initialSprite: 'bullet',
     drawLayer: 0,
     width: 4,
     height: 4,
@@ -92,24 +69,12 @@ Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
         if ( entity.type == 'Terrain.Land' ) {
             Game.destroyEntity( this );
         }
-    },
-    bitmaps: [
-        [
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ]
-    ]
+    }
 });
 
 Game.Entity.Interactable.Egg = Game.Entity.Interactable.extend({
     type: 'Interactable.Egg',
+    initialSprite: 'egg',
     width: 6,
     height: 8,
     drawLayer: 0,
@@ -117,18 +82,5 @@ Game.Entity.Interactable.Egg = Game.Entity.Interactable.extend({
         if ( entity.type == 'Terrain.Land' ) {
             Game.destroyEntity( this );
         }
-    },
-    bitmaps: [
-        [
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ]
-    ]
+    }
 });

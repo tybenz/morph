@@ -9,7 +9,7 @@ Game.Entity = Class.extend({
         this.width = this.width || Game.unit;
         this.height = this.height || Game.unit;
         this.lastAnimated = Date.now();
-        this.activeSprite = 0;
+        this.activeSprite = this.initialSprite || 'transparent';
         this.visible = true;
         this.sprites = [];
 
@@ -129,7 +129,7 @@ Game.Entity = Class.extend({
     render: function() {
         //Render the activeSprite
         if ( this.visible ) {
-            Game.ctx.drawImage( this.sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
+            Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
         }
     },
     //Two entities -> collision dictionary or false if no collision

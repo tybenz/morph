@@ -27,8 +27,8 @@ var Game = {
         document.getElementById( 'game' ).appendChild( Game.canvas );
         Game.ctx = Game.canvas.getContext( '2d' );
 
-        //Initialize extra sprites
-        Game.extraSprites.init();
+        //Initialize sprites
+        Game.initSprites();
 
         if ( Game.clickStep ) {
             document.onclick = Game.nextGameFrame;
@@ -45,6 +45,31 @@ var Game = {
         Game.currentLevel = Game.Levels[ level ];
         Game.viewportShiftBuffer = Game.currentLevel.width - Game.viewportWidth;
         Game.loadLevel();
+    },
+    totalSprites: 0,
+    initSprites: function() {
+        var i, j, k,
+            tempCanvas, tempContext,
+            dataURL, currentSprite,
+            rectSize = Game.unit / 9;
+
+        //Same init as Game.Entity
+        for ( i in Game.Bitmaps ) {
+            currentSprite = Game.Bitmaps[ i ];
+            tempCanvas = document.createElement( 'canvas' );
+            tempCanvas.width = currentSprite[0].length * rectSize;
+            tempCanvas.height = currentSprite.length * rectSize;
+            tempContext = tempCanvas.getContext( '2d' );
+            for ( j in currentSprite ) {
+                for ( k in currentSprite[ j ] ) {
+                    tempContext.fillStyle = currentSprite[ j ][ k ];
+                    tempContext.fillRect( k * rectSize, j * rectSize, rectSize, rectSize );
+                }
+            }
+            dataURL = tempCanvas.toDataURL( 'image/png' );
+            Game.Sprites[i] = Game.Sprite( dataURL );
+            Game.totalSprites++;
+        }
     },
     initDrawLayers: function() {
         //Layers for rendering - specified by each entity
@@ -331,11 +356,11 @@ var Game = {
 
             for ( i = 0; i < Game.score.maxHealth; i++ ) {
                 if ( i % 2 == 0 && i < Game.score.health ) {
-                    Game.ctx.drawImage( Game.extraSprites.sprites.heart, Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                    Game.ctx.drawImage( Game.Sprites[ 'heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
                 } else if ( i == Game.score.health && i % 2 == 1 ) {
-                    Game.ctx.drawImage( Game.extraSprites.sprites.halfHeart, Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                    Game.ctx.drawImage( Game.Sprites[ 'half-heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
                 } else if ( i % 2 == 0 ) {
-                    Game.ctx.drawImage( Game.extraSprites.sprites.emptyHeart, Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                    Game.ctx.drawImage( Game.Sprites[ 'empty-heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
                 }
             }
 
@@ -389,77 +414,13 @@ var Game = {
         Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     imageLoaded: function( img ) {
-        if ( Game.imageCount < Game.currentLevel.entityCount ) {
+        if ( Game.imageCount < Game.totalSprites ) {
             Game.imageCount++;
             return;
         }
         if ( !Game.hasStarted ) {
             Game.hasStarted = true;
             Game.startLoop();
-        }
-    },
-    //Extra sprites are those don't have an entity
-    //TODO - think about refactoring this into its own class
-    extraSprites: {
-        init: function() {
-            var i, j, k,
-                tempCanvas, tempContext,
-                dataURL, currentSprite,
-                rectSize = Game.unit / 9;
-
-            //Same init as Game.Entity
-            for ( i in this.bitmaps ) {
-                currentSprite = this.bitmaps[ i ];
-                tempCanvas = document.createElement( 'canvas' );
-                tempCanvas.width = Game.unit;
-                tempCanvas.height = Game.unit;
-                tempContext = tempCanvas.getContext( '2d' );
-                for ( j in currentSprite ) {
-                    for ( k in currentSprite[ j ] ) {
-                        tempContext.fillStyle = currentSprite[ j ][ k ];
-                        tempContext.fillRect( k * rectSize, j * rectSize, rectSize, rectSize );
-                    }
-                }
-                dataURL = tempCanvas.toDataURL( 'image/png' );
-                sprite = Game.Sprite(dataURL,this.type);
-                this.sprites[i] = Game.Sprite( dataURL, this.type );
-            }
-        },
-        sprites: {},
-        bitmaps: {
-            heart: [
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "transparent", "#ff55ff", "#ff55ff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "#ff55ff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "#ff55ff", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-            ],
-            halfHeart: [
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "transparent", "#ffffff", "#ffffff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ffffff", "#ffffff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ff55ff", "#ff55ff", "#ff55ff", "#ffffff", "#ffffff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "#ff55ff", "#ff55ff", "#ffffff", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "#ff55ff", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-            ],
-            emptyHeart: [
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ffffff", "#ffffff", "transparent", "#ffffff", "#ffffff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-                [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-            ]
         }
     },
     //Score to represent game logic

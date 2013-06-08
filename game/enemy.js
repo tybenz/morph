@@ -73,13 +73,16 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
     type: 'Enemy.Turret',
     shotInterval: TURRET_INTERVAL,
     bulletSpeed: TURRET_SPEED,
+    initialSprite: 'turret',
+    rightSprite: 'turret',
+    leftSprite: 'turret',
     init: function( x, y ) {
         this._super( x, y );
         this.lastShot = Date.now();
         this.animationStates = {
             dying: {
                 delta: 40,
-                sequence: [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
                 times: 1
             }
         };
@@ -94,7 +97,7 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( this.activeSprite == 9 ) {
+        if ( this.activeSprite == 'enemy-dying-9' ) {
             this.visible = false;
             Game.destroyEntity( this );
         }
@@ -104,10 +107,10 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
             myX = this.pos.x;
 
         if ( heroX > myX ) {
-            this.activeSprite = TURRET_RIGHT;
+            this.activeSprite = this.rightSprite;
             this.direction = 'right';
         } else if ( heroX < myX ) {
-            this.activeSprite = TURRET_LEFT;
+            this.activeSprite = this.leftSprite;
             this.direction = 'left';
         }
         this.animated = true;
@@ -119,135 +122,15 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
         var bullet = new Game.Entity.Interactable.Bullet( x, y );
         Game.currentLevel.entities.push( bullet );
         bullet.velocity = new Game.Vector( xVelocity, yVelocity );
-    },
-    bitmaps: [
-        [
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ]
-        ]
-    ]
+    }
 });
 
 Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
     shotInterval: QUICK_TURRET_INTERVAL,
     bulletSpeed: QUICK_TURRET_SPEED,
+    initialSprite: 'turret-quick-left',
+    rightSprite: 'turret-quick-right',
+    leftSprite: 'turret-quick-left',
     shoot: function() {
         this.lockTarget();
         if ( this.direction == 'left' ) {
@@ -255,142 +138,22 @@ Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
         } else {
             this.createBullet( this.pos.x, this.pos.y, 0 - this.bulletSpeed, 0 );
         }
-    },
-    bitmaps: [
-        [
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ]
-        ]
-    ]
+    }
 });
 
 Game.Entity.Enemy.Turret.Smart = Game.Entity.Enemy.Turret.extend({
     shotInterval: SMART_TURRET_INTERVAL,
     bulletSpeed: SMART_TURRET_SPEED,
+    initialSprite: 'turret-smart-left',
+    rightSprite: 'turret-smart-right',
+    leftSprite: 'turret-smart-left',
     shoot: function() {
         this.lockTarget();
 
         var heroX = Game.hero.pos.x,
             heroY = Game.hero.pos.y,
-            myX = this.pos.x,
-            myY = this.pos.y,
+            myX = this.pos.x - ( this.width / 2 ),
+            myY = this.pos.y - ( this.height / 2 ),
             xDiff = heroX - myX,
             yDiff = heroY - myY,
             ratio = yDiff / xDiff,
@@ -400,134 +163,12 @@ Game.Entity.Enemy.Turret.Smart = Game.Entity.Enemy.Turret.extend({
         if ( Math.abs( yVelocity ) <= Math.abs( xVelocity ) ) {
             this.createBullet( this.pos.x, this.pos.y, xVelocity, yVelocity );
         }
-    },
-    bitmaps: [
-        [
-            [ "transparent", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "transparent", "transparent" ],
-            [ "transparent", "transparent", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "transparent", "transparent" ],
-            [ "transparent", "transparent", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "transparent", "transparent" ],
-            [ "transparent", "transparent", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ]
-        ]
-    ]
+    }
 });
 
 Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
     type: 'Enemy.Monster',
+    initialSprite: 'monster-open',
     init: function( x, y ) {
         this._super( x, y );
         this.lastMoved = Date.now();
@@ -535,12 +176,12 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
         this.animationStates = {
             dying: {
                 delta: 40,
-                sequence: [ 4, 5, 6, 7, 8, 9, 10, 11 ],
+                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
                 times: 1
             },
             chomping: {
                 delta: 150,
-                sequence: [ MONSTER_OPEN, MONSTER_OPEN, MONSTER_OPEN, MONSTER_OPEN, MONSTER_OPEN, MONSTER_CLOSING, MONSTER_CLOSED, MONSTER_CLOSED, ],
+                sequence: [ 'monster-open', 'monster-open', 'monster-open', 'monster-open', 'monster-open', 'monster-closing', 'monster-closed', 'monster-closed', ],
                 times: 'infinite'
             }
         };
@@ -563,145 +204,11 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
-        if ( this.activeSprite == 11 ) {
+        if ( this.activeSprite == 'enemy-dying-9' ) {
             this.visible = false;
             Game.destroyEntity( this );
         }
-    },
-    bitmaps: [
-        [
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ]
-        ]
-    ]
+    }
 });
 
 Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
@@ -709,6 +216,7 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
     ignoreGravity: true,
     count: 0,
     lastMoved: Date.now(),
+    initialSprite: 'bird-wings-up',
     init: function( x, y ) {
         this._super( x, y );
         this.velocity.x = -0.09;
@@ -716,12 +224,12 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
         this.animationStates = {
             flying: {
                 delta: 200,
-                sequence: [ WINGS_UP, WINGS_DOWN ],
+                sequence: [ 'bird-wings-up', 'bird-wings-down' ],
                 times: 'infinite'
             },
             dying: {
                 delta: 40,
-                sequence: [ 2, 3, 4, 5, 6, 7, 8, 9 ],
+                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
                 times: 1
             }
         };
@@ -757,119 +265,7 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
             Game.destroyEntity( this );
         }
         this._super( timeDiff );
-    },
-    bitmaps: [
-        [
-            [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ]
-        ]
-    ]
+    }
 });
 
 var SPIDER_FALLING = 8,
@@ -884,23 +280,29 @@ var SPIDER_FALLING = 8,
 
 Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
     ignoreGravity: true,
+    initialSprite: 'spider-walking-left-1',
     init: function( x, y ) {
         this._super( x, y );
         this.animationStates = {
             'walking_left': {
                 delta: 180,
-                sequence: [ SPIDER_WALKING_1, SPIDER_WALKING_2, SPIDER_WALKING_3, SPIDER_WALKING_4 ],
+                sequence: [ 'spider-walking-left-1', 'spider-walking-left-2', 'spider-walking-left-3', 'spider-walking-left-4' ],
                 times: 'infinite'
             },
             'walking_right': {
                 delta: 180,
-                sequence: [ SPIDER_WALKING_5, SPIDER_WALKING_6, SPIDER_WALKING_7, SPIDER_WALKING_8 ],
+                sequence: [ 'spider-walking-right-1', 'spider-walking-right-2', 'spider-walking-right-3', 'spider-walking-right-4' ],
                 times: 'infinite'
             },
             'falling': {
                 delta: 1000,
-                sequence: [ SPIDER_FALLING ],
+                sequence: [ 'spider-falling' ],
                 times: 'infinite'
+            },
+            'dying': {
+                delta: 40,
+                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
+                times: 1
             }
         }
         this.moves = [
@@ -950,106 +352,5 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             this.ignoreGravity = false;
         }
         this._super( timeDiff );
-    },
-    bitmaps: [
-        [
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "transparent", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "#ff0000", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "rgba(0,0,0,0)", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-            [ "rgba(0,0,0,0)", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "rgba(0,0,0,0)", "#ff0000", "transparent", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#ff0000" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "rgba(0,0,0,0)" ],
-            [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "rgba(0,0,0,0)" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-            [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-        ],
-        [
-            [ "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent" ],
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
-            [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-            [ "#ff0000", "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent", "#ff0000" ],
-            [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "transparent" ]
-        ]
-    ]
+    }
 });
