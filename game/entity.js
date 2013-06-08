@@ -142,13 +142,33 @@ Game.Entity = Class.extend({
                 oldTop: Math.round( this.oldPos.y ),
                 oldBototm: Math.round( this.oldPos.y + this.height ),
                 oldLeft: Math.round( this.oldPos.x ),
-                oldRight: Math.round( this.oldPos.x + this.width )
+                oldRight: Math.round( this.oldPos.x + this.width ),
+                oldCenter: {
+                    x: Math.round ( this.oldPos.x + ( this.width / 2 ) ),
+                    y: Math.round ( this.oldPos.y + ( this.height / 2 ) ),
+                },
+                center: {
+                    x: Math.round ( this.pos.x + ( this.width / 2 ) ),
+                    y: Math.round ( this.pos.y + ( this.height / 2 ) ),
+                }
             },
             target = {
                 top: Math.round( entity.pos.y ),
                 bottom: Math.round( entity.pos.y + entity.height ),
                 left: Math.round( entity.pos.x ),
-                right: Math.round( entity.pos.x + entity.width )
+                right: Math.round( entity.pos.x + entity.width ),
+                oldTop: Math.round( entity.oldPos.y ),
+                oldBototm: Math.round( entity.oldPos.y + entity.height ),
+                oldLeft: Math.round( entity.oldPos.x ),
+                oldRight: Math.round( entity.oldPos.x + entity.width ),
+                oldCenter: {
+                    x: Math.round ( entity.oldPos.x + ( entity.width / 2 ) ),
+                    y: Math.round ( entity.oldPos.y + ( entity.height / 2 ) ),
+                },
+                center: {
+                    x: Math.round ( entity.pos.x + ( entity.width / 2 ) ),
+                    y: Math.round ( entity.pos.y + ( entity.height / 2 ) ),
+                }
             },
 
             betweenLeftAndRight = ( src.left < target.right && src.left > target.left ) ||
@@ -163,6 +183,8 @@ Game.Entity = Class.extend({
             movingLeft = src.oldLeft > src.left,
             movingUp = src.oldTop > src.top,
             movingDown = src.oldBottom < src.bottom,
+
+            intersection = Game.checkIntersection( src.oldCenter, src.center, target.oldCenter, target.center ),
 
             skipRight = ( betweenTopAndBottom || topAndBottomAligned ) && src.right < target.left && 
                 ( src.left > target.oldRight || src.right >= target.oldLeft ),
@@ -182,6 +204,21 @@ Game.Entity = Class.extend({
                 overlappingVertical: leftAndRightAligned && ( betweenTopAndBottom || skipDown || skipUp ),
                 overlappingHorizontal: topAndBottomAligned && ( betweenLeftAndRight || skipRight || skipLeft )
             };
+        if ( !intersection && this.oldPos.x == this.pos.x && this.oldPos.y == this.pos.y ) {
+            if ( target.oldTop <= target.top ) {
+                intersection = Game.checkIntersection( { x: this.pos.x, y: this.pos.y },
+                        { x: this.pos.x + this.width, y: this.pos.y + this.height },
+                        target.oldCenter, target.center );
+            } else {
+                intersection = Game.checkIntersection( { x: this.pos.x + this.width, y: this.pos.y },
+                        { x: this.pos.x, y: this.pos.y + this.height },
+                        target.oldCenter, target.center );
+            }
+            collisions.overlapping = ( betweenTopAndBottom && betweenLeftAndRight ) || intersection
+        }
+        if ( this.type == 'Hero.Man' && entity.type == 'Interactable.Bullet' ) {
+            console.log(intersection);
+        }
 
         // If there are any collisions we build an object of only those that are true
         // If none, we return false
