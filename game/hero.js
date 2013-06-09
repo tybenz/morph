@@ -173,15 +173,34 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     actions: {
         pickup: function( entity ) {
             this.holding = entity;
-            entity.pos.y = this.pos.y - this.height;
-            entity.pos.x = this.pos.x;
+
             if ( this.direction == 'right' ) {
                 this.activeSprite = 'man-holding-right';
             } else if ( this.direction == 'left' ) {
                 this.activeSprite = 'man-holding-left';
             }
+
+            Game.hero = new Game.Entity.Super( this.pos.x, this.pos.y - entity.height, [
+                    {
+                        entity: this,
+                        relativePos: { x: 0, y: this.height }
+                    },
+                    {
+                        entity: entity,
+                        relativePos: { x: 0, y: 0 }
+                    }
+                ]);
+            Game.currentLevel.entities.push(Game.hero);
+
+            Game.destroyEntity( this );
+            Game.destroyEntity( entity );
         },
         throw: function() {
+            Game.currentLevel.entities.push( this );
+            Game.currentLevel.entities.push( this.holding );
+            Game.drawLayers[ this.drawLayer ].push( this );
+            Game.drawLayers[ this.holding.drawLayer ].push( this.holding );
+
             if ( this.direction == 'right' ) {
                 this.holding.velocity.x = 0.1;
                 this.activeSprite = 'man-right';
@@ -191,6 +210,13 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             }
             this.holding.velocity.y = -0.4;
             this.holding = false;
+
+            Game.hero = this;
+            for ( var i in Game.currentLevel.entities ) {
+                if ( Game.currentLevel.entities[i].type == 'Super' ) {
+                    Game.destroyEntity( Game.currentLevel.entities[i] );
+                }
+            }
         }
     }
 });
