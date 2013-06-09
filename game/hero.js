@@ -10,6 +10,7 @@ Game.Entity.Hero = Game.Entity.extend({
     drawLayer: 3,
     init: function( x, y ) {
         this._super( x, y );
+        this.direction = 'right';
         this.animationStates = {
             blinking: {
                 delta: 70,
