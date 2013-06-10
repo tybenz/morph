@@ -329,7 +329,7 @@ var Game = {
     //Pass it two entities - if they have collisions we call
     //each of their collision handlers
     collider: function( a, b ) {
-        // Obtain collision dictionaries for the two objects.
+            // Obtain collision dictionaries for the two objects.
         var aCollisions = a.getCollisions( b ),
             bCollisions = b.getCollisions( a );
 

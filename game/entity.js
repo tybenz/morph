@@ -3,6 +3,7 @@
 Game.Entity = Class.extend({
     type: 'Entity',
     ignoreGravity: false,
+    maxVelocityY: 7,
     drawLayer: 0,
     init: function( x, y ) {
         this.width = this.width || Game.unit;
@@ -20,14 +21,30 @@ Game.Entity = Class.extend({
         //Entities should be initialized with an x and y
         if ( x !== null && y !== null ) {
             this.pos = new Game.Vector( x, y );
-            this.oldPos = new Game.Vector( x, y );
         } else {
             this.pos = new Game.Vector( 0, 0 );
-            this.oldPos = new Game.Vector( 0, 0 );
         }
         this.velocity = new Game.Vector( 0, 0 );
         this.gravity = new Game.Vector( 0, 0.001 ); // Changed to test collisions
 
+        this.oldPos = this.pos;
+
+        //Iterate through an array of bitmaps and cache them as images
+        for ( i in this.bitmaps ) {
+            currentSprite = this.bitmaps[ i ];
+            tempCanvas = document.createElement( 'canvas' );
+            tempCanvas.width = this.width;
+            tempCanvas.height = this.height;
+            tempContext = tempCanvas.getContext( '2d' );
+            for ( j in currentSprite ) {
+                for ( k in currentSprite[ j ] ) {
+                    tempContext.fillStyle = currentSprite[ j ][ k ];
+                    tempContext.fillRect( k * rectSize, j * rectSize, rectSize, rectSize );
+                }
+            }
+            dataURL = tempCanvas.toDataURL( 'image/png' );
+            this.sprites.push( Game.Sprite( dataURL, this.type ) );
+        }
         Game.drawLayers[this.drawLayer].push( this );
     },
     //Animate method uses the entities dictionary of animationStates
@@ -86,6 +103,13 @@ Game.Entity = Class.extend({
         //Change position based on velocity
         var positionChange = this.velocity.multiply( timeDiff );
         this.pos = this.pos.add( positionChange );
+        if ( this.type == 'Interactable.Bullet' ) {
+            /*
+                OLD 468 324 entity.js:107
+                VELOCITY -0.6 0.13636363636363635 entity.js:108
+                POS 458.336400000524 326.19627272715366 
+            */
+        }
     },
     invalidateRect: function() {
         var newX = this.pos.x,
@@ -191,6 +215,9 @@ Game.Entity = Class.extend({
                         target.oldCenter, target.center );
             }
             collisions.overlapping = ( betweenTopAndBottom && betweenLeftAndRight ) || intersection
+        }
+        if ( this.type == 'Hero.Man' && entity.type == 'Interactable.Bullet' ) {
+            console.log(intersection);
         }
 
         // If there are any collisions we build an object of only those that are true
@@ -322,92 +349,6 @@ Game.Entity = Class.extend({
         if ( !this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
             var gravitationalForce = this.gravity.multiply( timeDiff );
             this.velocity = this.velocity.add( gravitationalForce );
-        }
-    }
-});
-
-Game.Entity.Super = Game.Entity.extend({
-    type: 'Super',
-    drawLayer: 0,
-    init: function( x, y, entityList ) {
-        this.entityList = entityList;
-
-        this.pos = new Game.Vector( x, y );
-        this.oldPos = new Game.Vector( x, y );
-
-        // Set up properties based on "master"
-        this.master = entityList[ 0 ];
-
-        var master = this.master.entity;
-
-        this.activeSprite = master.activeSprite;
-        this.gravity = new Game.Vector( master.gravity.x, master.gravity.y );
-        this.velocity = new Game.Vector( master.velocity.x, master.velocity.y );
-
-        var entity, relativePos,
-            maxWidth = 0,
-            maxHeight = 0;
-
-        for ( var i = 0; i < entityList.length; i++ ) {
-            entity = entityList[i].entity;
-            relativePos = entityList[i].relativePos;
-
-            if ( entity.pos.y + entity.height > maxHeight ) {
-                maxHeight = entity.pos.y + entity.height;
-            }
-            if ( entity.pos.x + entity.width > maxWidth ) {
-                maxWidth = entity.pos.x + entity.width;
-            }
-        }
-
-        this.height = maxHeight - this.pos.y;
-        this.width = maxWidth - this.pos.x;
-
-        this.visible = true;
-        Game.drawLayers[this.drawLayer].push( this );
-    },
-    render: function() {
-        if ( this.visible ) {
-            for ( var i = 0; i < this.entityList.length; i++ ) {
-
-                var entity = this.entityList[i].entity,
-                    relativePos = this.entityList[i].relativePos;
-
-                Game.ctx.drawImage( Game.Sprites[ entity.activeSprite ], this.pos.x + relativePos.x - Game.viewportOffset, this.pos.y + relativePos.y );
-
-            }
-        }
-    },
-    generateNextCoords: function( timeDiff ) {
-        this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
-
-        var master = this.master.entity,
-            relativePos = this.master.relativePos;
-
-        master.generateNextCoords( timeDiff );
-        this.pos = new Game.Vector( master.pos.x - relativePos.x, master.pos.y - relativePos.y );
-        this.velocity = new Game.Vector( master.velocity.x, master.velocity.y );
-        this.animated = master.animated;
-    },
-    collideWith: function( entity, collisionTypes ) {
-        for ( var i = 0; i < this.entityList.length; i++ ) {
-            var self = this.entityList[i].entity,
-                relativePos = this.entityList[i].relativePos,
-                aCollisions = self.getCollisions( entity ),
-                bCollisions = entity.getCollisions( self );
-                if ( aCollisions || bCollisions ) {
-                    if ( aCollisions ) {
-                        self.collideWith( entity, aCollisions );
-                    }
-
-                    if ( bCollisions ) {
-                        entity.collideWith( self, bCollisions );
-                    }
-
-                    this.pos = new Game.Vector( self.pos.x - relativePos.x, self.pos.y - relativePos.y );
-
-                    break;
-                }
         }
     }
 });
