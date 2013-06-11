@@ -95,10 +95,8 @@ Game.Entity.Hero = Game.Entity.extend({
                 }
                 break;
             case 'Interactable.Heart':
-                if ( 'exact' in collisionTypes && entity.visible ) {
-                    entity.visible = false;
-                    Game.score.incrementHealth();
-                }
+                Game.destroyEntity( entity );
+                Game.score.incrementHealth();
                 break;
             default: break;
         }

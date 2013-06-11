@@ -193,16 +193,16 @@ Game.Entity = Class.extend({
             entityLeft = this.pos.x + relativePos.x;
             entityRight = this.pos.x + relativePos.x + dimensions.width;
 
-            if ( !top || entityTop < top ) {
+            if ( top === undefined || entityTop < top ) {
                 top = entityTop;
             }
-            if ( !bottom || entityBottom > bottom ) {
+            if ( bottom === undefined || entityBottom > bottom ) {
                 bottom = entityBottom;
             }
-            if ( !left || entityLeft < left ) {
+            if ( left === undefined || entityLeft < left ) {
                 left = entityLeft;
             }
-            if ( !right || entityRight > right ) {
+            if ( right === undefined || entityRight > right ) {
                 right = entityRight;
             }
         }
@@ -281,9 +281,12 @@ Game.Entity = Class.extend({
                 ( src.right < target.right && src.right > target.left ),
             betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) ||
                 ( src.bottom < target.bottom && src.bottom > target.top ),
-            leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
-            topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
-            leftOrRightAligned = ( src.left == target.left || src.right == target.right ),
+            leftAligned = src.left == target.left,
+            rightAligned = src.right == target.right,
+            leftAndRightAligned = ( leftAligned && rightAligned ),
+            topAligned = src.top == target.top,
+            bottomAligned = src.bottom == target.bottom,
+            topAndBottomAligned = ( topAligned && bottomAligned ),
 
             movingRight = src.oldRight < src.right,
             movingLeft = src.oldLeft > src.left,
@@ -306,6 +309,8 @@ Game.Entity = Class.extend({
             // the behavior of this too!
             collisions = {
                 exact: leftAndRightAligned && topAndBottomAligned,
+                almostExact: leftAligned && topAndBottomAligned || rightAligned && topAndBottomAligned ||
+                    topAligned && leftAndRightAligned || bottomAligned && leftAndRightAligned,
                 overlapping: betweenTopAndBottom && betweenLeftAndRight,
                 overlappingVertical: leftAndRightAligned && ( betweenTopAndBottom || skipDown || skipUp ),
                 overlappingHorizontal: topAndBottomAligned && ( betweenLeftAndRight || skipRight || skipLeft )

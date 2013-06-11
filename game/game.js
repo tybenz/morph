@@ -480,8 +480,8 @@ var Game = {
     loadLevel: function() {
         Game.hero = null;
         Game.currentLevel.entities = [];
-        for ( i in Game.currentLevel.grid ) {
-            for ( j in Game.currentLevel.grid[ i ] ) {
+        for ( var i = 0; i < Game.currentLevel.grid.length; i++ ) {
+            for ( var j = 0; j < Game.currentLevel.grid[i].length; j++ ) {
                 entityString = Game.currentLevel.grid[ i ][ j ];
                 if ( entityString != 'blank' ) {
                     entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
@@ -492,6 +492,39 @@ var Game = {
                 }
             }
         }
+    },
+    loadLevel: function() {
+        Game.hero = null;
+        Game.currentLevel.entities = [];
+
+        Game.terrainGroup = null;
+
+        for ( i in Game.currentLevel.grid ) {
+            for ( j in Game.currentLevel.grid[ i ] ) {
+                entityString = Game.currentLevel.grid[ i ][ j ];
+                if ( entityString != 'blank' ) {
+                    // Each entity gets initialized and put into our level's entity list
+                    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
+                    if ( entityString == 'terrain.land' ) {
+                        if ( Game.terrainGroup ) {
+                            Game.terrainGroup.attach( [ entity ] );
+                        } else {
+                            Game.terrainGroup = entity;
+                            Game.currentLevel.entities.push( entity );
+                        }
+                    } else {
+                        Game.currentLevel.entities.push( entity );
+                    }
+                    if ( entityString.indexOf( 'hero' ) != -1 ) {
+                        Game.hero = entity
+                    }
+                } else if ( Game.terrainGroup ) {
+                    Game.terrainGroup = null;
+                }
+            }
+            Game.terrainGroup = null;
+        }
+        // One last call for the end of the level
     },
     keyDownListener: function( evt ) {
         //Prevent default on up and down so the
