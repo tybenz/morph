@@ -141,11 +141,6 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
         if ( this.velocity.y < 0 ) {
             this.disableJump = true;
         }
-        //Update rock
-        if ( this.holding ) {
-            this.holding.pos.y = this.pos.y - this.height;
-            this.holding.pos.x = this.pos.x;
-        }
     },
     right: function() {
         this._super();
@@ -174,15 +169,23 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     actions: {
         pickup: function( entity ) {
             this.holding = entity;
-            entity.pos.y = this.pos.y - this.height;
+            entity.pos.y = this.pos.y - entity.height;
             entity.pos.x = this.pos.x;
             if ( this.direction == 'right' ) {
                 this.activeSprite = 'man-holding-right';
             } else if ( this.direction == 'left' ) {
                 this.activeSprite = 'man-holding-left';
             }
+
+            this.attach( [ entity ] );
+            Game.destroyEntity( entity );
         },
         throw: function() {
+            this.detach( this.holding );
+
+            Game.currentLevel.entities.push( this.holding );
+            Game.drawLayers[ this.holding.drawLayer ].push( this.holding );
+
             if ( this.direction == 'right' ) {
                 this.holding.velocity.x = 0.1;
                 this.activeSprite = 'man-right';
@@ -191,6 +194,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                 this.activeSprite = 'man-left';
             }
             this.holding.velocity.y = -0.4;
+
             this.holding = false;
         }
     }

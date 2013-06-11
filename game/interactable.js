@@ -18,7 +18,9 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
             if ( this.velocity.y > 0 && collisionTypes ) {
                 this.velocity.y = 0;
                 this.pos.y = entity.pos.y - entity.height;
-                entity.actions.pickup.call( entity, this );
+                if ( !entity.holding ) {
+                    entity.actions.pickup.call( entity, this );
+                }
             }
         }
         if ( entity.type == 'Terrain.Land' ) {

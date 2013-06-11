@@ -304,7 +304,7 @@ var Game = {
                     ent.pos.x = ent.oldPos.x;
                     ent.pos.y = ent.oldPos.y;
                 }
-                if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated ) {
+                if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated || ent.detached || ent.attached ) {
                     ent.invalidateRect();
                 }
             }

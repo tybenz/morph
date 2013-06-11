@@ -93,6 +93,8 @@ Game.Entity = Class.extend({
     generateNextCoords: function( timeDiff ) {
         //Bool that will tell us if the entity animated
         this.animated = this.animate( timeDiff );
+        this.attached = false;
+        this.detached = false;
         this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
 
         //Gravity
@@ -126,10 +128,114 @@ Game.Entity = Class.extend({
         //Pass a rect (position/dimensions) to the global invalidRect
         Game.invalidateRect( top, right, bottom, left );
     },
+    attach: function( arr ) {
+        var append = [], entityList;
+
+        // Initialize the entitylist with yourself if necessary
+        if ( !this.entityList || !this.entityList.length ) {
+            this.entityList = [{
+                entity: this,
+                relativePos: { x: 0, y: 0 },
+                oldDimensions: { width: this.width, height: this.height }
+            }];
+        }
+        // Cache the entityList
+        entityList = this.entityList;
+
+        // Convert entity array to have relativePos and append
+        for ( var i = 0; i < arr.length; i++ ) {
+            entityList.push({
+                entity: arr[i],
+                relativePos: { x: arr[i].pos.x - this.pos.x, y: arr[i].pos.y - this.pos.y },
+                oldDimensions: { width: arr[i].width, height: arr[i].height }
+            });
+        }
+
+
+        this.refreshDimensions();
+        this.attached = true;
+    },
+    detach: function( entity ) {
+        var entityList = this.entityList ? this.entityList : [],
+            relativePos;
+
+        for ( var i = entityList.length - 1; i >= 0; i-- ) {
+            relativePos = entityList[i].relativePos;
+            if ( entityList[i].entity == entity ) {
+                entity.pos = new Game.Vector( this.pos.x + relativePos.x, this.pos.y + relativePos.y );
+                entityList.splice( i, 1 );
+            }
+        }
+
+        this.refreshDimensions();
+        this.detached = true;
+
+        if ( this.entityList.length == 1 ) {
+            this.entityList = [];
+        }
+    },
+    refreshDimensions: function() {
+        // Calculate top bottom left and right
+        var entityList = this.entityList,
+            entity, relativePos,
+            top, bottom, left, right,
+            entityTop, entityBottom,
+            entityLeft, entityRight,
+            oldX, oldY;
+
+        for ( var i = 0; i < entityList.length; i++ ) {
+            entity = entityList[i].entity;
+            relativePos = entityList[i].relativePos;
+            dimensions = entityList[i].oldDimensions;
+
+            entityTop = this.pos.y + relativePos.y;
+            entityBottom = this.pos.y + relativePos.y + dimensions.height;
+            entityLeft = this.pos.x + relativePos.x;
+            entityRight = this.pos.x + relativePos.x + dimensions.width;
+
+            if ( !top || entityTop < top ) {
+                top = entityTop;
+            }
+            if ( !bottom || entityBottom > bottom ) {
+                bottom = entityBottom;
+            }
+            if ( !left || entityLeft < left ) {
+                left = entityLeft;
+            }
+            if ( !right || entityRight > right ) {
+                right = entityRight;
+            }
+        }
+
+        for ( var i = 0; i < entityList.length; i++ ) {
+            entity = entityList[i].entity;
+            relativePos = entityList[i].relativePos;
+            oldX = this.pos.x + relativePos.x;
+            oldY = this.pos.y + relativePos.y;
+            entityList[i].relativePos = { x: oldX - left, y: oldY - top };
+        }
+
+        this.height = bottom - top;
+        this.width = right - left;
+        this.pos.x = left;
+        this.pos.y = top;
+    },
     render: function() {
         //Render the activeSprite
         if ( this.visible ) {
-            Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
+            if ( this.entityList && this.entityList.length ) {
+                // Iterate over entityList and render them relative to actual position
+                for ( var i = 0; i < this.entityList.length; i++ ) {
+
+                    var entity = this.entityList[i].entity,
+                        relativePos = this.entityList[i].relativePos;
+
+                    Game.ctx.drawImage( Game.Sprites[ entity.activeSprite ], this.pos.x + relativePos.x - Game.viewportOffset, this.pos.y + relativePos.y );
+
+                }
+            } else {
+                Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
+            }
         }
     },
     //Two entities -> collision dictionary or false if no collision
@@ -216,9 +322,6 @@ Game.Entity = Class.extend({
             }
             collisions.overlapping = ( betweenTopAndBottom && betweenLeftAndRight ) || intersection
         }
-        if ( this.type == 'Hero.Man' && entity.type == 'Interactable.Bullet' ) {
-            console.log(intersection);
-        }
 
         // If there are any collisions we build an object of only those that are true
         // If none, we return false
@@ -254,14 +357,18 @@ Game.Entity = Class.extend({
                 ( src.right < target.right && src.right > target.left ),
             betweenTopAndBottom = ( src.top < target.bottom && src.top > target.top ) ||
                 ( src.bottom < target.bottom && src.bottom > target.top ),
-            leftAndRightAligned = ( src.left == target.left && src.right == target.right ),
-            topAndBottomAligned = ( src.top == target.top && src.bottom == target.bottom ),
+            leftAligned = src.left == target.left,
+            rightAligned = src.right == target.right,
+            leftAndRightAligned = ( leftAligned && rightAligned ),
+            topAligned = src.top == target.top,
+            bottomAligned = src.bottom == target.bottom,
+            topAndBottomAligned = ( topAligned && bottomAligned ),
             directions = {
                 exact: leftAndRightAligned && topAndBottomAligned,
-                top: ( betweenLeftAndRight || leftAndRightAligned ) && src.top == target.bottom,
-                bottom: ( betweenLeftAndRight || leftAndRightAligned ) && src.bottom == target.top,
-                left: ( betweenTopAndBottom || topAndBottomAligned ) && src.left == target.right,
-                right: ( betweenTopAndBottom || topAndBottomAligned ) && src.right == target.left
+                top: ( betweenLeftAndRight || leftAligned || rightAligned ) && src.top == target.bottom,
+                bottom: ( betweenLeftAndRight || leftAligned || rightAligned ) && src.bottom == target.top,
+                left: ( betweenTopAndBottom || topAligned || bottomAligned ) && src.left == target.right,
+                right: ( betweenTopAndBottom || topAligned || bottomAligned ) && src.right == target.left
             };
         // If there are any entities adjacent, we build an object of only those that are true
         // If none, we return false
