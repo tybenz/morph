@@ -4,6 +4,21 @@ Game.Entity = Class.extend({
     type: 'Entity',
     maxVelocityY: 7,
     drawLayer: 0,
+    initialState: 'still',
+    states: {
+        'still': {
+            animation: null,
+            actions: null
+        }
+    },
+    changeState: function( state ) {
+        if ( state != this.state ) {
+            this.state = state;
+            this.activeMove = 0;
+            this.stateChanged = true;
+        }
+        this.stateChanged = false;
+    },
     init: function( x, y ) {
         this.width = this.width || Game.unit;
         this.height = this.height || Game.unit;
@@ -12,6 +27,7 @@ Game.Entity = Class.extend({
         this.activeSprite = this.initialSprite || 'transparent';
         this.visible = true;
         this.sprites = [];
+        this.changeState( this.initialState );
 
         var i, j, k,
             tempCanvas, tempContext,
@@ -47,48 +63,81 @@ Game.Entity = Class.extend({
         }
         Game.drawLayers[this.drawLayer].push( this );
     },
-    //Animate method uses the entities dictionary of animationStates
+    //Animate method uses the entities dictionary of states
     //and cycles through sprites in each animation
     animate: function() {
-        var oldSprite = this.activeSprite,
+        var animation = this.states[ this.state ].animation,
+            oldSprite = this.activeSprite,
             wasVisible = this.visible,
-            isVisible,
-            timeToAnimate = this.animationStates
-                && this.animationStates[ this.state ]
-                && ( Date.now() - this.lastAnimated ) > this.animationStates[ this.state ].delta;
-        if ( timeToAnimate ) {
-            var nextSprite = this.nextSprite();
-            if ( nextSprite != 'invisible' ) {
-                this.activeSprite = nextSprite;
-                this.visible = true;
-                isVisible = true;
-            } else {
-                this.visible = false;
+            isVisible;
+
+        if ( typeof animation == 'string' ) {
+            this.activeSprite = animation;
+        } else if ( animation ) {
+            var timeToAnimate = ( Date.now() - this.lastAnimated ) > animation.delta;
+
+            // Get next sprite
+            if ( timeToAnimate ) {
+                var nextSprite = this.activeSprite;
+
+                this.activeAnimation = this.activeAnimation || 0;
+                this.activeAnimation++;
+                this.activeAnimation %= animation.sequence.length;
+                if ( this.stateChanged ) {
+                    this.activeAnimation = 0;
+                }
+                if ( animation.times == 'infinite' || Math.floor( this.activeAnimation / animation.sequence.length ) < animation.times ) {
+                    nextSprite = animation.sequence[ this.activeAnimation % animation.sequence.length ];
+                    if ( nextSprite == 'initial' ) {
+                        nextSprite = this.activeSprite;
+                    } else if ( nextSprite == 'invisible' ) {
+                        nextSprite = 'invisible';
+                    }
+                }
+
+                if ( nextSprite == 'invisible' ) {
+                    this.visible = false;
+                } else {
+                    this.activeSprite = nextSprite;
+                    this.visible = true;
+                    isVisible = true;
+                }
+
+                this.lastAnimated = Date.now();
             }
-            this.lastAnimated = Date.now();
         }
+
         //Return a bool to tell invalidRect if the entity animated
         return oldSprite != this.activeSprite || ( !wasVisible && isVisible );
     },
-    //Grabbing the next sprite in each animation
-    nextSprite: function() {
-        var aState = this.animationStates[ this.state ];
-        if ( !aState.current ) {
-            aState.current = 0;
-            aState.initial = this.activeSprite;
-        }
-        aState.current++;
-        if ( aState.times == 'infinite' || Math.floor( aState.current / aState.sequence.length ) < aState.times ) {
-            var nextSprite = aState.sequence[ aState.current % aState.sequence.length ];
-            //Initial and invisible are special values within an animation sequence
-            if ( nextSprite == 'initial' ) {
-                nextSprite = this.activeSprite;
-            } else if ( nextSprite == 'invisible' ) {
-                nextSprite = 'invisible';
+    // Checks dictionary of states for any "actions" and cycles through them if they exist
+    // mostly used for enemies - AI
+    performAction: function() {
+        var actions = this.states[ this.state ].actions,
+            actionObj;
+
+        if ( actions ) {
+            // Get active action
+            this.activeAction = this.activeAction || 0;
+            if ( this.stateChanged ) {
+                this.activeAction = 0;
             }
-            return nextSprite;
+            actionObj = actions[ this.activeAction ];
+
+            // Define last action if not defined
+            this.lastAction = this.lastAction || Date.now();
+
+            if ( ( Date.now() - this.lastAction ) > actionObj.delta ) {
+                if ( actionObj.until && actionObj.until.call( this ) ) {
+                    this.activeAction++;
+                    this.activeAction %= actions.length;
+                }
+                actionObj = actions[ this.activeAction ];
+
+                actionObj.action.call( this );
+                this.lastAction = Date.now();
+            }
         }
-        return this.activeSprite;
     },
     generateNextCoords: function( timeDiff ) {
         //Bool that will tell us if the entity animated
@@ -96,6 +145,8 @@ Game.Entity = Class.extend({
         this.attached = false;
         this.detached = false;
         this.oldPos = new Game.Vector( this.pos.x, this.pos.y );
+
+        this.performAction();
 
         //Gravity
         if ( !this.ignoreGravity ) {

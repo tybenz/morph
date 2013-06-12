@@ -1,70 +1,26 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-TURRET_INTERVAL = 1000;
-TURRET_SPEED = -1;
+TURRET_INTERVAL = 2000;
+TURRET_SPEED = -0.4;
 QUICK_TURRET_INTERVAL = 800;
 QUICK_TURRET_SPEED = -0.8;
 SMART_TURRET_INTERVAL = 400;
 SMART_TURRET_SPEED = -0.6;
 
-
-MONSTER_OPEN = 0;
-MONSTER_CLOSING = 1;
-MONSTER_GNASHED = 2;
-MONSTER_CLOSED = 3;
-WINGS_UP = 0;
-WINGS_DOWN = 1;
-TURRET_LEFT = 0;
-TURRET_RIGHT = 1;
-
 Game.Entity.Enemy = Game.Entity.extend({
     type: 'Enemy',
     drawLayer: 1,
-    move: {
-        'right': function() {
-            this.pos.x += Game.unit;
-        },
-        'left': function() {
-            this.pos.x -= Game.unit;
-        },
-        'up': function() {
-            //jump
-        },
-        'down': function() {
-            //down for plane and jellyfish
+    states: {
+        'dying': {
+            animation: {
+                delta: 40,
+                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
+                times: 1
+            }
         }
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
-        if ( this.moves ) {
-            this.performNextMove();
-        }
-    },
-    performNextMove: function() {
-        var moves = this.moves[ this.state ];
-        this.activeMove = this.activeMove || 0;
-        this.lastMove = this.lastMove || Date.now();
-
-        var move = moves[ this.activeMove ];
-
-        if ( this.state != 'dying' && ( Date.now() - this.lastMove ) > move.delta ) {
-            this.moved = false;
-            if ( move.until.call( this ) ) {
-                this.activeMove++;
-                this.activeMove %= moves.length;
-            }
-
-            move = moves[ this.activeMove ];
-
-            move.move.call( this );
-            this.lastMove = Date.now();
-        }
-    },
-    changeState: function( state ) {
-        if ( state != this.state ) {
-            this.state = state;
-            this.activeMove = 0;
-        }
     },
     collideWith: function( entity, collisionTypes ) {
         if ( ( entity.type == 'Interactable.Rock' && ( entity.velocity.x > 0 || entity.velocity.y > 0 ) && collisionTypes )
@@ -78,35 +34,24 @@ Game.Entity.Enemy = Game.Entity.extend({
 
 Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
     type: 'Enemy.Turret',
-    shotInterval: TURRET_INTERVAL,
     bulletSpeed: TURRET_SPEED,
     initialSprite: 'turret',
     rightSprite: 'turret',
     leftSprite: 'turret',
+    initialState: 'shooting',
+    states: {
+        'dying': Game.Entity.Enemy.prototype.states.dying,
+        'shooting': {
+            animation: null,
+            actions: [{
+                delta: TURRET_INTERVAL,
+                action: function() { this.shoot(); }
+            }]
+        }
+    },
     init: function( x, y ) {
         this._super( x, y );
         this.lastShot = Date.now();
-        this.animationStates = {
-            dying: {
-                delta: 40,
-                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
-                times: 1
-            },
-            shooting: {
-                delta: 1000,
-                sequence: [ 'turret' ],
-                times: 'infinite'
-            }
-        };
-        this.moves = {
-            'shooting': [{
-                delta: this.shotInterval,
-                move: this.__proto__.shoot,
-                until: function() { return true; }
-            }],
-            'dying': [{ delta: 0, move: function() {}, until: function() {} }]
-        };
-        this.changeState( 'shooting' );
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
@@ -140,11 +85,20 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
 });
 
 Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
-    shotInterval: QUICK_TURRET_INTERVAL,
     bulletSpeed: QUICK_TURRET_SPEED,
     initialSprite: 'turret-quick-left',
     rightSprite: 'turret-quick-right',
     leftSprite: 'turret-quick-left',
+    states: {
+        'dying': Game.Entity.Enemy.prototype.states.dying,
+        'shooting': {
+            animation: null,
+            actions: [{
+                delta: QUICK_TURRET_INTERVAL,
+                action: function() { this.shoot(); }
+            }]
+        }
+    },
     shoot: function() {
         this.lockTarget();
         if ( this.direction == 'left' ) {
@@ -156,11 +110,20 @@ Game.Entity.Enemy.Turret.Quick = Game.Entity.Enemy.Turret.extend({
 });
 
 Game.Entity.Enemy.Turret.Smart = Game.Entity.Enemy.Turret.extend({
-    shotInterval: SMART_TURRET_INTERVAL,
     bulletSpeed: SMART_TURRET_SPEED,
     initialSprite: 'turret-smart-left',
     rightSprite: 'turret-smart-right',
     leftSprite: 'turret-smart-left',
+    states: {
+        'dying': Game.Entity.Enemy.prototype.states.dying,
+        'shooting': {
+            animation: null,
+            actions: [{
+                delta: SMART_TURRET_INTERVAL,
+                action: function() { this.shoot(); }
+            }]
+        }
+    },
     shoot: function() {
         this.lockTarget();
 
@@ -183,41 +146,32 @@ Game.Entity.Enemy.Turret.Smart = Game.Entity.Enemy.Turret.extend({
 Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
     type: 'Enemy.Monster',
     initialSprite: 'monster-open',
-    init: function( x, y ) {
-        this._super( x, y );
-        this.lastMoved = Date.now();
-        this.changeState( 'chomping' );
-        this.animationStates = {
-            dying: {
-                delta: 40,
-                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
-                times: 1
-            },
-            chomping: {
+    initialState: 'walking',
+    states: {
+        'dying': Game.Entity.Enemy.prototype.states.dying,
+        'walking': {
+            animation: {
                 delta: 150,
                 sequence: [ 'monster-open', 'monster-open', 'monster-open', 'monster-open', 'monster-open', 'monster-closing', 'monster-closed', 'monster-closed', ],
                 times: 'infinite'
-            }
-        };
-        this.moves = {
-            'chomping': [
+            },
+            actions: [
                 {
                     delta: 500,
-                    move: function() { this.pos.x -= Game.unit; this.moved = true; },
+                    action: function() { this.pos.x -= Game.unit; },
                     until: function() {
                         return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' );
                     }
                 },
                 {
                     delta: 500,
-                    move: function() { this.pos.x += Game.unit; this.moved = true; },
+                    action: function() { this.pos.x += Game.unit; },
                     until: function() {
                         return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' );
                     }
                 }
-            ],
-            'dying': [{ delta: 0, move: function() {}, until: function() {} }]
-        };
+            ]
+        }
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
@@ -231,33 +185,29 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
 Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
     type: 'Enemy.Bird',
     count: 0,
-    lastMoved: Date.now(),
     initialSprite: 'bird-wings-up',
-    init: function( x, y ) {
-        this._super( x, y );
-        this.ignoreGravity = true;
-        this.velocity.x = -0.09;
-        this.changeState( 'flying' );
-        this.animationStates = {
-            flying: {
+    initialState: 'flying',
+    states: {
+        'dying': Game.Entity.Enemy.prototype.states.dying,
+        'flying': {
+            animation: {
                 delta: 200,
                 sequence: [ 'bird-wings-up', 'bird-wings-down' ],
                 times: 'infinite'
             },
-            dying: {
-                delta: 40,
-                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
-                times: 1
-            }
-        };
-        this.moves = {
-            'flying': [{
+            actions: [{
                 delta: 500,
-                move: this.__proto__.dropEgg,
+                action: function() {
+                    this.dropEgg();
+                },
                 until: function() { return false }
-            }],
-            'dying': [{ delta: 0, move: function() {}, until: function() {} }]
-        };
+            }]
+        }
+    },
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+        this.velocity.x = -0.09;
     },
     dropEgg: function() {
         // TODO - calculate when to lay the egg based on vertical distance form hero
@@ -289,35 +239,18 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
 Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
     type: 'Enemy.Spider',
     initialSprite: 'spider-walking-left-1',
-    init: function( x, y ) {
-        this._super( x, y );
-        this.ignoreGravity = true;
-        this.animationStates = {
-            'walking_left': {
+    initialState: 'walking-left',
+    states: {
+        'dying': Game.Entity.Enemy.prototype.states.dying,
+        'walking-left': {
+            animation: {
                 delta: 180,
                 sequence: [ 'spider-walking-left-1', 'spider-walking-left-2', 'spider-walking-left-3', 'spider-walking-left-4' ],
                 times: 'infinite'
             },
-            'walking_right': {
-                delta: 180,
-                sequence: [ 'spider-walking-right-1', 'spider-walking-right-2', 'spider-walking-right-3', 'spider-walking-right-4' ],
-                times: 'infinite'
-            },
-            'falling': {
+            actions: [{
                 delta: 0,
-                sequence: [ 'spider-falling' ],
-                times: 'infinite'
-            },
-            'dying': {
-                delta: 40,
-                sequence: [ 'enemy-dying-1', 'enemy-dying-2', 'enemy-dying-3', 'enemy-dying-4', 'enemy-dying-5', 'enemy-dying-6', 'enemy-dying-7', 'enemy-dying-8', 'enemy-dying-9' ],
-                times: 1
-            }
-        }
-        this.moves = {
-            'walking_left': [{
-                delta: 0,
-                move: function() {
+                action: function() {
                     this.velocity.x = -0.06;
                 },
                 until: function() {
@@ -327,17 +260,24 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                     if ( land ) {
                         edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentToLevelEdge( 'left' );
                         if ( edgePiece && this.pos.x <= land.pos.x ) {
-                            this.changeState( 'walking_right' );
+                            this.changeState( 'walking-right' );
                             return true;
                         }
                         return false;
                     }
                     return true;
                 }
-            }],
-            'walking_right': [{
+            }]
+        },
+        'walking-right': {
+            animation: {
+                delta: 180,
+                sequence: [ 'spider-walking-right-1', 'spider-walking-right-2', 'spider-walking-right-3', 'spider-walking-right-4' ],
+                times: 'infinite'
+            },
+            actions: [{
                 delta: 0,
-                move: function() {
+                action: function() {
                     this.velocity.x = 0.06;
                 },
                 until: function() {
@@ -346,23 +286,27 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                     if ( land ) {
                         edgePiece = !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentToLevelEdge( 'right' );
                         if ( edgePiece && this.pos.x >= land.pos.x + land.width - this.width ) {
-                            this.changeState( 'walking_left' );
+                            this.changeState( 'walking-left' );
                             return true;
                         }
                         return false;
                     }
                     return true;
                 }
-            }],
-            'falling': [{ delta: 0, move: function() { this.velocity.x = 0 }, until: function() {} }],
-            'dying': [{ delta: 0, move: function() {}, until: function() {} }]
-        };
-        this.changeState( 'walking_left' );
+            }]
+        },
+        'falling': {
+            animation: 'spider-falling',
+            actions: [{ delta: 0, action: function() { this.ignoreGravity = false; this.velocity.x = 0 }, until: function() {} }],
+        }
+    },
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
     },
     generateNextCoords: function( timeDiff ) {
         if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Game.unit ) {
             this.changeState( 'falling' );
-            this.ignoreGravity = false;
         }
         this._super( timeDiff );
     }

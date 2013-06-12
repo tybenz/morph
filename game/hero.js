@@ -8,21 +8,25 @@ var MAN_RIGHT = 0,
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
     drawLayer: 3,
-    init: function( x, y ) {
-        this._super( x, y );
-        this.direction = 'right';
-        this.animationStates = {
-            blinking: {
+    states: {
+        'blinking': {
+            animation: {
                 delta: 70,
                 sequence: [ 'initial', 'invisible' ],
                 times: 'infinite'
-            },
-            transforming: {
+            }
+        },
+        'transforming': {
+            animation: {
                 delta: 80,
                 sequence: [ 'hero-scramble-1', 'hero-scramble-2', 'hero-scramble-3', 'hero-scramble-4', 'hero-scramble-5' ],
                 times: 'infinite'
             }
-        };
+        }
+    },
+    init: function( x, y ) {
+        this._super( x, y );
+        this.direction = 'right';
     },
     right: function() {
         this.direction = 'right';
@@ -74,14 +78,14 @@ Game.Entity.Hero = Game.Entity.extend({
             var hero = this;
             Game.Inventory.decrementHealth();
             if ( Game.Inventory.health > 0 ) {
-                this.state = 'blinking';
+                this.changeState( 'blinking' );
                 this.takingDamage = 'locked';
             } else {
-                this.state = 'dying';
+                this.changeState( 'dying' );
             }
             setTimeout( function() {
                 hero.takingDamage = false;
-                hero.state = '';
+                hero.changeState( 'walking' );
                 hero.visible = true;
             }, 1000 );
         }
@@ -117,6 +121,12 @@ Game.Entity.Hero = Game.Entity.extend({
 Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     type: 'Hero.Man',
     initialSprite: 'man-right',
+    initialState: 'walking',
+    states: {
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming,
+        'walking': { animation: null, actions: null }
+    },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
         //spacebar
@@ -205,6 +215,12 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
 Game.Entity.Hero.Block = Game.Entity.Hero.extend({
     type: 'Hero.Block',
     initialSprite: 'block',
+    initialState: 'walking',
+    states: {
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming,
+        'walking': { animation: null, actions: null }
+    },
     up: function() {
         if ( !this.disableJump ) {
             var jumpForce = new Game.Vector( 0, -0.5 );
