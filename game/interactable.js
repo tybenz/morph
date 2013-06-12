@@ -57,13 +57,19 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
 Game.Entity.Interactable.Coin = Game.Entity.Interactable.extend({
     type: 'Interactable.Coin',
     initialSprite: 'coin',
-    ignoreGravity: true
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+    }
 });
 
 Game.Entity.Interactable.Heart = Game.Entity.Interactable.extend({
     type: 'Interactable.Heart',
     initialSprite: 'heart',
-    ignoreGravity: true
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+    }
 });
 
 Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
@@ -72,7 +78,10 @@ Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
     drawLayer: 0,
     width: 4,
     height: 4,
-    ignoreGravity: true,
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+    },
     collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Terrain.Land' ) {
             Game.destroyEntity( this );

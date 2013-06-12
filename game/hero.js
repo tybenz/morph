@@ -72,8 +72,8 @@ Game.Entity.Hero = Game.Entity.extend({
         //TODO - don't use setTimeout
         if ( this.takingDamage && this.takingDamage != 'locked' ) {
             var hero = this;
-            Game.score.decrementHealth();
-            if ( Game.score.health > 0 ) {
+            Game.Inventory.decrementHealth();
+            if ( Game.Inventory.health > 0 ) {
                 this.state = 'blinking';
                 this.takingDamage = 'locked';
             } else {
@@ -96,7 +96,11 @@ Game.Entity.Hero = Game.Entity.extend({
                 break;
             case 'Interactable.Heart':
                 Game.destroyEntity( entity );
-                Game.score.incrementHealth();
+                Game.Inventory.incrementHealth();
+                break;
+            case 'Interactable.Coin':
+                Game.destroyEntity( entity );
+                Game.Inventory.incrementCurrency();
                 break;
             default: break;
         }

@@ -230,6 +230,10 @@ var Game = {
         }
     },
     update: function( timeDiff ) {
+        if ( 73 in Game.keysDown && Game.keysDown[ 73 ] != 'locked' ) {
+            // "I" key for inventory
+            // show inventory menu
+        }
         if ( Game.transforming ) {
             Game.hero.generateNextCoords( timeDiff );
             Game.hero.invalidateRect();
@@ -463,10 +467,10 @@ var Game = {
             Game.ctx.fillStyle = "#000";
             Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.unit * 2 );
 
-            for ( i = 0; i < Game.score.maxHealth; i++ ) {
-                if ( i % 2 == 0 && i < Game.score.health ) {
+            for ( i = 0; i < Game.Inventory.maxHealth; i++ ) {
+                if ( i % 2 == 0 && i < Game.Inventory.health ) {
                     Game.ctx.drawImage( Game.Sprites[ 'heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
-                } else if ( i == Game.score.health && i % 2 == 1 ) {
+                } else if ( i == Game.Inventory.health && i % 2 == 1 ) {
                     Game.ctx.drawImage( Game.Sprites[ 'half-heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
                 } else if ( i % 2 == 0 ) {
                     Game.ctx.drawImage( Game.Sprites[ 'empty-heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
@@ -569,21 +573,6 @@ var Game = {
         if ( !Game.hasStarted ) {
             Game.hasStarted = true;
             Game.startLoop();
-        }
-    },
-    //Score to represent game logic
-    score: {
-        health: 10,
-        maxHealth: 10,
-        decrementHealth: function() {
-            if ( this.health > 0 ) {
-                this.health--;
-            }
-        },
-        incrementHealth: function() {
-            if ( this.health < this.maxHealth ) {
-                this.health++;
-            }
         }
     },
     stop: function() {

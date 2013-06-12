@@ -2,12 +2,12 @@
 
 Game.Entity.Machine = Game.Entity.extend({
     type: 'Machine',
-    ignoreGravity: true,
     initialSprite: 'machine-green',
     init: function( x, y ) {
+        this._super( x, y );
         this.width = Game.unit * 2;
         this.height = Game.unit * 2;
-        this._super( x, y );
+        this.ignoreGravity = true;
         this.animationStates = {
             'flashing-light': {
                 delta: 1200,
