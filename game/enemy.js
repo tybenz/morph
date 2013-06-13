@@ -78,7 +78,7 @@ Game.Entity.Enemy.Turret = Game.Entity.Enemy.extend({
         this.createBullet( this.pos.x, this.pos.y, this.bulletSpeed, 0 );
     },
     createBullet: function( x, y, xVelocity, yVelocity ) {
-        var bullet = new Game.Entity.Interactable.Bullet( x, y );
+        var bullet = new Game.Entity.Enemy.Bullet( x, y );
         Game.currentLevel.entities.push( bullet );
         bullet.velocity = new Game.Vector( xVelocity, yVelocity );
     }
@@ -309,5 +309,23 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             this.changeState( 'falling' );
         }
         this._super( timeDiff );
+    }
+});
+
+Game.Entity.Enemy.Bullet = Game.Entity.Enemy.extend({
+    type: 'Enemy.Bullet',
+    initialSprite: 'bullet-red',
+    drawLayer: 0,
+    width: 4,
+    height: 4,
+    states: Game.Entity.prototype.states,
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+    },
+    collideWith: function( entity, collisionTypes ) {
+        if ( entity.type == 'Terrain.Land' ) {
+            Game.destroyEntity( this );
+        }
     }
 });

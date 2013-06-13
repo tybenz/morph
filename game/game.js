@@ -66,7 +66,8 @@ var Game = {
 
         var heroList = {
             'block': Game.Bitmaps[ 'block' ],
-            'man-right': Game.Bitmaps[ 'man-right' ]
+            'man-right': Game.Bitmaps[ 'man-right' ],
+            'boat-right': Game.Bitmaps[ 'boat-right' ]
         };
         for ( var i in heroList ) {
             Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], Game.unit / 3 ) );
@@ -506,22 +507,6 @@ var Game = {
     loadLevel: function() {
         Game.hero = null;
         Game.currentLevel.entities = [];
-        for ( var i = 0; i < Game.currentLevel.grid.length; i++ ) {
-            for ( var j = 0; j < Game.currentLevel.grid[i].length; j++ ) {
-                entityString = Game.currentLevel.grid[ i ][ j ];
-                if ( entityString != 'blank' ) {
-                    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
-                    Game.currentLevel.entities.push( entity );
-                    if ( entityString.indexOf( 'hero' ) != -1 ) {
-                        Game.hero = entity
-                    }
-                }
-            }
-        }
-    },
-    loadLevel: function() {
-        Game.hero = null;
-        Game.currentLevel.entities = [];
 
         Game.terrainGroup = null;
 
@@ -540,6 +525,7 @@ var Game = {
                         }
                     } else {
                         Game.currentLevel.entities.push( entity );
+                        Game.terrainGroup = null;
                     }
                     if ( entityString.indexOf( 'hero' ) != -1 ) {
                         Game.hero = entity
@@ -594,7 +580,8 @@ var Game = {
         Game.transforming = true;
         Game.hero.transform( newType );
         Game.lastUpdate = null;
-        Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
+        Game.invalidateRect( 0, Game.viewportWidth + Game.viewportOffset, Game.viewportHeight, Game.viewportOffset );
+        Game.render( 0 );
         Game.requestID = requestAnimationFrame( Game.loop );
     },
     doneTransforming: function() {

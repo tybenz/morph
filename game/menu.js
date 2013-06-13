@@ -77,7 +77,8 @@ Game.Menu.Transform = Game.Menu.extend({
     },
     heroList: [
         Game.Entity.Hero.Block,
-        Game.Entity.Hero.Man
+        Game.Entity.Hero.Man,
+        Game.Entity.Hero.Boat
     ],
     selected: 0,
     rowSize: 4,
@@ -99,43 +100,39 @@ Game.Menu.Transform = Game.Menu.extend({
         }
     },
     loop: function() {
-        if ( !this.hideMenu ) {
-            var self = this;
+        var self = this;
 
-            //Left
-            if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) {
-                this.moveCursorLeft();
-                Game.keysDown[37] = 'locked';
-            }
-            //Up
-            if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) {
-                this.moveCursorUp();
-                Game.keysDown[38] = 'locked';
-            }
-            //Right
-            if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) {
-                this.moveCursorRight();
-                Game.keysDown[39] = 'locked';
-            }
-            //Down
-            if ( 40 in Game.keysDown && Game.keysDown[ 40 ] != 'locked' ) {
-                this.moveCursorDown();
-                Game.keysDown[40] = 'locked';
-            }
-            //Space
-            if ( 13 in Game.keysDown && Game.keysDown[ 13 ] != 'locked' ) {
-                this.hideMenu = true;
-            }
-
-            Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
+        //Left
+        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) {
+            this.moveCursorLeft();
+            Game.keysDown[37] = 'locked';
+        }
+        //Up
+        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) {
+            this.moveCursorUp();
+            Game.keysDown[38] = 'locked';
+        }
+        //Right
+        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) {
+            this.moveCursorRight();
+            Game.keysDown[39] = 'locked';
+        }
+        //Down
+        if ( 40 in Game.keysDown && Game.keysDown[ 40 ] != 'locked' ) {
+            this.moveCursorDown();
+            Game.keysDown[40] = 'locked';
+        }
+        //Space
+        if ( 13 in Game.keysDown && Game.keysDown[ 13 ] != 'locked' ) {
+            Game.startTransformAnimation( this.heroList[ this.selected ] );
+        } else {
+            Game.invalidateRect( 0, Game.viewportWidth + Game.viewportOffset, Game.viewportHeight, Game.viewportOffset );
             Game.render( 0 );
             this.render();
 
             this.requestID = requestAnimationFrame(function() {
                 self.loop();
             });
-        } else {
-            Game.startTransformAnimation( this.heroList[ this.selected ] );
         }
     },
     moveCursorUp: function() {

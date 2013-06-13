@@ -355,9 +355,13 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent"  ]
     ],
-    'bullet': [
+    'bullet-red': [
         [ "#ff0000", "#ff0000" ],
         [ "#ff0000", "#ff0000" ]
+    ],
+    'bullet-green': [
+        [ "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00" ]
     ],
     'egg': [
         [ "transparent", "#ff0000", "transparent" ],
@@ -569,5 +573,137 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
         [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent" ],
         [ "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ]
+    ],
+    'boat-left': [
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)", "transparent" ]
+    ],
+    'boat-right': [
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)", "transparent" ]
+    ],
+    'water': [
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'wave-1': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'wave-2': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff" ]
+    ],
+    'wave-3': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#0000ff", "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "#0000ff" ]
+    ],
+    'wave-4': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)" ]
+    ],
+    'wave-5': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)" ]
+    ],
+    'wave-6': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "transparent", "transparent", "transparent", "rgba(0,0,0,0)" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)" ]
+    ],
+    'wave-7': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "transparent", "transparent", "rgba(0,0,0,0)" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "rgba(0,0,0,0)", "rgba(0,0,0,0)" ]
+    ],
+    'wave-8': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "transparent", "rgba(0,0,0,0)" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "rgba(0,0,0,0)" ]
+    ],
+    'wave-9': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "transparent" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "rgba(0,0,0,0)" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
     ]
 };

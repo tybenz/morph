@@ -74,7 +74,7 @@ Game.Entity.Interactable.Heart = Game.Entity.Interactable.extend({
 
 Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
     type: 'Interactable.Bullet',
-    initialSprite: 'bullet',
+    initialSprite: 'bullet-green',
     drawLayer: 0,
     width: 4,
     height: 4,

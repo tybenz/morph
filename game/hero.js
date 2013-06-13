@@ -49,10 +49,35 @@ Game.Entity.Hero = Game.Entity.extend({
         } else {
             this.changeState( 'transforming' );
             setTimeout( function() {
-                var newHero = new newType( self.pos.x, self.pos.y );
+                var newHero = new newType( self.pos.x, self.pos.y ),
+                    machine, wave, type;
+
                 Game.destroyEntity( self );
                 Game.currentLevel.entities.push( newHero );
                 Game.hero = newHero;
+
+                machine = Game.hero.hasCollisionWith( 'Machine' );
+                if ( machine ) {
+                    machine = machine.entity;
+                    type = Game.hero.type;
+                    if ( type == 'Hero.Boat' ) {
+                        wave = machine.adjacentTo( 'Terrain.Wave' );
+                        if ( wave ) {
+                            wave = wave.entity;
+                            Game.hero.pos = new Game.Vector( wave.pos.x, wave.pos.y );
+                        }
+                    } else {
+                        wave = Game.hero.adjacentTo( 'Terrain.Water', 'bottom' );
+                        if ( wave ) {
+                            land = machine.adjacentTo( 'Terrain.Land', 'bottom' ) || machine.adjacentTo( 'Terrain.Land', 'left' );
+                            if ( land ) {
+                                land = land.entity;
+                                Game.hero.pos = new Game.Vector( land.pos.x, land.pos.y - Game.hero.height );
+                            }
+                        }
+                    }
+                }
+
                 Game.doneTransforming();
             }, 1000 );
         }
@@ -61,17 +86,24 @@ Game.Entity.Hero = Game.Entity.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
         if ( !Game.transforming ) {
-            if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
+            if ( !Game.keysLocked && !this.doNotMove && 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
                 this.left();
                 Game.keysDown[ 37 ] = 'locked';
             }
-            if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
+            if ( !Game.keysLocked && !this.doNotMove && 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
                 this.right();
                 Game.keysDown[ 39 ] = 'locked';
             }
-            if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
+            if ( !Game.keysLocked && !this.doNotMove && 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
                 this.up();
                 Game.keysDown[ 38 ] = 'locked';
+            }
+            if ( 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) { // SPACE
+                var collisions = this.hasCollisionWith( 'Machine' );
+                if ( collisions && this.pos.x == collisions.entity.pos.x ) {
+                    Game.openTransformMenu();
+                    this.skipAction = true;
+                }
             }
         }
         //Lose health and blink when hitting an enemy
@@ -79,6 +111,7 @@ Game.Entity.Hero = Game.Entity.extend({
         //TODO - don't use setTimeout
         if ( this.takingDamage && this.takingDamage != 'locked' ) {
             var hero = this;
+            var oldState = this.state;
             Game.Inventory.decrementHealth();
             if ( Game.Inventory.health > 0 ) {
                 this.changeState( 'blinking' );
@@ -88,7 +121,7 @@ Game.Entity.Hero = Game.Entity.extend({
             }
             setTimeout( function() {
                 hero.takingDamage = false;
-                hero.changeState( 'walking' );
+                hero.changeState( oldState );
                 hero.visible = true;
             }, 1000 );
         }
@@ -112,7 +145,7 @@ Game.Entity.Hero = Game.Entity.extend({
             default: break;
         }
 
-        var hit = entityType.indexOf( 'Enemy' ) == 0 || entityType == 'Interactable.Bullet' || ( entityType == 'Interactable.Egg' && entity.oldPos.y < this.pos.y );
+        var hit = entityType.indexOf( 'Enemy' ) == 0 || entityType == 'Enemy.Bullet' || ( entityType == 'Interactable.Egg' && entity.oldPos.y < this.pos.y );
 
         if ( hit && entity.state != 'dying' && this.takingDamage != 'locked' ) {
             this.takingDamage = true;
@@ -132,22 +165,19 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
+
         //spacebar
-        if ( !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
-            Game.keysDown[ 32 ] = 'locked';
+        if ( !this.skipAction && !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
             if ( this.holding ) {
                 this.actions.throw.call( this );
+                Game.keysDown[ 32 ] = 'locked';
             } else {
                 var adjacent = this.adjacentTo( 'Interactable.Rock' ),
                     collision = this.hasCollisionWith( 'Interactable.Rock' );
-                if ( adjacent ) {
+
+                if ( adjacent || collision ) {
                     this.actions.pickup.call( this, adjacent.entity );
-                } else if ( collision ) {
-                    this.actions.pickup.call( this, collision.entity );
-                }
-                var collisions = this.hasCollisionWith( 'Machine' );
-                if ( collisions && this.pos.x == collisions.entity.pos.x ) {
-                    Game.openTransformMenu();
+                    Game.keysDown[ 32 ] = 'locked';
                 }
             }
         }
@@ -235,6 +265,73 @@ Game.Entity.Hero.Block = Game.Entity.Hero.extend({
         //Only perform one jump at a time
         if ( this.velocity.y < 0 ) {
             this.disableJump = true;
+        }
+    }
+});
+
+Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
+    type: 'Hero.Boat',
+    initialSprite: 'boat-right',
+    initialState: 'sailing',
+    bulletSpeed: -0.3,
+    bulletInterval: 500,
+    lastFired: Date.now(),
+    states: {
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming,
+        'sailing': { animation: null, actions: null }
+    },
+    right: function() {
+        this._super();
+        this.activeSprite = 'boat-right';
+    },
+    left: function() {
+        this._super();
+        this.activeSprite = 'boat-left';
+    },
+    collideWith: function( entity, collisionTypes ) {
+        this._super( entity, collisionTypes );
+        if ( entity.type == 'Terrain.Water' ) {
+            if ( this.velocity.y > 0 && collisionTypes ) {
+                this.velocity.y = 0;
+                this.pos.y = entity.pos.y - entity.height;
+            }
+        } else if ( entity.type == 'Machine' ) {
+            this.pos = new Game.Vector( entity.pos.x, entity.pos.y + entity.height - this.height );
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( !this.skipAction && !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
+            this.shoot();
+        }
+
+        if ( this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+            this.doNotMove = true;
+        } else {
+            this.doNotMove = false;
+        }
+    },
+    shoot: function() {
+        var xVelocity = this.bulletSpeed;
+        if ( this.direction == 'right' ) {
+            xVelocity = 0 - xVelocity;
+        }
+        if ( ( Date.now() - this.lastFired ) > this.bulletInterval ) {
+            this.createBullet( this.pos.x, this.pos.y + ( Game.unit / 9 ) * 5, xVelocity, 0 );
+            this.lastFired = Date.now();
+        }
+    },
+    createBullet: function( x, y, xVelocity, yVelocity ) {
+        var bullet = new Game.Entity.Interactable.Bullet( x, y );
+        Game.currentLevel.entities.push( bullet );
+        bullet.velocity = new Game.Vector( xVelocity, yVelocity );
+    },
+    applyGravity: function( timeDiff ) {
+        if ( !this.adjacentTo( 'Terrain.Water', 'bottom' ) && !this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+            var gravitationalForce = this.gravity.multiply( timeDiff );
+            this.velocity = this.velocity.add( gravitationalForce );
         }
     }
 });
