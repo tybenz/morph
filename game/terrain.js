@@ -36,3 +36,19 @@ Game.Entity.Terrain.Water = Game.Entity.Terrain.extend({
     drawLayer: 4,
     initialSprite: 'water'
 });
+
+Game.Entity.Terrain.Waterfall = Game.Entity.Terrain.extend({
+    type: 'Terrain.Waterfall',
+    drawLayer: 4,
+    initialSprite: 'waterfall-1',
+    initialState: 'falling',
+    states: {
+        'falling': {
+            animation: {
+                delta: 400,
+                sequence: [ 'waterfall-1', 'waterfall-2', 'waterfall-3', 'waterfall-4', 'waterfall-5', 'waterfall-6', 'waterfall-7', 'waterfall-8', 'waterfall-9' ],
+                times: 'infinite'
+            }
+        }
+    }
+});
