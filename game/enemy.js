@@ -422,3 +422,63 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
         }
     }
 });
+
+Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
+    type: 'Enemy.Balloon',
+    initialSprite: 'balloon',
+    width: Game.unit * 2,
+    height: Game.unit * 2,
+    bulletSpeed: TURRET_SPEED,
+    initialSprite: 'balloon',
+    initialState: 'floating',
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+        this.startY = y;
+        this.velocity.x = -0.02;
+        this.direction = 'left';
+    },
+    states: {
+        'floating': {
+            animation: 'balloon',
+            actions: [
+                {
+                    delta: TURRET_INTERVAL,
+                    action: function() {
+                        this.velocity.y = 0.007;
+                        this.shoot();
+                    },
+                    until: function() { return Math.abs( this.pos.y - this.startY ) >= 7; }
+                },
+                {
+                    delta: TURRET_INTERVAL,
+                    action: function() {
+                        this.velocity.y = -0.007;
+                        this.shoot();
+                    },
+                    until: function() { return Math.abs( this.pos.y - this.startY ) >= 7; }
+                }
+            ]
+        }
+    },
+    shoot: function() {
+        var heroX = Game.hero.pos.x - Game.hero.width / 2,
+            heroY = Game.hero.pos.y - Game.hero.height / 2,
+            myX = this.pos.x - ( this.width / 2 ),
+            myY = this.pos.y - ( this.height / 2 ),
+            xDiff = heroX - myX,
+            yDiff = heroY - myY,
+            ratio = yDiff / xDiff,
+            xVelocity = this.direction == 'left' ? this.bulletSpeed : 0 - this.bulletSpeed,
+            yVelocity = ratio * xVelocity;
+
+        if ( Math.abs( yVelocity ) <= Math.abs( xVelocity ) && this.pos.x > heroX ) {
+            this.createBullet( this.pos.x, this.pos.y, xVelocity, yVelocity );
+        }
+    },
+    createBullet: function( x, y, xVelocity, yVelocity ) {
+        var bullet = new Game.Entity.Enemy.Bullet( x, y );
+        Game.currentLevel.entities.push( bullet );
+        bullet.velocity = new Game.Vector( xVelocity, yVelocity );
+    }
+});
