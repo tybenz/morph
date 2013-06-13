@@ -239,6 +239,7 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
 
 Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
     type: 'Enemy.Spider',
+    dropFor: 2000,
     initialSprite: 'spider-walking-left-1',
     initialState: 'walking-left',
     states: {
@@ -298,18 +299,64 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
         },
         'falling': {
             animation: 'spider-falling',
-            actions: [{ delta: 0, action: function() { this.ignoreGravity = false; this.velocity.x = 0 }, until: function() {} }],
+            actions: [{
+                delta: 100,
+                action: function() {
+                    this.ignoreGravity = false;
+                    this.velocity.x = 0
+                },
+                until: function() {
+                    this.fellOn = this.fellOn || Date.now();
+                    if ( ( Date.now() - this.fellOn ) > this.dropFor ) {
+                        this.changeState( 'climbing' );
+                        this.fellOn = null;
+                    }
+                    return false;
+                } 
+            }],
+        },
+        'climbing': {
+            animation: 'spider-falling',
+            actions: [{
+                delta: 100,
+                action: function() {
+                    this.velocity.y = -0.08;
+                    this.ignoreGravity = true;
+                },
+                until: function() {
+                    if ( this.pos.y <= this.initialY ) {
+                        this.changeState( 'walking-left' );
+                    }
+                    return false;
+                }
+            }]
+        }
+    },
+    render: function() {
+        if ( this.visible ) {
+            Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
+            if ( this.state == 'falling' || this.state == 'climbing' ) {
+                for ( var i = this.initialY; i < this.pos.y; i++ ) {
+                    Game.ctx.drawImage( Game.Sprites[ 'spider-web' ], this.pos.x + ( Game.unit / 9 ) * 4, i );
+                }
+            }
         }
     },
     init: function( x, y ) {
         this._super( x, y );
         this.ignoreGravity = true;
+        this.initialY = y;
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Game.unit ) {
+        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Game.unit && this.pos.y < Game.hero.pos.y ) {
             this.changeState( 'falling' );
+            this.fellOn = Date.now();
+        }
+
+        if ( this.state == 'falling' ) {
+            this.invalidateRect( this.initialY, this.pos.x + this.width, this.pos.y + this.height, this.pos.x );
         }
 
         if ( this.activeSprite == 'enemy-dying-9' ) {
