@@ -146,6 +146,7 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "transparent" ]
     ],
+    'spider-web': [ [ "#ff0000" ] ],
     'spider-walking-left-1': [
         [ "#ff0000", "transparent", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "transparent", "#ff0000" ],
         [ "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent" ],
@@ -946,5 +947,103 @@ Game.Bitmaps = {
         [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "rgba(0,0,0,0)" ],
         [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
     ],
-    'spider-web': [ [ "#ff0000" ] ]
+    'waterclimb-1': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-2': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "#0000ff", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-3': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "#0000ff", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-4': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#0000ff", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-5': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-6': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-7': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-8': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ],
+    'waterclimb-9': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "transparent", "transparent", "transparent", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ],
+        [ "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff", "#0000ff" ]
+    ]
 };

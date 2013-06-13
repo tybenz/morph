@@ -295,10 +295,8 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
     collideWith: function( entity, collisionTypes ) {
         this._super( entity, collisionTypes );
         if ( entity.type == 'Terrain.Water' ) {
-            if ( this.velocity.y > 0 && collisionTypes ) {
-                this.velocity.y = 0;
-                this.pos.y = entity.pos.y - entity.height;
-            }
+            this.velocity.y = 0;
+            this.pos.y = entity.pos.y - entity.height;
         } else if ( entity.type == 'Machine' ) {
             this.pos = new Game.Vector( entity.pos.x, entity.pos.y + entity.height - this.height );
         }

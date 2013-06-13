@@ -52,3 +52,19 @@ Game.Entity.Terrain.Waterfall = Game.Entity.Terrain.extend({
         }
     }
 });
+
+Game.Entity.Terrain.Waterclimb = Game.Entity.Terrain.extend({
+    type: 'Terrain.Waterclimb',
+    drawLayer: 4,
+    initialSprite: 'waterclimb-1',
+    initialState: 'climbing',
+    states: {
+        'climbing': {
+            animation: {
+                delta: 400,
+                sequence: [ 'waterclimb-1', 'waterclimb-2', 'waterclimb-3', 'waterclimb-4', 'waterclimb-5', 'waterclimb-6', 'waterclimb-7', 'waterclimb-8', 'waterclimb-9' ],
+                times: 'infinite'
+            }
+        }
+    }
+});
