@@ -505,6 +505,7 @@ var Game = {
     },
     //Iterate through level grid and instantiate all entities based on class name
     loadLevel: function() {
+        var entities, entityString;
         Game.hero = null;
         Game.currentLevel.entities = [];
 
@@ -512,26 +513,29 @@ var Game = {
 
         for ( i in Game.currentLevel.grid ) {
             for ( j in Game.currentLevel.grid[ i ] ) {
-                entityString = Game.currentLevel.grid[ i ][ j ];
-                if ( entityString != 'blank' ) {
-                    // Each entity gets initialized and put into our level's entity list
-                    entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
-                    if ( entityString == 'terrain.land' ) {
-                        if ( Game.terrainGroup ) {
-                            Game.terrainGroup.attach( [ entity ] );
+                entities = Game.currentLevel.grid[i][j].split( '|' );
+                for ( k = 0; k < entities.length; k++ ) {
+                    entityString = entities[k];
+                    if ( entityString != 'blank' ) {
+                        // Each entity gets initialized and put into our level's entity list
+                        entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
+                        if ( entityString == 'terrain.land' ) {
+                            if ( Game.terrainGroup ) {
+                                Game.terrainGroup.attach( [ entity ] );
+                            } else {
+                                Game.terrainGroup = entity;
+                                Game.currentLevel.entities.push( entity );
+                            }
                         } else {
-                            Game.terrainGroup = entity;
                             Game.currentLevel.entities.push( entity );
+                            Game.terrainGroup = null;
                         }
-                    } else {
-                        Game.currentLevel.entities.push( entity );
+                        if ( entityString.indexOf( 'hero' ) != -1 ) {
+                            Game.hero = entity
+                        }
+                    } else if ( Game.terrainGroup ) {
                         Game.terrainGroup = null;
                     }
-                    if ( entityString.indexOf( 'hero' ) != -1 ) {
-                        Game.hero = entity
-                    }
-                } else if ( Game.terrainGroup ) {
-                    Game.terrainGroup = null;
                 }
             }
             Game.terrainGroup = null;

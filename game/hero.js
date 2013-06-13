@@ -175,8 +175,11 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                 var adjacent = this.adjacentTo( 'Interactable.Rock' ),
                     collision = this.hasCollisionWith( 'Interactable.Rock' );
 
-                if ( adjacent || collision ) {
+                if ( adjacent ) {
                     this.actions.pickup.call( this, adjacent.entity );
+                    Game.keysDown[ 32 ] = 'locked';
+                } else if ( collision ) {
+                    this.actions.pickup.call( this, collision.entity );
                     Game.keysDown[ 32 ] = 'locked';
                 }
             }

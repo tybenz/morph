@@ -33,5 +33,6 @@ Game.Entity.Terrain.Wave = Game.Entity.Terrain.extend({
 
 Game.Entity.Terrain.Water = Game.Entity.Terrain.extend({
     type: 'Terrain.Water',
+    drawLayer: 4,
     initialSprite: 'water'
 });

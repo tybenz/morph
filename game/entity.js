@@ -285,6 +285,9 @@ Game.Entity = Class.extend({
 
                 }
             } else {
+                if ( !Game.Sprites[this.activeSprite]) {
+                console.log(this.type,this.activeSprite);
+                }
                 Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
             }
         }

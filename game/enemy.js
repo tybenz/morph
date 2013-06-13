@@ -24,7 +24,8 @@ Game.Entity.Enemy = Game.Entity.extend({
     },
     collideWith: function( entity, collisionTypes ) {
         if ( ( entity.type == 'Interactable.Rock' && ( entity.velocity.x > 0 || entity.velocity.y > 0 ) && collisionTypes )
-            || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.pos.y < this.pos.y ) ) {
+            || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.pos.y < this.pos.y )
+            || entity.type == 'Interactable.Bullet' ) {
 
             this.changeState( 'dying' );
         }
@@ -305,10 +306,16 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
         this.ignoreGravity = true;
     },
     generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
         if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Game.unit ) {
             this.changeState( 'falling' );
         }
-        this._super( timeDiff );
+
+        if ( this.activeSprite == 'enemy-dying-9' ) {
+            this.visible = false;
+            Game.destroyEntity( this );
+        }
     }
 });
 
@@ -326,6 +333,92 @@ Game.Entity.Enemy.Bullet = Game.Entity.Enemy.extend({
     collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Terrain.Land' ) {
             Game.destroyEntity( this );
+        }
+    }
+});
+
+Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
+    type: 'Enemy.Battleship',
+    initialSprite: 'battleship-left',
+    rightSprite: 'battleship-right',
+    leftSprite: 'battleship-left',
+    width: Game.unit * 3,
+    height: Game.unit,
+    bulletSpeed: TURRET_SPEED,
+    initialState: 'cruising-left',
+    states: {
+        'cruising-right': {
+            animation: 'battleship-right',
+            actions: [{
+                delta: TURRET_INTERVAL,
+                action: function() {
+                    this.shoot();
+                }
+            }]
+        },
+        'cruising-left': {
+            animation: 'battleship-left',
+            actions: [{
+                delta: TURRET_INTERVAL,
+                action: function() {
+                    this.shoot();
+                }
+            }]
+        },
+        'dying': {
+            animation: {
+                delta: 40,
+                sequence: [ 'battleship-dying-1', 'battleship-dying-2', 'battleship-dying-3', 'battleship-dying-4', 'battleship-dying-5', 'battleship-dying-6', 'battleship-dying-7', 'battleship-dying-8', 'battleship-dying-9' ],
+                times: 1
+            }
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( this.activeSprite == 'battleship-dying-9' ) {
+            this.visible = false;
+            Game.destroyEntity( this );
+        }
+    },
+    lockTarget: function() {
+        var heroX = Game.hero.pos.x,
+            myX = this.pos.x;
+
+        if ( heroX > myX ) {
+            this.changeState( 'cruising-right' );
+            this.direction = 'right';
+        } else if ( heroX < myX ) {
+            this.changeState( 'cruising-left' );
+            this.direction = 'left';
+        }
+    },
+    shoot: function() {
+        this.lockTarget();
+        if ( this.direction == 'left' ) {
+            this.createBullet( this.pos.x, this.pos.y + ( Game.unit / 9 ) * 5, this.bulletSpeed, 0 );
+        } else {
+            this.createBullet( this.pos.x, this.pos.y + ( Game.unit / 9 ) * 5, 0 - this.bulletSpeed, 0 );
+        }
+    },
+    createBullet: function( x, y, xVelocity, yVelocity ) {
+        var bullet = new Game.Entity.Enemy.Bullet( x, y );
+        Game.currentLevel.entities.push( bullet );
+        bullet.velocity = new Game.Vector( xVelocity, yVelocity );
+    },
+    collideWith: function( entity, collisionTypes ) {
+        this._super( entity, collisionTypes );
+        if ( entity.type == 'Terrain.Water' ) {
+            if ( this.velocity.y > 0 && collisionTypes ) {
+                this.velocity.y = 0;
+                this.pos.y = entity.pos.y - entity.height;
+            }
+        }
+    },
+    applyGravity: function( timeDiff ) {
+        if ( !this.adjacentTo( 'Terrain.Water', 'bottom' ) && !this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+            var gravitationalForce = this.gravity.multiply( timeDiff );
+            this.velocity = this.velocity.add( gravitationalForce );
         }
     }
 });
