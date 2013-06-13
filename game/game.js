@@ -20,6 +20,15 @@ var Game = {
             right: Game.viewportWidth / 2 - ( 3 * Game.unit )
         };
 
+        //Initialize pause menu
+        var pauseMenuWidth = Game.unit * 30,
+            pauseMenuHeight = Game.unit * 15,
+            pauseMenuLineWidth = 3;
+        Game.pauseMenu = new Game.Menu.Pause( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
+
+        //Initialize transform menu
+        Game.transformMenu = new Game.Menu.Transform( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
+
         //Prepare canvas
         Game.canvas = document.createElement( 'canvas' );
         Game.canvas.width = Game.viewportWidth;
@@ -49,28 +58,36 @@ var Game = {
     initSprites: function() {
         Game.totalSprites = 0;
 
-        var i, j, k,
-            tempCanvas, tempContext,
-            dataURL, currentSprite,
-            rectSize = Game.unit / 9;
-
         //Same init as Game.Entity
-        for ( i in Game.Bitmaps ) {
-            currentSprite = Game.Bitmaps[ i ];
-            tempCanvas = document.createElement( 'canvas' );
-            tempCanvas.width = currentSprite[0].length * rectSize;
-            tempCanvas.height = currentSprite.length * rectSize;
-            tempContext = tempCanvas.getContext( '2d' );
-            for ( j in currentSprite ) {
-                for ( k in currentSprite[ j ] ) {
-                    tempContext.fillStyle = currentSprite[ j ][ k ];
-                    tempContext.fillRect( k * rectSize, j * rectSize, rectSize, rectSize );
-                }
-            }
-            dataURL = tempCanvas.toDataURL( 'image/png' );
-            Game.Sprites[i] = Game.Sprite( dataURL );
+        for ( var i in Game.Bitmaps ) {
+            Game.Sprites[i] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], Game.unit / 9 ) );
             Game.totalSprites++;
         }
+
+        var heroList = {
+            'block': Game.Bitmaps[ 'block' ],
+            'man-right': Game.Bitmaps[ 'man-right' ]
+        };
+        for ( var i in heroList ) {
+            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], Game.unit / 3 ) );
+            Game.totalSprites++;
+        }
+    },
+    convertBitmapToSprite: function( bitmap, rectSize ) {
+        var i, j,
+            tempCanvas, tempContent;
+
+        tempCanvas = document.createElement( 'canvas' );
+        tempCanvas.width = bitmap[0].length * rectSize;
+        tempCanvas.height = bitmap.length * rectSize;
+        tempContext = tempCanvas.getContext( '2d' );
+        for ( i in bitmap ) {
+            for ( j in bitmap[ i ] ) {
+                tempContext.fillStyle = bitmap[ i ][ j ];
+                tempContext.fillRect( j * rectSize, i * rectSize, rectSize, rectSize );
+            }
+        }
+        return tempCanvas.toDataURL( 'image/png' );
     },
     initDrawLayers: function() {
         //Layers for rendering - specified by each entity
@@ -226,7 +243,11 @@ var Game = {
         }
         Game.lastUpdate = timestamp;
         if ( !Game.clickStep ) {
-            Game.requestID = requestAnimationFrame( Game.loop ); 
+            if ( !Game.startTransform ) {
+                Game.requestID = requestAnimationFrame( Game.loop ); 
+            } else {
+                Game.showTransformMenu();
+            }
         }
     },
     update: function( timeDiff ) {
@@ -234,6 +255,7 @@ var Game = {
             // "I" key for inventory
             // show inventory menu
         }
+
         if ( Game.transforming ) {
             Game.hero.generateNextCoords( timeDiff );
             Game.hero.invalidateRect();
@@ -551,19 +573,33 @@ var Game = {
         delete Game.keysDown[ evt.keyCode ];
     },
     pause: function() {
+        Game.pauseMenu.render();
         Game.paused = true;
         cancelAnimationFrame( Game.requestID );
     },
     resume: function() {
         Game.paused = false;
         Game.lastUpdate = null;
+        Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
         Game.requestID = requestAnimationFrame( Game.loop ); 
     },
-    transform: function() {
+    showTransformMenu: function() {
+        Game.transformMenu.show();
+    },
+    openTransformMenu: function() {
+        Game.startTransform = true;
+    },
+    startTransformAnimation: function( newType ) {
+        Game.startTransform = false;
         Game.transforming = true;
+        Game.hero.transform( newType );
+        Game.lastUpdate = null;
+        Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
+        Game.requestID = requestAnimationFrame( Game.loop );
     },
     doneTransforming: function() {
         Game.transforming = false;
+        Game.startTransform = false;
     },
     imageLoaded: function( img ) {
         if ( Game.imageCount < Game.totalSprites ) {

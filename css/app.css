@@ -86,3 +86,8 @@
 .clear {
 	clear: both;
 }
+
+#fonts {
+  position: absolute;
+  left: -9999px;
+}

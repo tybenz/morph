@@ -42,17 +42,20 @@ Game.Entity.Hero = Game.Entity.extend({
     },
     up: function() {},
     down: function() {},
-    transform: function( newType, timeDiff ) {
+    transform: function( newType ) {
         var self = this;
-        this.state = 'transforming';
-        Game.transform();
-        setTimeout( function() {
-            var newHero = new newType( self.pos.x, self.pos.y );
-            Game.destroyEntity( self );
-            Game.currentLevel.entities.push( newHero );
-            Game.hero = newHero;
+        if ( this.__proto__ == newType.prototype ) {
             Game.doneTransforming();
-        }, 1000 );
+        } else {
+            this.changeState( 'transforming' );
+            setTimeout( function() {
+                var newHero = new newType( self.pos.x, self.pos.y );
+                Game.destroyEntity( self );
+                Game.currentLevel.entities.push( newHero );
+                Game.hero = newHero;
+                Game.doneTransforming();
+            }, 1000 );
+        }
     },
     //Handling user input
     generateNextCoords: function( timeDiff ) {
@@ -144,7 +147,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
                 }
                 var collisions = this.hasCollisionWith( 'Machine' );
                 if ( collisions && this.pos.x == collisions.entity.pos.x ) {
-                    this.transform( Game.Entity.Hero.Block, timeDiff );
+                    Game.openTransformMenu();
                 }
             }
         }
