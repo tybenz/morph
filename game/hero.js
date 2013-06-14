@@ -336,3 +336,79 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
         }
     }
 });
+
+Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
+    type: 'Hero.Frog',
+    initialSprite: 'frog-right',
+    initialState: 'still',
+    states: {
+        'still': Game.Entity.prototype.states.still,
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming,
+        'jumping': {}
+    },
+    init: function( x, y ) {
+        this._super( x, y );
+        this.gravity = new Game.Vector( 0, 0.0006 );
+    },
+    up: function() {
+        if ( !this.disableJump ) {
+            this.changeState( 'jumping' );
+            var jumpForce = new Game.Vector( 0, -0.6 );
+            this.velocity = this.velocity.add( jumpForce );
+            if ( this.direction == 'right' ) {
+                this.activeSprite = 'frog-right-jump';
+            }
+            if ( this.direction == 'left' ) {
+                this.activeSprite = 'frog-left-jump';
+            }
+        }
+    },
+    right: function() {
+        this._super();
+        switch ( this.state ) {
+            case 'jumping':
+                this.activeSprite = 'frog-right-jump';
+                if ( !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
+                    this.pos.x += Game.unit;
+                }
+                break;
+            case 'licking':
+                this.activeSprite = 'frog-right-lick';
+                break;
+            case 'still':
+                this.activeSprite = 'frog-right';
+                break;
+            default: break;
+        }
+    },
+    left: function() {
+        this._super();
+        switch ( this.state ) {
+            case 'jumping':
+                this.activeSprite = 'frog-left-jump';
+                if ( !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
+                    this.pos.x -= Game.unit;
+                }
+                break;
+            case 'licking':
+                this.activeSprite = 'frog-left-lick';
+                break;
+            case 'still':
+                this.activeSprite = 'frog-left';
+                break;
+            default: break;
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+        if ( this.velocity.y < 0 ) {
+            this.disableJump = true;
+        }
+        if ( this.state == 'jumping' && this.adjacentTo('Terrain.Land','bottom') && this.velocity.y >= 0 ) {
+            this.changeState( 'still' );
+            this.activeSprite = this.direction == 'left' ? 'frog-left' : 'frog-right';
+            this.invalidateRect();
+        }
+    }
+});

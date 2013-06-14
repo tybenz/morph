@@ -1,5 +1,17 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+// Flip bitmap
+flipBitmap = function( b ) {
+    $.each( b, function( i,bit ) {
+        bit.reverse();
+    });
+
+    return JSON.stringify(b, undefined, 4).
+                replace( /",\n(\s)*/g, '", ' ).
+                replace( /\[\n\s*"/g, '[ "' ).
+                replace( /"\n\s*\]/g, '" ]' );
+};
+
 // Capitalize only the first letters in a string
 // passing in a delimiters means each "word" will be capitalized
 String.prototype.capitalize = function( delim ) {
