@@ -101,3 +101,39 @@ Game.Entity.Interactable.Egg = Game.Entity.Interactable.extend({
         }
     }
 });
+
+Game.Entity.Interactable.Tongue = Game.Entity.Interactable.extend({
+    type: 'Interactable.Tongue',
+    initialSprite: 'frog-tongue',
+    width: 20,
+    height: 2,
+    drawLayer: 2,
+    init: function( x, y, velocity ) {
+        this._super( x, y );
+        this.initialX = x;
+        this.velocity.x = velocity || 0;
+        this.initialVelocity = this.velocity.x;
+        this.ignoreGravity = true;
+    },
+    collideWith: function( entity, collisionTypes ) {
+        if ( entity.type == 'Terrain.Land' ) {
+            Game.destroyEntity( this );
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( Math.abs( this.pos.x - this.initialX ) >= this.width - 13 ) {
+            this.velocity.x = 0 - this.velocity.x;
+        }
+
+        if ( this.initialVelocity > 0 && this.velocity.x < 0 && Math.abs( this.pos.x - this.initialX ) <= 10 ) {
+            Game.hero.doneLicking();
+            Game.destroyEntity( this );
+        }
+        if ( this.initialVelocity < 0 && this.velocity.x > 0 && Math.abs( this.pos.x - this.initialX ) <= 10 ) {
+            Game.hero.doneLicking();
+            Game.destroyEntity( this );
+        }
+    }
+});

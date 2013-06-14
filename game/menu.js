@@ -78,7 +78,8 @@ Game.Menu.Transform = Game.Menu.extend({
     heroList: [
         Game.Entity.Hero.Block,
         Game.Entity.Hero.Man,
-        Game.Entity.Hero.Boat
+        Game.Entity.Hero.Boat,
+        Game.Entity.Hero.Frog
     ],
     selected: 0,
     rowSize: 4,

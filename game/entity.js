@@ -66,6 +66,10 @@ Game.Entity = Class.extend({
     //Animate method uses the entities dictionary of states
     //and cycles through sprites in each animation
     animate: function() {
+        if ( !this.states[ this.state ] ) {
+            console.log( this.state, this.type );
+        }
+
         var animation = this.states[ this.state ].animation,
             oldSprite = this.activeSprite,
             wasVisible = this.visible,
@@ -156,13 +160,6 @@ Game.Entity = Class.extend({
         //Change position based on velocity
         var positionChange = this.velocity.multiply( timeDiff );
         this.pos = this.pos.add( positionChange );
-        if ( this.type == 'Interactable.Bullet' ) {
-            /*
-                OLD 468 324 entity.js:107
-                VELOCITY -0.6 0.13636363636363635 entity.js:108
-                POS 458.336400000524 326.19627272715366 
-            */
-        }
     },
     invalidateRect: function() {
         var newX = this.pos.x,

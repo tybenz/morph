@@ -25,7 +25,7 @@ Game.Entity.Enemy = Game.Entity.extend({
     collideWith: function( entity, collisionTypes ) {
         if ( ( entity.type == 'Interactable.Rock' && ( entity.velocity.x > 0 || entity.velocity.y > 0 ) && collisionTypes )
             || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.pos.y < this.pos.y )
-            || entity.type == 'Interactable.Bullet' ) {
+            || entity.type == 'Interactable.Bullet' || entity.type == 'Interactable.Tongue' ) {
 
             this.changeState( 'dying' );
         }
@@ -351,12 +351,13 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
         this._super( timeDiff );
 
         if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Game.unit && this.pos.y < Game.hero.pos.y ) {
+            this.pos.x = Math.round( this.pos.x / Game.unit ) * Game.unit;
             this.changeState( 'falling' );
             this.fellOn = Date.now();
         }
 
-        if ( this.state == 'falling' ) {
-            this.invalidateRect( this.initialY, this.pos.x + this.width, this.pos.y + this.height, this.pos.x );
+        if ( this.state == 'falling' || this.state == 'dying' ) {
+            Game.invalidateRect( this.initialY, this.pos.x + this.width, this.pos.y + this.height, this.pos.x );
         }
 
         if ( this.activeSprite == 'enemy-dying-9' ) {

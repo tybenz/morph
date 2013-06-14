@@ -345,11 +345,12 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
         'still': Game.Entity.prototype.states.still,
         'blinking': Game.Entity.Hero.prototype.states.blinking,
         'transforming': Game.Entity.Hero.prototype.states.transforming,
-        'jumping': {}
+        'jumping': {},
+        'licking': {}
     },
     init: function( x, y ) {
         this._super( x, y );
-        this.gravity = new Game.Vector( 0, 0.0006 );
+        this.gravity = new Game.Vector( 0, 0.0008 );
     },
     up: function() {
         if ( !this.disableJump ) {
@@ -372,6 +373,10 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
                 if ( !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
                     this.pos.x += Game.unit;
                 }
+                // correct position if we jumped inside land
+                if ( this.hasCollisionWith( 'Terrain.Land', 'overlappingVertical' ) ) {
+                    this.pos.x -= Game.unit;
+                }
                 break;
             case 'licking':
                 this.activeSprite = 'frog-right-lick';
@@ -390,6 +395,10 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
                 if ( !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
                     this.pos.x -= Game.unit;
                 }
+                // correct position if we jumped inside land
+                if ( this.hasCollisionWith( 'Terrain.Land', 'overlappingVertical' ) ) {
+                    this.pos.x += Game.unit;
+                }
                 break;
             case 'licking':
                 this.activeSprite = 'frog-left-lick';
@@ -400,15 +409,40 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
             default: break;
         }
     },
+    lick: function() {
+        var tongue, rectSize = Game.unit / 9,
+            x = this.pos.x + this.width - rectSize * 4,
+            y = this.pos.y + rectSize * 4,
+            velocity = this.direction == 'left' ? -0.12 : 0.12;
+
+        if ( this.state.indexOf( 'licking' ) == -1 ) {
+            this.changeState( 'licking' );
+            if ( this.direction == 'left' ) {
+                x = this.pos.x - rectSize * 4;
+            }
+            var tongue = new Game.Entity.Interactable.Tongue( x, y, velocity );
+            Game.currentLevel.entities.push( tongue );
+        }
+    },
+    doneLicking: function() {
+        this.activeSprite = this.direction == 'left' ? 'frog-left' : 'frog-right';
+        this.changeState( 'still' );
+    },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
         if ( this.velocity.y < 0 ) {
             this.disableJump = true;
         }
+
         if ( this.state == 'jumping' && this.adjacentTo('Terrain.Land','bottom') && this.velocity.y >= 0 ) {
             this.changeState( 'still' );
             this.activeSprite = this.direction == 'left' ? 'frog-left' : 'frog-right';
             this.invalidateRect();
+        }
+
+        if ( !this.skipAction && !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
+            this.lick();
+            Game.keysDown[ 32 ] = 'locked';
         }
     }
 });

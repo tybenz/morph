@@ -1068,17 +1068,6 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "#00ff00", "transparent", "transparent" ],
         [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "#00ff00", "#00ff00", "transparent" ]
     ],
-    'frog-right-tongue': [
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
-    ],
     'frog-right-jump': [
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
@@ -1112,16 +1101,8 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
         [ "transparent", "#00ff00", "#00ff00", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
     ],
-    'frog-left-tongue': [
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+    'frog-tongue': [
+        [ "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff" ]
     ],
     'frog-left-jump': [
         [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],

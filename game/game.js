@@ -67,7 +67,8 @@ var Game = {
         var heroList = {
             'block': Game.Bitmaps[ 'block' ],
             'man-right': Game.Bitmaps[ 'man-right' ],
-            'boat-right': Game.Bitmaps[ 'boat-right' ]
+            'boat-right': Game.Bitmaps[ 'boat-right' ],
+            'frog-right': Game.Bitmaps[ 'frog-right' ]
         };
         for ( var i in heroList ) {
             Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], Game.unit / 3 ) );
@@ -356,7 +357,7 @@ var Game = {
     //Pass it two entities - if they have collisions we call
     //each of their collision handlers
     collider: function( a, b ) {
-            // Obtain collision dictionaries for the two objects.
+        // Obtain collision dictionaries for the two objects.
         var aCollisions = a.getCollisions( b ),
             bCollisions = b.getCollisions( a );
 
@@ -364,10 +365,10 @@ var Game = {
 	
         if ( aCollisions ) {
             a.collideWith( b, aCollisions );
-        }
-
-        if ( bCollisions ) {
             b.collideWith( a, bCollisions );
+        } else if ( bCollisions ) {
+            b.collideWith( a, bCollisions );
+            a.collideWith( b, aCollisions );
         }
     },
     //Add entity to the removal queue
