@@ -49,7 +49,8 @@ Game.Entity.Hero = Game.Entity.extend({
         } else {
             this.changeState( 'transforming' );
             setTimeout( function() {
-                var newHero = new newType( self.pos.x, self.pos.y ),
+                var oldX = self.pos.x,
+                    newHero = new newType( self.pos.x, self.pos.y ),
                     machine, wave, type;
 
                 Game.destroyEntity( self );
@@ -65,6 +66,8 @@ Game.Entity.Hero = Game.Entity.extend({
                         if ( wave ) {
                             wave = wave.entity;
                             Game.hero.pos = new Game.Vector( wave.pos.x, wave.pos.y );
+                        } else {
+                            Game.hero.pos.x = oldX + Game.unit * 2;
                         }
                     } else {
                         wave = Game.hero.adjacentTo( 'Terrain.Water', 'bottom' );
