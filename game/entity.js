@@ -66,8 +66,9 @@ Game.Entity = Class.extend({
     //Animate method uses the entities dictionary of states
     //and cycles through sprites in each animation
     animate: function() {
+
         if ( !this.states[ this.state ] ) {
-            console.log( this.state, this.type );
+            console.log( 'ERROR ANIMATING', this.state, this.type );
         }
 
         var animation = this.states[ this.state ].animation,

@@ -29,6 +29,9 @@ var Game = {
         //Initialize transform menu
         Game.transformMenu = new Game.Menu.Transform( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
 
+        //Initialize game over menu
+        Game.gameOverMenu = new Game.Menu.GameOver( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
+
         //Prepare canvas
         Game.canvas = document.createElement( 'canvas' );
         Game.canvas.width = Game.viewportWidth;
@@ -68,8 +71,11 @@ var Game = {
             'block': Game.Bitmaps[ 'block' ],
             'man-right': Game.Bitmaps[ 'man-right' ],
             'boat-right': Game.Bitmaps[ 'boat-right' ],
-            'frog-right': Game.Bitmaps[ 'frog-right' ]
+            'frog-right': Game.Bitmaps[ 'frog-right' ],
+            'restart': Game.Bitmaps[ 'restart' ],
+            'exit': Game.Bitmaps[ 'exit' ]
         };
+
         for ( var i in heroList ) {
             Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], Game.unit / 3 ) );
             Game.totalSprites++;
@@ -217,7 +223,7 @@ var Game = {
         Game.$actionButton.on( 'vmousedown', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 32,
+                keyCode: 88,
                 preventDefault: function( evt ) {}
             };
             Game.keyDownListener( evt );
@@ -225,7 +231,7 @@ var Game = {
         Game.$actionButton.on( 'vmouseup', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 32,
+                keyCode: 88,
                 preventDefault: function( evt ) {}
             };
             Game.keyUpListener( evt );
@@ -245,9 +251,9 @@ var Game = {
         }
         Game.lastUpdate = timestamp;
         if ( !Game.clickStep ) {
-            if ( !Game.startTransform ) {
+            if ( !Game.startTransform && !Game.paused ) {
                 Game.requestID = requestAnimationFrame( Game.loop ); 
-            } else {
+            } else if ( Game.startTransform ) {
                 Game.showTransformMenu();
             }
         }
@@ -616,6 +622,10 @@ var Game = {
     },
     nextGameFrame: function() {
         Game.requestID = requestAnimationFrame( Game.loop ); 
+    },
+    gameOver: function() {
+        Game.gameOverMenu.show();
+        Game.paused = true;
     },
     debugInvalidRect: false
 };

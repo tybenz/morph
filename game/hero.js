@@ -22,6 +22,13 @@ Game.Entity.Hero = Game.Entity.extend({
                 sequence: [ 'hero-scramble-1', 'hero-scramble-2', 'hero-scramble-3', 'hero-scramble-4', 'hero-scramble-5' ],
                 times: 'infinite'
             }
+        },
+        'dying': {
+            animation: {
+                delta: 40,
+                sequence: [ 'hero-dying-1', 'hero-dying-2', 'hero-dying-3', 'hero-dying-4', 'hero-dying-5', 'hero-dying-6', 'hero-dying-7', 'hero-dying-8', 'hero-dying-9' ],
+                times: 1
+            }
         }
     },
     init: function( x, y ) {
@@ -101,7 +108,7 @@ Game.Entity.Hero = Game.Entity.extend({
                 this.up();
                 Game.keysDown[ 38 ] = 'locked';
             }
-            if ( 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) { // SPACE
+            if ( 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) { // SPACE
                 var collisions = this.hasCollisionWith( 'Machine' );
                 if ( collisions && this.pos.x == collisions.entity.pos.x ) {
                     Game.openTransformMenu();
@@ -127,6 +134,18 @@ Game.Entity.Hero = Game.Entity.extend({
                 hero.changeState( oldState );
                 hero.visible = true;
             }, 1000 );
+        }
+
+        if ( this.activeSprite == 'hero-dying-9' ) {
+            this.visible = false;
+            Game.destroyEntity( this );
+            Game.gameOver();
+        }
+
+        if ( this.pos.y > Game.viewportHeight ) {
+            this.visible = false;
+            Game.destroyEntity( this );
+            Game.gameOver();
         }
     },
     collideWith: function( entity, collisionTypes ) {
@@ -162,6 +181,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     initialSprite: 'man-right',
     initialState: 'walking',
     states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
         'blinking': Game.Entity.Hero.prototype.states.blinking,
         'transforming': Game.Entity.Hero.prototype.states.transforming,
         'walking': { animation: null, actions: null }
@@ -170,20 +190,20 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
         this._super( timeDiff );
 
         //spacebar
-        if ( !this.skipAction && !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
             if ( this.holding ) {
                 this.actions.throw.call( this );
-                Game.keysDown[ 32 ] = 'locked';
+                Game.keysDown[ 88 ] = 'locked';
             } else {
                 var adjacent = this.adjacentTo( 'Interactable.Rock' ),
                     collision = this.hasCollisionWith( 'Interactable.Rock' );
 
                 if ( adjacent ) {
                     this.actions.pickup.call( this, adjacent.entity );
-                    Game.keysDown[ 32 ] = 'locked';
+                    Game.keysDown[ 88 ] = 'locked';
                 } else if ( collision ) {
                     this.actions.pickup.call( this, collision.entity );
-                    Game.keysDown[ 32 ] = 'locked';
+                    Game.keysDown[ 88 ] = 'locked';
                 }
             }
         }
@@ -256,6 +276,7 @@ Game.Entity.Hero.Block = Game.Entity.Hero.extend({
     initialSprite: 'block',
     initialState: 'walking',
     states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
         'blinking': Game.Entity.Hero.prototype.states.blinking,
         'transforming': Game.Entity.Hero.prototype.states.transforming,
         'walking': { animation: null, actions: null }
@@ -283,6 +304,7 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
     bulletInterval: 500,
     lastFired: Date.now(),
     states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
         'blinking': Game.Entity.Hero.prototype.states.blinking,
         'transforming': Game.Entity.Hero.prototype.states.transforming,
         'sailing': { animation: null, actions: null }
@@ -307,8 +329,14 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( !this.skipAction && !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
             this.shoot();
+            Game.keysDown[ 88 ] = 'locked';
+        }
+
+        if ( !this.skipAction && !Game.keysLocked && 90 in Game.keysDown && Game.keysDown[ 90 ] != 'locked' ) {
+            this.lockTarget();
+            Game.keysDown[ 90 ] = 'locked';
         }
 
         if ( this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
@@ -332,6 +360,20 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
         Game.currentLevel.entities.push( bullet );
         bullet.velocity = new Game.Vector( xVelocity, yVelocity );
     },
+    lockTarget: function() {
+        if ( this.direction == 'right' ) {
+            this.locked = this.locked || this;
+            for ( var i = 0; i < Game.currentLevel.entities.length; i++ ) {
+                entity = Game.currentLevel.entities[i];
+                if ( entity.type.indexOf( 'Enemy' ) === 0 && entity.type.indexOf( 'Bullet' ) == -1 && entity.pos.x > this.locked.pos.x ) {
+                    this.locked = entity;
+                    // console.log(entity.type,entity.pos.x,entity.pos.y);
+                    break;
+                }
+            }
+        } else {
+        }
+    },
     applyGravity: function( timeDiff ) {
         if ( !this.adjacentTo( 'Terrain.Water', 'bottom' ) && !this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
             var gravitationalForce = this.gravity.multiply( timeDiff );
@@ -345,6 +387,7 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
     initialSprite: 'frog-right',
     initialState: 'still',
     states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
         'still': Game.Entity.prototype.states.still,
         'blinking': Game.Entity.Hero.prototype.states.blinking,
         'transforming': Game.Entity.Hero.prototype.states.transforming,
@@ -443,9 +486,9 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
             this.invalidateRect();
         }
 
-        if ( !this.skipAction && !Game.keysLocked && 32 in Game.keysDown && Game.keysDown[ 32 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
             this.lick();
-            Game.keysDown[ 32 ] = 'locked';
+            Game.keysDown[ 88 ] = 'locked';
         }
     }
 });

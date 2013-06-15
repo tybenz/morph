@@ -337,7 +337,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
             if ( this.state == 'falling' || this.state == 'climbing' ) {
                 for ( var i = this.initialY; i < this.pos.y; i++ ) {
-                    Game.ctx.drawImage( Game.Sprites[ 'spider-web' ], this.pos.x + ( Game.unit / 9 ) * 4, i );
+                    Game.ctx.drawImage( Game.Sprites[ 'spider-web' ], this.pos.x + ( Game.unit / 9 ) * 4 - Game.viewportOffset, i );
                 }
             }
         }

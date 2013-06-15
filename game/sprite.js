@@ -1114,5 +1114,127 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "#00ff00", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent" ]
+    ],
+    'hero-dying-1': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "transparent" ]
+    ],
+    'hero-dying-2': [
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent" ]
+    ],
+    'hero-dying-3': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent" ]
+    ],
+    'hero-dying-4': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ]
+    ],
+    'hero-dying-5': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent" ]
+    ],
+    'hero-dying-6': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "#00ff00", "transparent" ]
+    ],
+    'hero-dying-7': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "#00ff00" ],
+        [ "#00ff00", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent" ]
+    ],
+    'hero-dying-8': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "transparent", "#00ff00", "transparent", "#00ff00", "#00ff00", "#00ff00" ]
+    ],
+    'hero-dying-9': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ]
+    ],
+    'restart': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'exit': [
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)", "transparent", "#00ff00" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "rgba(0,0,0,0)", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
     ]
+
 };

@@ -3,14 +3,62 @@
 Game.Menu = Class.extend({
     titleText: 'MENU',
     init: function( left, top, width, height, lineWidth ) {
-        this.top = top;
+        this.x = left;
+        this.y = top;
         this.padding = 40;
+        this.paddingLeft = this.padding + 50;
         this.headerHeight = 30;
         this.paddingTop = this.headerHeight + this.padding;
-        this.left = left;
         this.width = width;
         this.height = height;
         this.lineWidth = lineWidth || 1;
+    },
+    data: [],
+    show: function() {
+        var self = this;
+
+        this.requestID = requestAnimationFrame(function() {
+            self.loop();
+        });
+    },
+    exit: function() {},
+    loop: function() {
+        var self = this;
+
+        // Left
+        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) {
+            this.left();
+            Game.keysDown[37] = 'locked';
+        }
+        // Up
+        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) {
+            this.up();
+            Game.keysDown[38] = 'locked';
+        }
+        // Right
+        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) {
+            this.right();
+            Game.keysDown[39] = 'locked';
+        }
+        // Down
+        if ( 40 in Game.keysDown && Game.keysDown[ 40 ] != 'locked' ) {
+            this.down();
+            Game.keysDown[40] = 'locked';
+        }
+
+        // Enter
+        if ( 13 in Game.keysDown && Game.keysDown[ 13 ] != 'locked' ) {
+            // Choose and exit
+            this.exit();
+        } else {
+            Game.invalidateRect( 0, Game.viewportWidth + Game.viewportOffset, Game.viewportHeight, Game.viewportOffset );
+            Game.render();
+            this.render();
+
+            this.requestID = requestAnimationFrame(function() {
+                self.loop();
+            });
+        }
     },
     render: function() {
         this.overlay();
@@ -19,14 +67,59 @@ Game.Menu = Class.extend({
 
         this.contents();
     },
+    selected: 0,
+    rowSize: 2,
+    selectionPadding: 7,
+    selectionLineWidth: 2,
+    selectionColor: '#00ff00',
+    itemWidth: Game.unit * 3,
+    itemHeight: Game.unit * 3,
     contents: function() {
         this.title();
+
+        var item,
+            spacing = 6 * Game.unit,
+            x, y;
+
+        for ( var i = 0; i < this.data.length; i++ ) {
+            item = this.data[i];
+            x = this.x + this.paddingLeft + ( i % this.rowSize ) * spacing;
+            y = this.y + this.paddingTop + spacing * Math.floor( i / this.rowSize );
+            if ( this.selected == i ) {
+                if ( item.sprite ) {
+
+                    this.drawRectangle( x - this.selectionPadding,
+                                        y - this.selectionPadding,
+                                        this.itemWidth + this.selectionPadding * 2 - 2,
+                                        this.itemHeight + this.selectionPadding * 2 - 2,
+                                        this.selectionLineWidth,
+                                        this.selectionColor );
+
+                } else {
+
+                    this.drawRectangle( x - this.selectionPadding,
+                                        y - this.selectionPadding,
+                                        Game.ctx.measureText( item.text ).width,
+                                        30,
+                                        this.selectionLineWidth,
+                                        this.selectionColor );
+
+                }
+
+            }
+            if ( item.sprite ) {
+                Game.ctx.drawImage( Game.Sprites[ item.sprite ], x, y );
+            } else if ( item.text ) {
+                Game.ctx.textAlign = 'left';
+                Game.ctx.fillText( item.text, x, y );
+            }
+        }
     },
     title: function() {
         Game.ctx.font = 'normal 20px uni05';
         Game.ctx.fillStyle = '#000';
         Game.ctx.textAlign = 'center';
-        Game.ctx.fillText( this.titleText, Game.viewportWidth / 2, this.top + 24 );
+        Game.ctx.fillText( this.titleText, Game.viewportWidth / 2, this.y + 24 );
     },
     overlay: function() {
         Game.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
@@ -34,11 +127,11 @@ Game.Menu = Class.extend({
     },
     container: function() {
         Game.ctx.fillStyle = '#000';
-        Game.ctx.fillRect( this.left, this.top, this.width, this.height );
+        Game.ctx.fillRect( this.x, this.y, this.width, this.height );
 
-        this.drawRectangle( this.left, this.top, this.width, this.height, this.lineWidth, '#00ff00' );
+        this.drawRectangle( this.x, this.y, this.width, this.height, this.lineWidth, '#00ff00' );
         // Header
-        Game.ctx.fillRect( this.left + this.lineWidth, this.top + this.lineWidth, this.width - this.lineWidth, this.headerHeight );
+        Game.ctx.fillRect( this.x + this.lineWidth, this.y + this.lineWidth, this.width - this.lineWidth, this.headerHeight );
     },
     //Draws four sides of a rectangle to make it hollow
     //path's stroke did not render colors well
@@ -58,6 +151,26 @@ Game.Menu = Class.extend({
         Game.ctx.fillRect( left, bottom, width, lineWidth );
         // TL -> BL
         Game.ctx.fillRect( left, top, lineWidth, height );
+    },
+    up: function() {
+        if ( this.selected - this.rowSize >= 0 ) {
+            this.selected -= this.rowSize;
+        }
+    },
+    down: function() {
+        if ( this.selected + this.rowSize < this.data.length ) {
+            this.selected += this.rowSize;
+        }
+    },
+    left: function() {
+        if ( this.selected - 1 >= 0 ) {
+            this.selected--;
+        }
+    },
+    right: function() {
+        if ( this.selected + 1 < this.data.length ) {
+            this.selected++;
+        }
     }
 });
 
@@ -65,95 +178,57 @@ Game.Menu.Pause = Game.Menu.extend({
     titleText: 'PAUSE'
 });
 
+Game.Menu.GameOver = Game.Menu.extend({
+    titleText: 'GAME OVER',
+    init: function( left, top, width, height, lineWidth ) {
+        this._super( left, top, width, height, lineWidth );
+        this.paddingLeft = 185;
+        this.paddingTop = 110;
+    },
+    data: [
+        { sprite: 'restart-double' },
+        { sprite: 'exit-double' }
+    ],
+    exit: function() {
+        if ( this.selected == 0 ) {
+            Game.paused = false;
+            Game.Inventory.health = Game.Inventory.maxHealth;
+            Game.lastUpdate = null;
+            Game.stop();
+            Game.init( 'intro' );
+        }
+    }
+});
+
 Game.Menu.Transform = Game.Menu.extend({
     titleText: 'MORPH',
     show: function() {
         var self = this;
-        this.hidden = false;
 
         this.requestID = requestAnimationFrame(function() {
             self.loop();
         });
     },
-    heroList: [
-        Game.Entity.Hero.Block,
-        Game.Entity.Hero.Man,
-        Game.Entity.Hero.Boat,
-        Game.Entity.Hero.Frog
+    data: [
+        {
+            className: Game.Entity.Hero.Block,
+            sprite: 'block-double'
+        },
+        {
+            className: Game.Entity.Hero.Man,
+            sprite: 'man-right-double'
+        },
+        {
+            className: Game.Entity.Hero.Boat,
+            sprite: 'boat-right-double'
+        },
+        {
+            className: Game.Entity.Hero.Frog,
+            sprite: 'frog-right-double'
+        }
     ],
-    selected: 0,
     rowSize: 4,
-    contents: function() {
-        this._super();
-
-        var hero,
-            spacing = 6 * Game.unit,
-            x, y;
-
-        for ( var i = 0; i < this.heroList.length; i++ ) {
-            hero = this.heroList[i];
-            x = this.left + this.padding + 50 + ( i % this.rowSize ) * spacing;
-            y = this.top + this.paddingTop + spacing * Math.floor( i / this.rowSize );
-            if ( this.selected == i ) {
-                this.drawRectangle( x - 7, y - 7, 3 * Game.unit + 12, 3 * Game.unit + 12, 2, '#00ff00' );
-            }
-            Game.ctx.drawImage( Game.Sprites[ hero.prototype.initialSprite + '-double' ], x, y );
-        }
-    },
-    loop: function() {
-        var self = this;
-
-        //Left
-        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) {
-            this.moveCursorLeft();
-            Game.keysDown[37] = 'locked';
-        }
-        //Up
-        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) {
-            this.moveCursorUp();
-            Game.keysDown[38] = 'locked';
-        }
-        //Right
-        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) {
-            this.moveCursorRight();
-            Game.keysDown[39] = 'locked';
-        }
-        //Down
-        if ( 40 in Game.keysDown && Game.keysDown[ 40 ] != 'locked' ) {
-            this.moveCursorDown();
-            Game.keysDown[40] = 'locked';
-        }
-        //Space
-        if ( 13 in Game.keysDown && Game.keysDown[ 13 ] != 'locked' ) {
-            Game.startTransformAnimation( this.heroList[ this.selected ] );
-        } else {
-            Game.invalidateRect( 0, Game.viewportWidth + Game.viewportOffset, Game.viewportHeight, Game.viewportOffset );
-            Game.render( 0 );
-            this.render();
-
-            this.requestID = requestAnimationFrame(function() {
-                self.loop();
-            });
-        }
-    },
-    moveCursorUp: function() {
-        if ( this.selected - this.rowSize >= 0 ) {
-            this.selected -= this.rowSize;
-        }
-    },
-    moveCursorDown: function() {
-        if ( this.selected + this.rowSize < this.heroList.length ) {
-            this.selected += this.rowSize;
-        }
-    },
-    moveCursorLeft: function() {
-        if ( this.selected - 1 >= 0 ) {
-            this.selected--;
-        }
-    },
-    moveCursorRight: function() {
-        if ( ( this.selected + 1 ) % this.rowSize < this.rowSize && this.selected + 1 < this.heroList.length ) {
-            this.selected++;
-        }
-    },
+    exit: function() {
+        Game.startTransformAnimation( this.data[ this.selected ].className );
+    }
 });
