@@ -346,22 +346,22 @@ var Game = {
             //Shift viewport if hero's pos is past the shift boundary
             if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
                 Game.shiftViewport( 'left' );
-            } else if ( Game.hero.pos.x <= Game.viewportShiftBoundary.right && Game.viewportOffset ) {
+            } else if ( Game.hero.pos.x < Game.viewportShiftBoundary.right && Game.viewportOffset ) {
                 Game.shiftViewport( 'right' );
             }
         }
     },
     shiftViewport: function( direction ) {
         if ( direction == 'left' ) {
-            Game.viewportShiftLeft = true;
-            Game.viewportShiftBoundary.left += Game.unit;
-            Game.viewportShiftBoundary.right += Game.unit;
-            Game.viewportOffset += Game.unit;
+            Game.viewportShiftLeft = Game.hero.pos.x - Game.viewportShiftBoundary.left;
+            Game.viewportShiftBoundary.left += Game.viewportShiftLeft;
+            Game.viewportShiftBoundary.right += Game.viewportShiftLeft;
+            Game.viewportOffset += Game.viewportShiftLeft;//Game.unit;
 
             // Load entities in
             var i = 0,
                 entity,
-                tileOffset = Game.viewportOffset / Game.unit,
+                tileOffset = Math.ceil( Game.viewportOffset / Game.unit ),
                 column = Game.viewportTileWidth + tileOffset - 1;
 
             for ( i = 0; i < Game.currentLevel.entityGrid.length; i++ ) {
@@ -372,11 +372,11 @@ var Game = {
             }
 
         } else {
-            Game.viewportShiftRight = true;
-            Game.viewportShiftBoundary.left -= Game.unit;
-            Game.viewportShiftBoundary.right -= Game.unit;
-            if ( Game.viewportOffset - Game.unit >= 0 ) {
-                Game.viewportOffset -= Game.unit;
+            Game.viewportShiftRight = Game.viewportShiftBoundary.right - Game.hero.pos.x;
+            Game.viewportShiftBoundary.left -= Game.viewportShiftRight;
+            Game.viewportShiftBoundary.right -= Game.viewportShiftRight;
+            if ( Game.viewportOffset - Game.viewportShiftRight >= 0 ) {
+                Game.viewportOffset -= Game.viewportShiftRight;
             }
         }
     },
@@ -458,27 +458,39 @@ var Game = {
 
             // Handle viewport shift
             if ( Game.viewportShiftLeft ) {
-                Game.viewportShiftLeft = false;
                 // Blit pixels
-                imageData = Game.ctx.getImageData( Game.unit, 0, Game.viewportWidth - Game.unit, Game.viewportHeight );
+                var top = 0,
+                    left = Game.viewportShiftLeft,
+                    width = Game.viewportWidth - left,
+                    height = Game.viewportHeight;
+
+                imageData = Game.ctx.getImageData( left, top, width, height );
                 Game.ctx.putImageData( imageData, 0, 0 );
-                Game.ctx.clearRect( Game.viewportWidth - Game.unit, 0, Game.unit, Game.viewportHeight );
+                Game.ctx.clearRect( width, top, left, height );
 
                 invalidTop = 0;
-                invalidWidth = Game.viewportWidth - invalidLeft;
-                invalidHeight = Game.viewportHeight;
-            } else if ( Game.viewportShiftRight ) {
-                Game.viewportShiftRight = false;
-
-                // Blit pixels
-                imageData = Game.ctx.getImageData( 0, 0, Game.viewportWidth - Game.unit, Game.viewportHeight );
-                Game.ctx.putImageData( imageData, Game.unit, 0 );
-                Game.ctx.clearRect( 0, 0, Game.unit, Game.viewportHeight );
-
                 invalidLeft = 0;
-                invalidTop = 0;
-                invalidWidth = Game.invalidRect.right;
+                invalidWidth = Game.viewportWidth;
                 invalidHeight = Game.viewportHeight;
+
+                Game.viewportShiftLeft = false;
+            } else if ( Game.viewportShiftRight ) {
+                // Blit pixels
+                var top = 0,
+                    left = 0,
+                    width = Game.viewportWidth - Game.viewportShiftRight,
+                    height = Game.viewportHeight;
+
+                imageData = Game.ctx.getImageData( left, top, width, height );
+                Game.ctx.putImageData( imageData, Game.viewportShiftRight, 0 );
+                Game.ctx.clearRect( 0, 0, Game.viewportShiftRight, height );
+
+                invalidTop = 0;
+                invalidLeft = 0;
+                invalidWidth = Game.viewportWidth;
+                invalidHeight = Game.viewportHeight;
+
+                Game.viewportShiftRight = false;
             }
 
             if ( Game.debugInvalidRect ) {
