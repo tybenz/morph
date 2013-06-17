@@ -510,13 +510,6 @@ var Game = {
         //Drawing health meter
         //TODO - refactor HUD rendering
         if ( !Game.HUDOff ) {
-            Game.ctx.save();
-            Game.ctx.beginPath();
-            Game.ctx.rect( 0, 0, Game.viewportWidth, Game.unit * 2 );
-            Game.ctx.clip();
-
-            Game.ctx.fillStyle = "#000";
-            Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.unit * 2 );
 
             for ( i = 0; i < Game.Inventory.maxHealth; i++ ) {
                 if ( i % 2 == 0 && i < Game.Inventory.health ) {
@@ -528,7 +521,6 @@ var Game = {
                 }
             }
 
-            Game.ctx.restore();
         }
     },
     //Iterate through level grid and instantiate all entities based on class name

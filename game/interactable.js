@@ -41,7 +41,6 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         } else {
             frictionalForce = ( new Game.Vector( 0.0003, 0 ) ).multiply( timeDiff );
         }
-        // TODO - only apply when on top of ground
         if ( this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
             if ( this.velocity.x != 0 ) {
                 this.velocity = this.velocity.add( frictionalForce );

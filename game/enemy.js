@@ -211,7 +211,6 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
         this.velocity.x = -0.09;
     },
     dropEgg: function() {
-        // TODO - calculate when to lay the egg based on vertical distance form hero
         if ( Math.abs( Game.hero.pos.x - this.pos.x ) < Game.unit * 4 ) {
             var eggWidth = Game.Entity.Interactable.Egg.prototype.width,
                 x = this.pos.x + ( Game.unit - eggWidth ) / 2,
@@ -228,7 +227,6 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
         if ( this.state == 'dying' ) {
             this.ignoreGravity = false;
         }
-        // TODO - check for on top of ground to destroy entity
         if ( this.state == 'dying' && this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
             this.visible = false;
             Game.destroyEntity( this );
