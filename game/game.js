@@ -342,20 +342,41 @@ var Game = {
                     ent.invalidateRect();
                 }
             }
-        
+
             //Shift viewport if hero's pos is past the shift boundary
             if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
-                Game.viewportShiftLeft = true;
-                Game.viewportShiftBoundary.left += Game.unit;
-                Game.viewportShiftBoundary.right += Game.unit;
-                Game.viewportOffset += Game.unit;
+                Game.shiftViewport( 'left' );
             } else if ( Game.hero.pos.x <= Game.viewportShiftBoundary.right && Game.viewportOffset ) {
-                Game.viewportShiftRight = true;
-                Game.viewportShiftBoundary.left -= Game.unit;
-                Game.viewportShiftBoundary.right -= Game.unit;
-                if ( Game.viewportOffset - Game.unit >= 0 ) {
-                    Game.viewportOffset -= Game.unit;
+                Game.shiftViewport( 'right' );
+            }
+        }
+    },
+    shiftViewport: function( direction ) {
+        if ( direction == 'left' ) {
+            Game.viewportShiftLeft = true;
+            Game.viewportShiftBoundary.left += Game.unit;
+            Game.viewportShiftBoundary.right += Game.unit;
+            Game.viewportOffset += Game.unit;
+
+            // Load entities in
+            var i = 0,
+                entity,
+                tileOffset = Game.viewportOffset / Game.unit,
+                column = Game.viewportTileWidth + tileOffset - 1;
+
+            for ( i = 0; i < Game.currentLevel.entityGrid.length; i++ ) {
+                entity = Game.currentLevel.entityGrid[ i ][ column ];
+                if ( entity ) {
+                    Game.currentLevel.entities.push( entity );
                 }
+            }
+
+        } else {
+            Game.viewportShiftRight = true;
+            Game.viewportShiftBoundary.left -= Game.unit;
+            Game.viewportShiftBoundary.right -= Game.unit;
+            if ( Game.viewportOffset - Game.unit >= 0 ) {
+                Game.viewportOffset -= Game.unit;
             }
         }
     },
@@ -518,8 +539,10 @@ var Game = {
 
         Game.terrainGroup = null;
 
-        for ( i in Game.currentLevel.grid ) {
-            for ( j in Game.currentLevel.grid[ i ] ) {
+        Game.currentLevel.entityGrid = [];
+        for ( var i = 0; i < Game.currentLevel.grid.length; i++ ) {
+            Game.currentLevel.entityGrid[i] = [];
+            for ( var j = 0; j < Game.currentLevel.grid[i].length; j++ ) {
                 entities = Game.currentLevel.grid[i][j].split( '|' );
                 for ( k = 0; k < entities.length; k++ ) {
                     entityString = entities[k];
@@ -534,14 +557,20 @@ var Game = {
                                 Game.currentLevel.entities.push( entity );
                             }
                         } else {
-                            Game.currentLevel.entities.push( entity );
+                            if ( Game.terrainGroup || j < Game.viewportTileWidth ) {
+                                Game.currentLevel.entities.push( entity );
+                            }
                             Game.terrainGroup = null;
                         }
                         if ( entityString.indexOf( 'hero' ) != -1 ) {
-                            Game.hero = entity
+                            Game.hero = entity;
                         }
+                        Game.currentLevel.entityGrid[i][j] = entity;
                     } else if ( Game.terrainGroup ) {
                         Game.terrainGroup = null;
+                        Game.currentLevel.entityGrid[i][j] = null;
+                    } else {
+                        Game.currentLevel.entityGrid[i][j] = null;
                     }
                 }
             }

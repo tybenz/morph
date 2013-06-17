@@ -367,7 +367,6 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
                 entity = Game.currentLevel.entities[i];
                 if ( entity.type.indexOf( 'Enemy' ) === 0 && entity.type.indexOf( 'Bullet' ) == -1 && entity.pos.x > this.locked.pos.x ) {
                     this.locked = entity;
-                    // console.log(entity.type,entity.pos.x,entity.pos.y);
                     break;
                 }
             }
