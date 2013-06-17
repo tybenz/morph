@@ -75,6 +75,9 @@ Game.Entity.Hero = Game.Entity.extend({
                             Game.hero.pos = new Game.Vector( wave.pos.x, wave.pos.y );
                         } else {
                             Game.hero.pos.x = oldX + Game.unit * 2;
+                            if ( Game.hero.hasCollisionWith( 'Terrain.Land' ) ) {
+                                Game.hero.pos.x = oldX;
+                            }
                         }
                     } else {
                         wave = Game.hero.adjacentTo( 'Terrain.Water', 'bottom' );
