@@ -358,16 +358,15 @@ var Game = {
             Game.viewportShiftBoundary.right += Game.viewportShiftLeft;
             Game.viewportOffset += Game.viewportShiftLeft;//Game.unit;
 
-            Game.lastAddedColumn = Game.lastAddedColumn || Game.viewportTileWidth;
+            Game.lastAddedColumn = Game.lastAddedColumn || Game.viewportTileWidth - 1;
 
             // Load entities in
             var i, j,
                 entity,
                 tileOffset = Math.ceil( Game.viewportOffset / Game.unit ),
-                column = Game.lastAddedColumn + tileOffset - 1;
+                column = Game.viewportTileWidth + tileOffset;
 
             for ( i = Game.lastAddedColumn + 1; i <= column; i++ ) {
-                console.log(i +' ADDED!');
                 for ( j = 0; j < Game.currentLevel.entityGrid.length; j++ ) {
                     entity = Game.currentLevel.entityGrid[ j ][ i ];
                     if ( entity ) {
@@ -548,6 +547,7 @@ var Game = {
         Game.currentLevel.entities = [];
 
         Game.terrainGroup = null;
+        Game.terrainGroupType = '';
 
         Game.currentLevel.entityGrid = [];
         for ( var i = 0; i < Game.currentLevel.grid.length; i++ ) {
@@ -559,11 +559,12 @@ var Game = {
                     if ( entityString != 'blank' ) {
                         // Each entity gets initialized and put into our level's entity list
                         entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
-                        if ( entityString == 'terrain.land' ) {
-                            if ( Game.terrainGroup ) {
+                        if ( entityString == 'terrain.land' || entityString == 'terrain.water' ) {
+                            if ( Game.terrainGroup && entityString == Game.terrainGroupType ) {
                                 Game.terrainGroup.attach( [ entity ] );
                             } else {
                                 Game.terrainGroup = entity;
+                                Game.terrainGroupType = entityString;
                                 Game.currentLevel.entities.push( entity );
                             }
                         } else {
@@ -576,10 +577,8 @@ var Game = {
                             Game.hero = entity;
                         }
                         Game.currentLevel.entityGrid[i][j] = entity;
-                    } else if ( Game.terrainGroup ) {
-                        Game.terrainGroup = null;
-                        Game.currentLevel.entityGrid[i][j] = null;
                     } else {
+                        Game.terrainGroup = null;
                         Game.currentLevel.entityGrid[i][j] = null;
                     }
                 }
