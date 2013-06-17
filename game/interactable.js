@@ -107,12 +107,14 @@ Game.Entity.Interactable.Tongue = Game.Entity.Interactable.extend({
     width: 20,
     height: 2,
     drawLayer: 2,
-    init: function( x, y, velocity ) {
+    yOffset: ( Game.unit / 9 ) * 4,
+    init: function( x, y, frog, velocity ) {
         this._super( x, y );
         this.initialX = x;
         this.velocity.x = velocity || 0;
         this.initialVelocity = this.velocity.x;
         this.ignoreGravity = true;
+        this.frog = frog;
     },
     collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Terrain.Land' ) {
@@ -121,6 +123,12 @@ Game.Entity.Interactable.Tongue = Game.Entity.Interactable.extend({
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
+
+        if ( this.frog.state.indexOf( 'jumping' ) != -1 ) {
+            this.pos.y = this.frog.pos.y + this.yOffset - ( Game.unit / 9 ) * 2;
+        } else {
+            this.pos.y = this.frog.pos.y + this.yOffset;
+        }
 
         if ( Math.abs( this.pos.x - this.initialX ) >= this.width - 13 ) {
             this.velocity.x = 0 - this.velocity.x;

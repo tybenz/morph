@@ -358,7 +358,14 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             Game.invalidateRect( this.initialY, this.pos.x + this.width, this.pos.y + this.height, this.pos.x );
         }
 
-        if ( this.activeSprite == 'enemy-dying-9' ) {
+        if ( this.state == 'dying' ) {
+            if ( this.velocity.y < 0 ) {
+                this.velocity.y = 0;
+            }
+            this.ignoreGravity = false;
+        }
+
+        if ( this.state == 'dying' && this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
             this.visible = false;
             Game.destroyEntity( this );
         }

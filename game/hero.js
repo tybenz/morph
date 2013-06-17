@@ -394,7 +394,8 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
         'blinking': Game.Entity.Hero.prototype.states.blinking,
         'transforming': Game.Entity.Hero.prototype.states.transforming,
         'jumping': {},
-        'licking': {}
+        'licking': {},
+        'licking-jumping': {},
     },
     init: function( x, y ) {
         this._super( x, y );
@@ -464,17 +465,26 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
             velocity = this.direction == 'left' ? -0.12 : 0.12;
 
         if ( this.state.indexOf( 'licking' ) == -1 ) {
-            this.changeState( 'licking' );
+            if ( this.state == 'jumping' ) {
+                this.changeState( 'licking-jumping' );
+            } else {
+                this.changeState( 'licking' );
+            }
             if ( this.direction == 'left' ) {
                 x = this.pos.x - rectSize * 4;
             }
-            var tongue = new Game.Entity.Interactable.Tongue( x, y, velocity );
+            var tongue = new Game.Entity.Interactable.Tongue( x, y, this, velocity );
             Game.currentLevel.entities.push( tongue );
         }
     },
     doneLicking: function() {
-        this.activeSprite = this.direction == 'left' ? 'frog-left' : 'frog-right';
-        this.changeState( 'still' );
+        if ( this.state == 'licking-jumping' ) {
+            this.activeSprite = this.direction == 'left' ? 'frog-left-jump' : 'frog-right-jump';
+            this.changeState( 'jumping' );
+        } else {
+            this.activeSprite = this.direction == 'left' ? 'frog-left' : 'frog-right';
+            this.changeState( 'still' );
+        }
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
