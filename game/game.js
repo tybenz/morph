@@ -358,18 +358,24 @@ var Game = {
             Game.viewportShiftBoundary.right += Game.viewportShiftLeft;
             Game.viewportOffset += Game.viewportShiftLeft;//Game.unit;
 
+            Game.lastAddedColumn = Game.lastAddedColumn || Game.viewportTileWidth;
+
             // Load entities in
-            var i = 0,
+            var i, j,
                 entity,
                 tileOffset = Math.ceil( Game.viewportOffset / Game.unit ),
-                column = Game.viewportTileWidth + tileOffset - 1;
+                column = Game.lastAddedColumn + tileOffset - 1;
 
-            for ( i = 0; i < Game.currentLevel.entityGrid.length; i++ ) {
-                entity = Game.currentLevel.entityGrid[ i ][ column ];
-                if ( entity ) {
-                    Game.currentLevel.entities.push( entity );
+            for ( i = Game.lastAddedColumn + 1; i <= column; i++ ) {
+                console.log(i +' ADDED!');
+                for ( j = 0; j < Game.currentLevel.entityGrid.length; j++ ) {
+                    entity = Game.currentLevel.entityGrid[ j ][ i ];
+                    if ( entity ) {
+                        Game.currentLevel.entities.push( entity );
+                    }
                 }
             }
+            Game.lastAddedColumn = column;
 
         } else {
             Game.viewportShiftRight = Game.viewportShiftBoundary.right - Game.hero.pos.x;
