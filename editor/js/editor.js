@@ -13,6 +13,7 @@ Editor = {
     $rectangle: $( '#rectangle-tool' ),
     $addColumn: $( '#add-column' ),
     $removeColumn: $( '#remove-column' ),
+    $input: $( '#columns' ),
     totalImages: 0,
     activeTool: 'fill',
     init: function() {
@@ -54,6 +55,8 @@ Editor = {
         this.$addColumn.on( 'click', Editor.addColumn );
 
         this.$removeColumn.on( 'click', Editor.removeColumn );
+
+        this.$input.on( 'input', Editor.adjustColumns );
 
         $( document ).on( 'keydown', function( evt ) {
             if ( evt.keyCode == 83 && ( evt.ctrlKey || evt.metaKey ) ) {
@@ -123,7 +126,7 @@ Editor = {
         }
     },
     rectangleStop: function( dt, dx, dy ) {
-        var left = dt.startX - Editor.$game.offset().left,
+        var left = dt.startX - Editor.$game.offset().left + Editor.$game.scrollLeft(),
             top = dt.startY - Editor.$game.offset().top,
             right = left + dx,
             bottom = top + dy,
@@ -203,6 +206,7 @@ Editor = {
             Editor.level[i].push( 'blank' );
         }
         Editor.width++;
+        Editor.$input.val( Editor.width );
 
         Editor.canvas.width = Editor.width * Game.unit;
         Editor.drawLevel();
@@ -213,9 +217,39 @@ Editor = {
             Editor.level[i].pop();
         }
         Editor.width--;
+        Editor.$input.val( Editor.width );
 
         Editor.canvas.width = Editor.width * Game.unit;
         Editor.drawLevel();
+    },
+    adjustColumns: function() {
+        var i = 0,
+            val = parseInt( Editor.$input.val() );
+
+        if ( val && val > 50 ) {
+
+            var diff = val - Editor.width;
+
+            if ( diff > 0 ) {
+                for ( ; i < diff; i++ ) {
+                    for ( var j in Editor.level ) {
+                        Editor.level[j].push( 'blank' );
+                    }
+                }
+            } else {
+                for ( ; i < diff; i++ ) {
+                    for ( var j in Editor.level ) {
+                        editor.level[j].pop();
+                    }
+                }
+            }
+
+            Editor.width = val;
+
+            Editor.canvas.width = Editor.width * Game.unit;
+            Editor.drawLevel();
+
+        }
     },
     initSprites: function () {
         Game.initSprites();

@@ -81,3 +81,19 @@
 #remove-column {
   margin-top: -190px;
 }
+
+#columns {
+  border: none;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  margin-top: -250px;
+  margin-right: -485px;
+  width: 28px;
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+}
