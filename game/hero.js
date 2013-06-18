@@ -79,6 +79,11 @@ Game.Entity.Hero = Game.Entity.extend({
                                 Game.hero.pos.x = oldX;
                             }
                         }
+                    } else if ( type == 'Hero.Plane' ) {
+                        if ( !Game.hero.below( 'Terrain.Land' ) ) {
+                            Game.keysLocked = true;
+                            Game.hero.velocity.y = -0.3;
+                        }
                     } else {
                         wave = Game.hero.adjacentTo( 'Terrain.Water', 'bottom' );
                         if ( wave ) {
@@ -110,6 +115,10 @@ Game.Entity.Hero = Game.Entity.extend({
             if ( !Game.keysLocked && !this.doNotMove && 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
                 this.up();
                 Game.keysDown[ 38 ] = 'locked';
+            }
+            if ( !Game.keysLocked && !this.doNotMove && 40 in Game.keysDown && Game.keysDown[ 40 ] != 'locked' ) { // UP
+                this.down();
+                Game.keysDown[ 40 ] = 'locked';
             }
             if ( 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) { // SPACE
                 var collisions = this.hasCollisionWith( 'Machine' );
@@ -167,6 +176,8 @@ Game.Entity.Hero = Game.Entity.extend({
                 Game.destroyEntity( entity );
                 Game.Inventory.incrementCurrency();
                 break;
+            case 'Terrain.Portal':
+                Game.switchLevel( entity.toLevel );
             default: break;
         }
 
@@ -501,6 +512,80 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
         if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
             this.lick();
             Game.keysDown[ 88 ] = 'locked';
+        }
+    }
+});
+
+Game.Entity.Hero.Plane = Game.Entity.Hero.extend({
+    type: 'Hero.Plane',
+    initialSprite: 'plane-right',
+    initialState: 'still',
+    bulletSpeed: 0.3,
+    bulletInterval: 300,
+    lastFired: Date.now(),
+    beginLandingSequence: true,
+    states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
+        'still': Game.Entity.prototype.states.still,
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming
+    },
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+            this.shoot();
+            Game.keysDown[ 88 ] = 'locked';
+        }
+
+        if ( Game.viewportOffset >= Game.viewportShiftBuffer && this.beginLandingSequence ) {
+            this.velocity.x = 0.1;
+            this.beginLandingSequence = false;
+        }
+    },
+    up: function() {
+        if ( !this.adjacentTo( 'Terrain.Land', 'top' ) && !this.adjacentToLevelEdge( 'top' ) ) {
+            this.pos.y -= Game.unit;
+        }
+    },
+    down: function() {
+        if ( !this.adjacentTo( 'Terrain.Land', 'bottom' ) && !this.adjacentToLevelEdge( 'bottom' ) ) {
+            this.pos.y += Game.unit;
+        }
+    },
+    left: function() {
+        if ( this.pos.x - Game.unit >= Game.viewportOffset && !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
+            this.pos.x -= Game.unit;
+        }
+    },
+    right: function() {
+        if ( ( this.pos.x + Game.unit < Game.viewportOffset + Game.viewportWidth ) && !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
+            this.pos.x += Game.unit;
+        }
+    },
+    shoot: function() {
+        var xVelocity = this.bulletSpeed;
+        if ( ( Date.now() - this.lastFired ) > this.bulletInterval ) {
+            this.createBullet( this.pos.x + this.width, this.pos.y + ( Game.unit / 9 ) * 5, xVelocity, 0 );
+            this.lastFired = Date.now();
+        }
+    },
+    createBullet: function( x, y, xVelocity, yVelocity ) {
+        var bullet = new Game.Entity.Interactable.Bullet( x, y );
+        Game.currentLevel.entities.push( bullet );
+        bullet.velocity = new Game.Vector( xVelocity, yVelocity );
+    },
+    collideWith: function( entity, collisions ) {
+        this._super( entity, collisions );
+
+        if ( entity.type == 'Terrain.Invisible' ) {
+            this.pos.x = entity.pos.x - this.width;
+            this.velocity.x = 0;
+            this.velocity.y = 0.08;
         }
     }
 });

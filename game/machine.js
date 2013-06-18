@@ -2,6 +2,8 @@
 
 Game.Entity.Machine = Game.Entity.extend({
     type: 'Machine',
+    width: Game.unit * 2,
+    height: Game.unit * 2,
     initialSprite: 'machine-green',
     initialState: 'flashing-light',
     states: {

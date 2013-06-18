@@ -1235,6 +1235,60 @@ Game.Bitmaps = {
         [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
         [ "transparent", "#00ff00", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "rgba(0,0,0,0)", "transparent" ],
         [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'plane-right': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "#00ff00", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ]
+    ],
+    'plane-left': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent" ]
+    ],
+    'cloud-1': [
+        [ "transparent", "#ffffff", "#ffffff", "#ffffff", "transparent", "#ffffff", "#ffffff", "#ffffff", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent" ],
+        [ "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "rgba(0,0,0,0)" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent" ]
+    ],
+    'cloud-2': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#ffffff", "transparent", "transparent", "transparent", "#ffffff", "#ffffff", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent", "#ffffff", "#ffffff", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+    ],
+    'cloud-3': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "transparent", "#ffffff", "#ffffff", "transparent" ],
+        [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent" ],
+        [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff" ],
+        [ "transparent", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent", "#ffffff", "#ffffff", "transparent" ]
     ]
-
 };

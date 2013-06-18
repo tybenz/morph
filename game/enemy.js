@@ -9,7 +9,7 @@ SMART_TURRET_SPEED = -0.6;
 
 Game.Entity.Enemy = Game.Entity.extend({
     type: 'Enemy',
-    drawLayer: 1,
+    drawLayer: 3,
     states: {
         'dying': {
             animation: {
@@ -476,6 +476,7 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
     }
 });
 
+// TODO - need a dying animation for a 2x2 enemy
 Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
     type: 'Enemy.Balloon',
     initialSprite: 'balloon',
@@ -512,6 +513,9 @@ Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
                     until: function() { return Math.abs( this.pos.y - this.startY ) >= 7; }
                 }
             ]
+        },
+        'dying': {
+            animation: 'transparent'
         }
     },
     shoot: function() {

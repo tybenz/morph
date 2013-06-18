@@ -1,5 +1,6 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+
 Game.Menu = Class.extend({
     titleText: 'MENU',
     init: function( left, top, width, height, lineWidth ) {
@@ -202,13 +203,6 @@ Game.Menu.GameOver = Game.Menu.extend({
 
 Game.Menu.Transform = Game.Menu.extend({
     titleText: 'MORPH',
-    show: function() {
-        var self = this;
-
-        this.requestID = requestAnimationFrame(function() {
-            self.loop();
-        });
-    },
     data: [
         {
             className: Game.Entity.Hero.Block,
@@ -225,6 +219,10 @@ Game.Menu.Transform = Game.Menu.extend({
         {
             className: Game.Entity.Hero.Frog,
             sprite: 'frog-right-double'
+        },
+        {
+            className: Game.Entity.Hero.Plane,
+            sprite: 'plane-right-double'
         }
     ],
     rowSize: 4,

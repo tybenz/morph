@@ -50,6 +50,8 @@ var Game = {
             Game.resize();
         }
 
+        Game.keysLocked = false;
+
         //Initialize drawLayers
         Game.initDrawLayers();
 
@@ -72,6 +74,7 @@ var Game = {
             'man-right': Game.Bitmaps[ 'man-right' ],
             'boat-right': Game.Bitmaps[ 'boat-right' ],
             'frog-right': Game.Bitmaps[ 'frog-right' ],
+            'plane-right': Game.Bitmaps[ 'plane-right' ],
             'restart': Game.Bitmaps[ 'restart' ],
             'exit': Game.Bitmaps[ 'exit' ]
         };
@@ -251,10 +254,12 @@ var Game = {
         }
         Game.lastUpdate = timestamp;
         if ( !Game.clickStep ) {
-            if ( !Game.startTransform && !Game.paused ) {
+            if ( ( !Game.stopLoop && !Game.startTransform ) && !Game.paused ) {
                 Game.requestID = requestAnimationFrame( Game.loop ); 
             } else if ( Game.startTransform ) {
                 Game.showTransformMenu();
+            } else if ( Game.switchToLevel ) {
+                Game.performLevelSwitch();
             }
         }
     },
@@ -343,11 +348,24 @@ var Game = {
                 }
             }
 
+            Game.shiftInterval = 20;
             //Shift viewport if hero's pos is past the shift boundary
-            if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
-                Game.shiftViewport( 'left' );
-            } else if ( Game.hero.pos.x < Game.viewportShiftBoundary.right && Game.viewportOffset ) {
-                Game.shiftViewport( 'right' );
+            if ( Game.currentLevel.type == 'sky' ) {
+                Game.lastShift = Game.lastShift || Date.now();
+                if ( ( Date.now() - Game.lastShift ) > Game.shiftInterval ) {
+                    if ( Game.viewportOffset < Game.viewportShiftBuffer ) {
+                        Game.lastShift = Date.now();
+                        Game.hero.pos.x += 2;
+                        Game.viewportShiftBoundary.left = Game.hero.pos.x - 2;
+                        Game.shiftViewport( 'left' );
+                    }
+                }
+            } else {
+                if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
+                    Game.shiftViewport( 'left' );
+                } else if ( Game.hero.pos.x < Game.viewportShiftBoundary.right && Game.viewportOffset ) {
+                    Game.shiftViewport( 'right' );
+                }
             }
         }
     },
@@ -542,7 +560,10 @@ var Game = {
     },
     //Iterate through level grid and instantiate all entities based on class name
     loadLevel: function() {
-        var entities, entityString;
+        var entities,
+            entityString,
+            toLevel;
+
         Game.hero = null;
         Game.currentLevel.entities = [];
 
@@ -555,10 +576,14 @@ var Game = {
             for ( var j = 0; j < Game.currentLevel.grid[i].length; j++ ) {
                 entities = Game.currentLevel.grid[i][j].split( '|' );
                 for ( k = 0; k < entities.length; k++ ) {
-                    entityString = entities[k];
+                    entityString = entities[k].split( ':' )[0];
+                    toLevel = entities[k].split( ':' )[1];
                     if ( entityString != 'blank' ) {
                         // Each entity gets initialized and put into our level's entity list
                         entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
+                        if ( toLevel ) {
+                            entity.toLevel = toLevel;
+                        }
                         if ( entityString == 'terrain.land' || entityString == 'terrain.water' ) {
                             if ( Game.terrainGroup && entityString == Game.terrainGroupType ) {
                                 Game.terrainGroup.attach( [ entity ] );
@@ -620,6 +645,7 @@ var Game = {
     },
     showTransformMenu: function() {
         Game.transformMenu.show();
+        Game.startTransform = false;
     },
     openTransformMenu: function() {
         Game.startTransform = true;
@@ -664,6 +690,17 @@ var Game = {
     gameOver: function() {
         Game.gameOverMenu.show();
         Game.paused = true;
+    },
+    switchLevel: function( levelID ) {
+        Game.stopLoop = true;
+        Game.switchToLevel = levelID;
+    },
+    performLevelSwitch: function() {
+        Game.stop();
+        Game.init( Game.switchToLevel );
+        Game.stopLoop = false;
+        Game.keysLocked = false;
+        Game.switchToLevel = null;
     },
     debugInvalidRect: false
 };

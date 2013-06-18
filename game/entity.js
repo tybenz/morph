@@ -485,6 +485,28 @@ Game.Entity = Class.extend({
             default: return false;
         }
     },
+    below: function( type ) {
+        var entities = Game.currentLevel.entities,
+            i, j, entity;
+
+        for ( i = 0; i < entities.length; i++ ) {
+            entity = entities[i];
+            if ( entity.entityList ) {
+                for ( j = 0; j < entities[i].entityList.length; j++ ) {
+                    entity = entities[i].entityList[j];
+                    if ( entity.type == type && entity.pos.y < this.pos.y && this.pos.x == this.pos.y ) {
+                        return true;
+                    }
+                }
+            } else {
+                if ( entity.type == type && entity.pos.y < this.pos.y && this.pos.x == this.pos.y ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    },
     //Collision handler -> to be extended by derived entities
     //By default entities stop moving when they hit land
     collideWith: function( entity, collisionTypes ) {

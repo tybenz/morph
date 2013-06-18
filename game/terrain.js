@@ -68,3 +68,30 @@ Game.Entity.Terrain.Waterclimb = Game.Entity.Terrain.extend({
         }
     }
 });
+
+Game.Entity.Terrain.Portal = Game.Entity.Terrain.extend({
+    type: 'Terrain.Portal',
+    initialState: 'still'
+});
+
+Game.Entity.Terrain.Invisible = Game.Entity.Terrain.extend({
+    type: 'Terrain.Invisible',
+    initialState: 'still'
+});
+
+Game.Entity.Terrain.Cloud = Game.Entity.Terrain.extend({
+    type: 'Terrain.Cloud',
+    initialState: 'still',
+    initialSprite: 'cloud-1',
+    init: function( x, y ) {
+        this._super( x, y );
+        var rand = Math.random();
+        if ( rand > 0.66 ) {
+            this.activeSprite = 'cloud-1';
+        } else if ( rand > 0.33 ) {
+            this.activeSprite = 'cloud-2';
+        } else {
+            this.activeSprite = 'cloud-3';
+        }
+    }
+});
