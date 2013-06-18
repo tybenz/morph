@@ -25,7 +25,7 @@ Game.Entity.Enemy = Game.Entity.extend({
     collideWith: function( entity, collisionTypes ) {
         if ( ( entity.type == 'Interactable.Rock' && ( entity.velocity.x > 0 || entity.velocity.y > 0 ) && collisionTypes )
             || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.oldPos.y < this.pos.y )
-            || entity.type == 'Interactable.Bullet' || entity.type == 'Interactable.Tongue' ) {
+            || entity.type == 'Interactable.Bullet' || entity.type == 'Interactable.Tongue' || entity.type == 'Interactable.Lightning' ) {
 
             this.changeState( 'dying' );
         }
@@ -384,7 +384,7 @@ Game.Entity.Enemy.Bullet = Game.Entity.Enemy.extend({
         this.ignoreGravity = true;
     },
     collideWith: function( entity, collisionTypes ) {
-        if ( entity.type == 'Terrain.Land' ) {
+        if ( entity.type == 'Terrain.Land' || entity.type == 'Interactable.Lightning' ) {
             Game.destroyEntity( this );
         }
     }
@@ -479,7 +479,6 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
 // TODO - need a dying animation for a 2x2 enemy
 Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
     type: 'Enemy.Balloon',
-    initialSprite: 'balloon',
     width: Game.unit * 2,
     height: Game.unit * 2,
     bulletSpeed: TURRET_SPEED,
@@ -494,7 +493,6 @@ Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
     },
     states: {
         'floating': {
-            animation: 'balloon',
             actions: [
                 {
                     delta: TURRET_INTERVAL,
@@ -538,4 +536,13 @@ Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
         Game.currentLevel.entities.push( bullet );
         bullet.velocity = new Game.Vector( xVelocity, yVelocity );
     }
+});
+
+Game.Entity.Enemy.Submarine = Game.Entity.Enemy.Balloon.extend({
+    type: 'Enemy.Submarine',
+    width: Game.unit * 2,
+    height: Game.unit * 2,
+    bulletSpeed: TURRET_SPEED,
+    initialSprite: 'submarine',
+    initialState: 'floating'
 });

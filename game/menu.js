@@ -223,6 +223,10 @@ Game.Menu.Transform = Game.Menu.extend({
         {
             className: Game.Entity.Hero.Plane,
             sprite: 'plane-right-double'
+        },
+        {
+            className: Game.Entity.Hero.Jellyfish,
+            sprite: 'jellyfish-double'
         }
     ],
     rowSize: 4,

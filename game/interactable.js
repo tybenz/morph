@@ -144,3 +144,37 @@ Game.Entity.Interactable.Tongue = Game.Entity.Interactable.extend({
         }
     }
 });
+
+Game.Entity.Interactable.Lightning = Game.Entity.Interactable.extend({
+    type: 'Interactable.Lightning',
+    initialSprite: 'lightning',
+    initialState: 'flashing',
+    width: Game.unit * 3,
+    height: Game.unit * 3,
+    shockFor: 1000,
+    init: function( x, y, jellyfish ) {
+        this._super( x, y );
+        this.created = Date.now();
+        this.ignoreGravity = true;
+        this.jellyfish = jellyfish;
+    },
+    states: {
+        'flashing': {
+            animation: {
+                delta: 120,
+                sequence: [ 'initial', 'invisible' ],
+                times: 'infinite'
+            }
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( Date.now() - ( this.created ) > this.shockFor ) {
+            Game.destroyEntity( this );
+        }
+
+        this.pos.x = this.jellyfish.pos.x - Game.unit;
+        this.pos.y = this.jellyfish.pos.y - Game.unit;
+    }
+});

@@ -60,37 +60,46 @@ Game.Entity.Hero = Game.Entity.extend({
                     newHero = new newType( self.pos.x, self.pos.y ),
                     machine, wave, type;
 
+                // Destroy old hero
                 Game.destroyEntity( self );
+                for ( var i = 0; i < Game.drawLayers[ self.drawLayer ]; i++ ) {
+                    if ( Game.drawLayers[ self.drawLayer ] == self ) {
+                        Game.drawLayers[ self.drawLayer ].splice( i, 1 );
+                        break;
+                    }
+                }
+
                 Game.currentLevel.entities.push( newHero );
+                Game.drawLayers[ newHero.drawLayer ].push( newHero );
                 Game.hero = newHero;
 
-                machine = Game.hero.hasCollisionWith( 'Machine' );
+                machine = newHero.hasCollisionWith( 'Machine' );
                 if ( machine ) {
                     machine = machine.entity;
-                    type = Game.hero.type;
-                    if ( type == 'Hero.Boat' ) {
+                    type = newHero.type;
+                    if ( type == 'Hero.Boat' || type == 'Hero.Jellyfish' ) {
                         wave = machine.adjacentTo( 'Terrain.Wave' );
                         if ( wave ) {
                             wave = wave.entity;
-                            Game.hero.pos = new Game.Vector( wave.pos.x, wave.pos.y );
+                            newHero.pos = new Game.Vector( wave.pos.x, wave.pos.y );
                         } else {
-                            Game.hero.pos.x = oldX + Game.unit * 2;
-                            if ( Game.hero.hasCollisionWith( 'Terrain.Land' ) ) {
-                                Game.hero.pos.x = oldX;
+                            newHero.pos.x = oldX + Game.unit * 2;
+                            if ( newHero.hasCollisionWith( 'Terrain.Land' ) ) {
+                                newHero.pos.x = oldX;
                             }
                         }
                     } else if ( type == 'Hero.Plane' ) {
-                        if ( !Game.hero.below( 'Terrain.Land' ) ) {
+                        if ( !newHero.below( 'Terrain.Land' ) ) {
                             Game.keysLocked = true;
-                            Game.hero.velocity.y = -0.3;
+                            newHero.velocity.y = -0.3;
                         }
                     } else {
-                        wave = Game.hero.adjacentTo( 'Terrain.Water', 'bottom' );
+                        wave = newHero.adjacentTo( 'Terrain.Water', 'bottom' );
                         if ( wave ) {
                             land = machine.adjacentTo( 'Terrain.Land', 'bottom' ) || machine.adjacentTo( 'Terrain.Land', 'left' );
                             if ( land ) {
                                 land = land.entity;
-                                Game.hero.pos = new Game.Vector( land.pos.x, land.pos.y - Game.hero.height );
+                                newHero.pos = new Game.Vector( land.pos.x, land.pos.y - newHero.height );
                             }
                         }
                     }
@@ -178,6 +187,13 @@ Game.Entity.Hero = Game.Entity.extend({
                 break;
             case 'Terrain.Portal':
                 Game.switchLevel( entity.toLevel );
+                break;
+            case 'Terrain.Water':
+                if ( this.type != 'Hero.Jellyfish' && this.type != 'Hero.Boat' ) {
+                    Game.destroyEntity( this );
+                    Game.gameOver();
+                }
+                break;
             default: break;
         }
 
@@ -587,5 +603,40 @@ Game.Entity.Hero.Plane = Game.Entity.Hero.extend({
             this.velocity.x = 0;
             this.velocity.y = 0.08;
         }
+    }
+});
+
+Game.Entity.Hero.Jellyfish = Game.Entity.Hero.extend({
+    type: 'Hero.Jellyfish',
+    drawLayer: 5,
+    initialSprite: 'jellyfish',
+    initialState: 'still',
+    states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
+        'still': Game.Entity.prototype.states.still,
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( Game.currentLevel.type == 'sea' ) {
+            this.gravity = new Game.Vector( 0, 0.0001 ); // Changed to test collisions
+        }
+
+        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+            this.shock();
+            Game.keysDown[ 88 ] = 'locked';
+        }
+    },
+    shock: function() {
+        var lightning;
+
+        lightning = new Game.Entity.Interactable.Lightning( this.pos.x - Game.unit, this.pos.y - Game.unit, this );
+        Game.currentLevel.entities.push( lightning );
+    },
+    up: function() {
+        this.pos.y -= this.height;
+        this.velocity.y = 0;
     }
 });

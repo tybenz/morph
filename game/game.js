@@ -10,6 +10,7 @@ var Game = {
     //Image count for loading sprites
     imageCount: 1,
     paused: false,
+    background: '#000',
     init: function( level ) {
         //Initialize viewport size
         Game.viewportWidth = Game.viewportTileWidth * Game.unit;
@@ -75,6 +76,7 @@ var Game = {
             'boat-right': Game.Bitmaps[ 'boat-right' ],
             'frog-right': Game.Bitmaps[ 'frog-right' ],
             'plane-right': Game.Bitmaps[ 'plane-right' ],
+            'jellyfish': Game.Bitmaps[ 'jellyfish' ],
             'restart': Game.Bitmaps[ 'restart' ],
             'exit': Game.Bitmaps[ 'exit' ]
         };
@@ -109,9 +111,11 @@ var Game = {
             [],
             //Interactables
             [],
-            //Enemies
+            //Enemies && Hero
             [],
-            //Hero
+            //Water
+            [],
+            //Underwater entities
             []
         ];
     },
@@ -124,7 +128,7 @@ var Game = {
         }
 
         //Background
-        Game.ctx.fillStyle = '#000';
+        Game.ctx.fillStyle = Game.background;
         Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
 
         // Initial render
@@ -527,7 +531,7 @@ var Game = {
             //Set the clip to the invalidRect's position/dimensions
             Game.ctx.clip();
             Game.ctx.closePath();
-            Game.ctx.fillStyle = '#000';
+            Game.ctx.fillStyle = Game.background;
             Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
 
             //When we render all entities only pixels that actually
@@ -563,6 +567,12 @@ var Game = {
         var entities,
             entityString,
             toLevel;
+
+        if ( Game.currentLevel.type == 'sea' ) {
+            Game.background = '#003';
+        } else {
+            Game.background = '#000';
+        }
 
         Game.hero = null;
         Game.currentLevel.entities = [];
