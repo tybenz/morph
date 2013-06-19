@@ -95,3 +95,9 @@ Game.Entity.Terrain.Cloud = Game.Entity.Terrain.extend({
         }
     }
 });
+
+Game.Entity.Terrain.Bubble = Game.Entity.Terrain.extend({
+    type: 'Terrain.Bubble',
+    initialState: 'still',
+    initialSprite: 'bubble'
+});

@@ -1350,5 +1350,16 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ]
+    ],
+    'bubble': [
+        [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "rgba(0,0,0,0)", "transparent" ],
+        [ "transparent", "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent" ],
+        [ "#ffffff", "transparent", "transparent", "transparent", "#ffffff", "#ffffff", "transparent", "transparent", "#ffffff" ],
+        [ "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent", "#ffffff" ],
+        [ "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent", "#ffffff" ],
+        [ "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent", "#ffffff" ],
+        [ "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff" ],
+        [ "transparent", "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent" ],
+        [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ]
     ]
 };
