@@ -227,6 +227,10 @@ Game.Menu.Transform = Game.Menu.extend({
         {
             className: Game.Entity.Hero.Jellyfish,
             sprite: 'jellyfish-double'
+        },
+        {
+            className: Game.Entity.Hero.Clock,
+            sprite: 'clock-double'
         }
     ],
     rowSize: 4,

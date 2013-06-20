@@ -112,7 +112,7 @@ Game.Entity.Hero = Game.Entity.extend({
     //Handling user input
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
-        if ( !Game.transforming ) {
+        if ( !Game.keysLocked ) {
             if ( !Game.keysLocked && !this.doNotMove && 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
                 this.left();
                 Game.keysDown[ 37 ] = 'locked';
@@ -610,7 +610,6 @@ Game.Entity.Hero.Jellyfish = Game.Entity.Hero.extend({
     type: 'Hero.Jellyfish',
     drawLayer: 5,
     initialSprite: 'jellyfish',
-    initialState: 'still',
     states: {
         'dying': Game.Entity.Hero.prototype.states.dying,
         'still': Game.Entity.prototype.states.still,
@@ -638,5 +637,59 @@ Game.Entity.Hero.Jellyfish = Game.Entity.Hero.extend({
     up: function() {
         this.pos.y -= this.height;
         this.velocity.y = 0;
+    }
+});
+
+Game.Entity.Hero.Clock = Game.Entity.Hero.extend({
+    type: 'Hero.Clock',
+    initialSprite: 'clock-1',
+    initialState: 'ticking',
+    timeStopDuration: 5000,
+    coolDown: 15000,
+    states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
+        'still': Game.Entity.prototype.states.still,
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming,
+        'ticking': {
+            animation: {
+                delta: 400,
+                sequence: [ 'clock-1', 'clock-2', 'clock-3', 'clock-4', 'clock-5', 'clock-6', 'clock-7', 'clock-8' ],
+                times: 'infinite'
+            }
+        }
+    },
+    stopTime: function() {
+        var self = this,
+            oldState = this.state;
+
+        Game.transforming = true;
+        this.timeStopped = true;
+        this.changeState( 'still' );
+
+        setTimeout(function() {
+            Game.transforming = false;
+            self.timeStopped = false;
+            self.changeState( oldState );
+        }, this.timeStopDuration);
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( !this.timeStopped && !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+            this.stopTime();
+        }
+
+        //Only perform one jump at a time
+        if ( this.velocity.y < 0 ) {
+            this.disableJump = true;
+        }
+    },
+    up: function() {
+        //jump
+        if ( !this.disableJump ) {
+            var jumpForce = new Game.Vector( 0, -0.3 );
+            this.velocity = this.velocity.add( jumpForce );
+        }
     }
 });

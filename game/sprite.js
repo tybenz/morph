@@ -1361,5 +1361,93 @@ Game.Bitmaps = {
         [ "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff" ],
         [ "transparent", "#ffffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#ffffff", "transparent" ],
         [ "transparent", "transparent", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "transparent", "transparent" ]
+    ],
+    'clock-1': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#000000", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'clock-2': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#000000", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'clock-3': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#000000", "#000000", "#000000", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'clock-4': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#000000", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'clock-5': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#000000", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'clock-6': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#000000", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'clock-7': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+    ],
+    'clock-8': [
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#000000", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#000000", "#000000", "#000000", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ],
+        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent" ],
+        [ "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
     ]
 };

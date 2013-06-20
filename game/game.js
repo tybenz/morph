@@ -77,12 +77,13 @@ var Game = {
             'frog-right': Game.Bitmaps[ 'frog-right' ],
             'plane-right': Game.Bitmaps[ 'plane-right' ],
             'jellyfish': Game.Bitmaps[ 'jellyfish' ],
+            'clock': Game.Bitmaps[ 'clock-1' ],
             'restart': Game.Bitmaps[ 'restart' ],
             'exit': Game.Bitmaps[ 'exit' ]
         };
 
         for ( var i in heroList ) {
-            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], Game.unit / 3 ) );
+            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( heroList[i], Game.unit / 3 ) );
             Game.totalSprites++;
         }
     },
@@ -276,6 +277,12 @@ var Game = {
         if ( Game.transforming ) {
             Game.hero.generateNextCoords( timeDiff );
             Game.hero.invalidateRect();
+            for ( var i = 0; i < Game.currentLevel.entities.length; i++ ) {
+                var collisions = Game.hero.getCollisions( Game.currentLevel.entities[i] );
+                if ( collisions ) {
+                    Game.hero.collideWith( Game.currentLevel.entities[i], collisions );
+                }
+            }
         } else {
             if ( Game.hero.pos.x >= ( Game.currentLevel.width - Game.hero.width ) && Game.currentLevel.next ) {
                 Game.currentLevel.loadNextLevel();
@@ -663,6 +670,7 @@ var Game = {
     startTransformAnimation: function( newType ) {
         Game.startTransform = false;
         Game.transforming = true;
+        Game.keysLocked = true;
         Game.hero.transform( newType );
         Game.lastUpdate = null;
         Game.invalidateRect( 0, Game.viewportWidth + Game.viewportOffset, Game.viewportHeight, Game.viewportOffset );
@@ -671,6 +679,7 @@ var Game = {
     },
     doneTransforming: function() {
         Game.transforming = false;
+        Game.keysLocked = false;
         Game.startTransform = false;
     },
     imageLoaded: function( img ) {
