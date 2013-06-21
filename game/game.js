@@ -78,6 +78,7 @@ var Game = {
             'plane-right': Game.Bitmaps[ 'plane-right' ],
             'jellyfish': Game.Bitmaps[ 'jellyfish' ],
             'clock': Game.Bitmaps[ 'clock-1' ],
+            'flame': Game.Bitmaps[ 'flame-big' ],
             'restart': Game.Bitmaps[ 'restart' ],
             'exit': Game.Bitmaps[ 'exit' ]
         };

@@ -231,6 +231,10 @@ Game.Menu.Transform = Game.Menu.extend({
         {
             className: Game.Entity.Hero.Clock,
             sprite: 'clock-double'
+        },
+        {
+            className: Game.Entity.Hero.Flame,
+            sprite: 'flame-double'
         }
     ],
     rowSize: 4,

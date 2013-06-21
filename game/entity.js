@@ -206,13 +206,14 @@ Game.Entity = Class.extend({
     },
     detach: function( entity ) {
         var entityList = this.entityList ? this.entityList : [],
+            newEntity, newEntityList,
             relativePos;
 
         for ( var i = entityList.length - 1; i >= 0; i-- ) {
             relativePos = entityList[i].relativePos;
             if ( entityList[i].entity == entity ) {
                 entity.pos = new Game.Vector( this.pos.x + relativePos.x, this.pos.y + relativePos.y );
-                entityList.splice( i, 1 );
+                newEntityList = entityList.splice( i, entityList.length - i );
             }
         }
 
@@ -222,6 +223,8 @@ Game.Entity = Class.extend({
         if ( this.entityList.length == 1 ) {
             this.entityList = [];
         }
+
+        return newEntityList;
     },
     refreshDimensions: function() {
         // Calculate top bottom left and right

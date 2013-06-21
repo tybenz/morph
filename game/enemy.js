@@ -25,7 +25,8 @@ Game.Entity.Enemy = Game.Entity.extend({
     collideWith: function( entity, collisionTypes ) {
         if ( ( entity.type == 'Interactable.Rock' && ( entity.velocity.x > 0 || entity.velocity.y > 0 ) && collisionTypes )
             || ( entity.type == 'Hero.Block' && entity.velocity.y > 0 && entity.oldPos.y < this.pos.y )
-            || entity.type == 'Interactable.Bullet' || entity.type == 'Interactable.Tongue' || entity.type == 'Interactable.Lightning' ) {
+            || ( entity.type == 'Hero.Clock' && entity.velocity.y > 0 && entity.oldPos.y < this.pos.y )
+            || entity.type == 'Interactable.Bullet' || entity.type == 'Interactable.Tongue' || entity.type == 'Interactable.Lightning' || entity.type == 'Interactable.Heat' ) {
 
             this.changeState( 'dying' );
         }

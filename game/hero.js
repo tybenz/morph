@@ -282,7 +282,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             Game.destroyEntity( entity );
         },
         throw: function() {
-            this.detach( this.holding );
+            var test = this.detach( this.holding );
 
             Game.currentLevel.entities.push( this.holding );
             Game.drawLayers[ this.holding.drawLayer ].push( this.holding );
@@ -678,6 +678,60 @@ Game.Entity.Hero.Clock = Game.Entity.Hero.extend({
 
         if ( !this.timeStopped && !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
             this.stopTime();
+        }
+
+        //Only perform one jump at a time
+        if ( this.velocity.y < 0 ) {
+            this.disableJump = true;
+        }
+    },
+    up: function() {
+        //jump
+        if ( !this.disableJump ) {
+            var jumpForce = new Game.Vector( 0, -0.3 );
+            this.velocity = this.velocity.add( jumpForce );
+        }
+    }
+});
+
+Game.Entity.Hero.Flame = Game.Entity.Hero.extend({
+    type: 'Hero.Flame',
+    initialSprite: 'flame-small',
+    initialState: 'still',
+    states: {
+        'dying': Game.Entity.Hero.prototype.states.dying,
+        'still': Game.Entity.prototype.states.still,
+        'blinking': Game.Entity.Hero.prototype.states.blinking,
+        'transforming': Game.Entity.Hero.prototype.states.transforming,
+        'melting': {}
+    },
+    meltStuff: function() {
+        if ( this.state != 'melting' && this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+            this.activeSprite = 'flame-big';
+            this.changeState( 'melting' );
+            this.animated = true;
+            this.heat = new Game.Entity.Interactable.Heat( this.pos.x - 2 * Game.unit, this.pos.y - 2 * Game.unit, this );
+            Game.currentLevel.entities.push( this.heat );
+            this.doNotMove = true;
+        }
+    },
+    stopMelting: function() {
+        this.activeSprite = 'flame-small';
+        this.changeState( 'still' );
+        this.animated = true;
+        Game.destroyEntity( this.heat );
+        this.heat = null;
+        this.doNotMove = false;
+    },
+    generateNextCoords: function( timeDiff) {
+        this._super( timeDiff );
+
+        if ( !this.skipAction && 88 in Game.keysDown ) {
+            this.meltStuff();
+        } else {
+            if ( this.state == 'melting' ) {
+                this.stopMelting();
+            }
         }
 
         //Only perform one jump at a time

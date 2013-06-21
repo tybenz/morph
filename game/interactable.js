@@ -178,3 +178,46 @@ Game.Entity.Interactable.Lightning = Game.Entity.Interactable.extend({
         this.pos.y = this.jellyfish.pos.y - Game.unit;
     }
 });
+
+Game.Entity.Interactable.Heat = Game.Entity.Interactable.extend({
+    type: 'Interactable.Heat',
+    drawLayer: 5,
+    initialSprite: 'heat',
+    initialState: 'wave',
+    width: Game.unit * 5,
+    height: Game.unit * 3,
+    xDelta: 5,
+    waveSpeed: 0.05,
+    states: {
+        'wave': {
+            animation: {
+                delta: 50,
+                sequence: [ 'heat', 'heat-2' ],
+                times: 'infinite'
+            },
+            actions: [
+                {
+                    delta: 20,
+                    action: function() { this.velocity.x = this.waveSpeed; },
+                    until: function() { return ( Math.round( this.pos.x / Game.unit ) * Game.unit ) - this.pos.x >= this.xDelta; }
+                },
+                {
+                    delta: 20,
+                    action: function() { this.velocity.x = 0 - this.waveSpeed; },
+                    until: function() { return ( Math.round( this.pos.x / Game.unit ) * Game.unit ) - this.pos.x <= this.xDelta; }
+                }
+            ]
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        this.pos.x = this.flame.pos.x - 2 * Game.unit;
+        this.pos.y = this.flame.pos.y - 2 * Game.unit;
+    },
+    init: function( x, y, flame ) {
+        this._super( x, y );
+        this.flame = flame;
+        this.ignoreGravity = true;
+    }
+});
