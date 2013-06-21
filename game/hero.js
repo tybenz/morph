@@ -53,6 +53,7 @@ Game.Entity.Hero = Game.Entity.extend({
         var self = this;
         if ( this.__proto__ == newType.prototype ) {
             Game.doneTransforming();
+            this.skipAction = false;
         } else {
             this.changeState( 'transforming' );
             setTimeout( function() {
@@ -72,6 +73,7 @@ Game.Entity.Hero = Game.Entity.extend({
                 Game.currentLevel.entities.push( newHero );
                 Game.drawLayers[ newHero.drawLayer ].push( newHero );
                 Game.hero = newHero;
+                newHero.skipAction = false;
 
                 machine = newHero.hasCollisionWith( 'Machine' );
                 if ( machine ) {
