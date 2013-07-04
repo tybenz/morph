@@ -133,14 +133,18 @@ Game.Entity = Class.extend({
             this.lastAction = this.lastAction || Date.now();
 
             if ( ( Date.now() - this.lastAction ) > actionObj.delta ) {
-                if ( actionObj.until && actionObj.until.call( this ) ) {
-                    this.activeAction++;
-                    this.activeAction %= actions.length;
+                if ( actionObj.until ) {
+                    if ( actionObj.until.call( this ) ) {
+                        this.activeAction++;
+                        this.activeAction %= actions.length;
+                    } else {
+                        actionObj.action.call( this );
+                        this.lastAction = Date.now();
+                    }
+                } else {
+                    actionObj.action.call( this );
+                    this.lastAction = Date.now();
                 }
-                actionObj = actions[ this.activeAction ];
-
-                actionObj.action.call( this );
-                this.lastAction = Date.now();
             }
         }
     },
