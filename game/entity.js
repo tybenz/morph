@@ -193,10 +193,14 @@ Game.Entity = Class.extend({
 
         // Convert entity array to have relativePos and append
         for ( var i = 0; i < arr.length; i++ ) {
+            var ent = arr[i];
+            if ( ent.entity ) {
+                ent = ent.entity;
+            }
             entityList.push({
-                entity: arr[i],
-                relativePos: { x: arr[i].pos.x - this.pos.x, y: arr[i].pos.y - this.pos.y },
-                oldDimensions: { width: arr[i].width, height: arr[i].height }
+                entity: ent,
+                relativePos: { x: ent.pos.x - this.pos.x, y: ent.pos.y - this.pos.y },
+                oldDimensions: { width: ent.width, height: ent.height }
             });
         }
 
@@ -205,26 +209,31 @@ Game.Entity = Class.extend({
         this.attached = true;
     },
     detach: function( entity ) {
-        var entityList = this.entityList ? this.entityList : [],
-            newEntity, newEntityList,
-            relativePos;
+        if ( this.entityList && this.entityList.length ) {
+            var entityList = this.entityList,
+                newEntity, newEntityList,
+                relativePos;
 
-        for ( var i = entityList.length - 1; i >= 0; i-- ) {
-            relativePos = entityList[i].relativePos;
-            if ( entityList[i].entity == entity ) {
-                entity.pos = new Game.Vector( this.pos.x + relativePos.x, this.pos.y + relativePos.y );
-                newEntityList = entityList.splice( i, entityList.length - i );
+            for ( var i = entityList.length - 1; i >= 0; i-- ) {
+                relativePos = entityList[i].relativePos;
+                if ( entityList[i].entity == entity ) {
+                    entity.pos = new Game.Vector( this.pos.x + relativePos.x, this.pos.y + relativePos.y );
+                    newEntityList = entityList.splice( i + 1, entityList.length - i );
+                    entityList.splice( i, 1 );
+                    break;
+                }
             }
+
+            this.detached = true;
+            this.refreshDimensions();
+
+            if ( this.entityList.length <= 1 ) {
+                this.entityList = [];
+            }
+
+            return newEntityList;
         }
-
-        this.refreshDimensions();
-        this.detached = true;
-
-        if ( this.entityList.length == 1 ) {
-            this.entityList = [];
-        }
-
-        return newEntityList;
+        return [];
     },
     refreshDimensions: function() {
         // Calculate top bottom left and right
@@ -272,6 +281,30 @@ Game.Entity = Class.extend({
         this.pos.x = left;
         this.pos.y = top;
     },
+    getActualDimensions: function() {
+        if ( this.entityList && this.entityList.length ) {
+
+            var entityObj = this.entityList[0],
+                relativePos = entityObj.relativePos,
+                dimensions = entityObj.oldDimensions;
+
+            return {
+                pos: {
+                    x: this.pos.x + relativePos.x,
+                    y: this.pos.y + relativePos.y
+                },
+                oldPos: {
+                    x: this.oldPos.x + relativePos.x,
+                    y: this.oldPos.y + relativePos.y
+                },
+                width: dimensions.width,
+                height: dimensions.height
+            };
+
+        }
+
+        return this;
+    },
     render: function() {
         //Render the activeSprite
         if ( this.visible ) {
@@ -291,23 +324,24 @@ Game.Entity = Class.extend({
         }
     },
     //Two entities -> collision dictionary or false if no collision
-    getCollisions: function( entity ) {
+    getCollisions: function( entity, self ) {
+        self = self || this;
         var src = {
-                top: Math.round( this.pos.y ),
-                bottom: Math.round( this.pos.y + this.height ),
-                left: Math.round( this.pos.x ),
-                right: Math.round( this.pos.x + this.width ),
-                oldTop: Math.round( this.oldPos.y ),
-                oldBototm: Math.round( this.oldPos.y + this.height ),
-                oldLeft: Math.round( this.oldPos.x ),
-                oldRight: Math.round( this.oldPos.x + this.width ),
+                top: Math.round( self.pos.y ),
+                bottom: Math.round( self.pos.y + self.height ),
+                left: Math.round( self.pos.x ),
+                right: Math.round( self.pos.x + self.width ),
+                oldTop: Math.round( self.oldPos.y ),
+                oldBototm: Math.round( self.oldPos.y + self.height ),
+                oldLeft: Math.round( self.oldPos.x ),
+                oldRight: Math.round( self.oldPos.x + self.width ),
                 oldCenter: {
-                    x: Math.round ( this.oldPos.x + ( this.width / 2 ) ),
-                    y: Math.round ( this.oldPos.y + ( this.height / 2 ) ),
+                    x: Math.round ( self.oldPos.x + ( self.width / 2 ) ),
+                    y: Math.round ( self.oldPos.y + ( self.height / 2 ) ),
                 },
                 center: {
-                    x: Math.round ( this.pos.x + ( this.width / 2 ) ),
-                    y: Math.round ( this.pos.y + ( this.height / 2 ) ),
+                    x: Math.round ( self.pos.x + ( self.width / 2 ) ),
+                    y: Math.round ( self.pos.y + ( self.height / 2 ) ),
                 }
             },
             target = {
@@ -356,28 +390,32 @@ Game.Entity = Class.extend({
             skipUp = ( betweenLeftAndRight || leftAndRightAligned ) && src.top > target.bottom && 
                 ( src.bottom < target.oldTop || src.top <= target.oldBottom ),
 
-            // The problem with only allowing collisions when this is moving, is that what happens when
-            // this is NOT moving and it gets hit? The offending entity must be able to handle 
-            // the behavior of this too!
+            // The problem with only allowing collisions when self is moving, is that what happens when
+            // self is NOT moving and it gets hit? The offending entity must be able to handle 
+            // the behavior of self too!
             collisions = {
                 exact: leftAndRightAligned && topAndBottomAligned,
                 almostExact: leftAligned && topAndBottomAligned || rightAligned && topAndBottomAligned ||
                     topAligned && leftAndRightAligned || bottomAligned && leftAndRightAligned,
-                overlapping: betweenTopAndBottom && betweenLeftAndRight,
+                overlapping: ( betweenTopAndBottom || topAligned || bottomAligned ) && ( betweenLeftAndRight || leftAligned || rightAligned ),
                 overlappingVertical: leftAndRightAligned && ( betweenTopAndBottom || skipDown || skipUp ),
                 overlappingHorizontal: topAndBottomAligned && ( betweenLeftAndRight || skipRight || skipLeft )
             };
-        if ( !intersection && this.oldPos.x == this.pos.x && this.oldPos.y == this.pos.y ) {
+
+        if ( !intersection && self.oldPos.x == self.pos.x && self.oldPos.y == self.pos.y ) {
             if ( target.oldTop <= target.top ) {
-                intersection = Game.checkIntersection( { x: this.pos.x, y: this.pos.y },
-                        { x: this.pos.x + this.width, y: this.pos.y + this.height },
+                intersection = Game.checkIntersection( { x: self.pos.x, y: self.pos.y },
+                        { x: self.pos.x + self.width, y: self.pos.y + self.height },
                         target.oldCenter, target.center );
             } else {
-                intersection = Game.checkIntersection( { x: this.pos.x + this.width, y: this.pos.y },
-                        { x: this.pos.x, y: this.pos.y + this.height },
+                intersection = Game.checkIntersection( { x: self.pos.x + self.width, y: self.pos.y },
+                        { x: self.pos.x, y: self.pos.y + self.height },
                         target.oldCenter, target.center );
             }
-            collisions.overlapping = ( betweenTopAndBottom && betweenLeftAndRight ) || intersection
+
+            if ( !collisions.overlapping ) {
+                collisions.overlapping = ( betweenTopAndBottom && betweenLeftAndRight ) || intersection
+            }
         }
 
         // If there are any collisions we build an object of only those that are true

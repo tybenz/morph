@@ -159,7 +159,7 @@ Game.Entity.Hero = Game.Entity.extend({
             }, 1000 );
         }
 
-        if ( this.activeSprite == 'hero-dying-9' ) {
+        if ( this.activeSprite == 'hero-dying-9' || this.activeSprite == 'flame-dying-9' ) {
             this.visible = false;
             Game.destroyEntity( this );
             Game.gameOver();
@@ -701,11 +701,17 @@ Game.Entity.Hero.Flame = Game.Entity.Hero.extend({
     initialSprite: 'flame-small',
     initialState: 'still',
     states: {
-        'dying': Game.Entity.Hero.prototype.states.dying,
         'still': Game.Entity.prototype.states.still,
         'blinking': Game.Entity.Hero.prototype.states.blinking,
         'transforming': Game.Entity.Hero.prototype.states.transforming,
-        'melting': {}
+        'melting': {},
+        'dying': {
+            animation: {
+                delta: 40,
+                sequence: [ 'flame-dying-1', 'flame-dying-2', 'flame-dying-3', 'flame-dying-4', 'flame-dying-5', 'flame-dying-6', 'flame-dying-7', 'flame-dying-8', 'flame-dying-9' ],
+                times: 1
+            }
+        }
     },
     meltStuff: function() {
         if ( this.state != 'melting' && this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {

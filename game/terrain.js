@@ -12,7 +12,109 @@ Game.Entity.Terrain = Game.Entity.extend({
 
 Game.Entity.Terrain.Land = Game.Entity.Terrain.extend({
     type: 'Terrain.Land',
-    initialSprite: 'land'
+    initialSprite: 'land',
+    heatThreshold: 400,
+    states: {
+        'still': Game.Entity.prototype.states.still,
+        'dying': {
+            animation: {
+                delta: 40,
+                sequence: [ 'land-dying-1', 'land-dying-2', 'land-dying-3', 'land-dying-4', 'land-dying-5', 'land-dying-6', 'land-dying-7', 'land-dying-8', 'land-dying-9' ],
+                times: 1
+            }
+        }
+    },
+    collideWith: function( entity, collisions, parent ) {
+        this._super( entity, collisions );
+
+        var entityList = this.entityList,
+            length = entityList ? entityList.length : 0;
+
+        if ( entity.type == 'Interactable.Heat' ) {
+
+            var actualCollisions = this.getCollisions( entity, this.getActualDimensions() );
+            if ( actualCollisions ) {
+                this.heatTouched = this.heatTouched || Date.now();
+            }
+
+            if ( length ) {
+                for ( var i = 1; i < this.entityList.length; i++ ) {
+                    var subEnt = entityList[i].entity,
+                        subCollisions = subEnt.getCollisions( entity );
+                    if ( subCollisions ) {
+                        subEnt.collideWith( entity, subCollisions, this );
+                    }
+                }
+            }
+        }
+
+        if ( ( Date.now() - this.heatTouched ) > this.heatThreshold ) {
+            if ( length ) {
+
+                var newList = this.detach( this );
+                length = this.entityList.length;
+
+                if ( newList[0] ) {
+                    var first = newList[0].entity;
+                    newList = newList.splice( 1, newList.length );
+
+                    // Create new composite entity
+                    first.attach( newList );
+                    // Add new composite entity to list of entities to track
+                    Game.drawLayers[ first.drawLayer ].push( first );
+                    Game.currentLevel.entities.push( first );
+
+                    this.changeState( 'dying' );
+
+                    if ( length ) {
+                        for ( var i = 1; i < length; i++ ) {
+                            var subEnt = entityList[i].entity,
+                                subCollisions = subEnt.getCollisions( entity );
+                            if ( subCollisions ) {
+                                subEnt.collideWith( entity, subCollisions, this );
+                            }
+                        }
+                    }
+                }
+            } else if ( parent ) {
+                var newList = parent.detach( this );
+
+                if ( newList[0] ) {
+                    var first = newList[0].entity;
+                    newList = newList.splice( 1, newList.length );
+
+                    // Create new composite entity
+                    first.attach( newList );
+                    // Add new composite entity to list of entities to track
+                    Game.drawLayers[ first.drawLayer ].push( first );
+                    Game.currentLevel.entities.push( first );
+                }
+
+                // Just detached add as a singular entity to entity list
+                Game.drawLayers[ this.drawLayer ].push( this );
+                Game.currentLevel.entities.push( this );
+                this.changeState( 'dying' );
+            } else {
+                this.changeState( 'dying' );
+            }
+        }
+    },
+    generateNextCoords: function( timeDiff ) {
+        this._super( timeDiff );
+
+        if ( this.heatTouched && !this.hasCollisionWith( 'Interactable.Heat' ) ) {
+            this.heatTouched = null;
+        }
+
+        if ( this.state == 'dying' ) {
+            this.ignoreGravity = false;
+        }
+
+        if ( this.state == 'dying' && this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+            this.visible = false;
+            Game.destroyEntity( this );
+        }
+    }
 });
 
 Game.Entity.Terrain.Wave = Game.Entity.Terrain.extend({
