@@ -405,7 +405,7 @@ Editor = {
     },
     preview: function() {
         Editor.$canvas.hide();
-        Game.Levels.preview = new Game.Level( null, this.level );
+        Game.Levels.preview = new Game.Level( null, null, this.level );
         Game.skipResize = true;
         Game.Editing = false;
         Game.init( 'preview' );
