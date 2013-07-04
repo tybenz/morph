@@ -260,7 +260,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                     window.land = land;
                     if ( land ) {
                         edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentToLevelEdge( 'left' );
-                        if ( edgePiece && this.pos.x <= land.pos.x ) {
+                        if ( ( edgePiece && this.pos.x <= land.pos.x ) || this.adjacentTo( 'Terrain.Land', 'left') ) {
                             this.changeState( 'walking-right' );
                             return true;
                         }
@@ -286,7 +286,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                         edgePiece;
                     if ( land ) {
                         edgePiece = !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentToLevelEdge( 'right' );
-                        if ( edgePiece && this.pos.x >= land.pos.x + land.width - this.width ) {
+                        if ( ( edgePiece && this.pos.x >= land.pos.x + land.width - this.width ) || this.adjacentTo( 'Terrain.Land', 'right' ) ) {
                             this.changeState( 'walking-left' );
                             return true;
                         }
