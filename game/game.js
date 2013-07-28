@@ -60,6 +60,17 @@ var Game = {
         Game.currentLevel = Game.Levels[ level ];
         Game.viewportShiftBuffer = Game.currentLevel.width - Game.viewportWidth;
         Game.loadLevel();
+
+        // Initialize cutscene if the level has one
+        var oldScene = Game.currentLevel.scene;
+        if ( oldScene ) {
+            Game.currentLevel.scene = new Game.Scene( oldScene.actors, oldScene.actions );
+        }
+
+        // If level has a cutscene - lock the keys and let it play
+        if ( Game.currentLevel.scene ) {
+            Game.currentLevel.scene.play();
+        }
     },
     initSprites: function() {
         Game.totalSprites = 0;
@@ -273,6 +284,11 @@ var Game = {
         if ( 73 in Game.keysDown && Game.keysDown[ 73 ] != 'locked' ) {
             // "I" key for inventory
             // show inventory menu
+        }
+
+        if ( Game.currentLevel.scene && Game.currentLevel.scene.playing ) {
+            var scene = Game.currentLevel.scene;
+            scene.next();
         }
 
         if ( Game.transforming ) {
@@ -626,9 +642,9 @@ var Game = {
                     }
                 }
             }
+            // One last call for the end of the level
             Game.terrainGroup = null;
         }
-        // One last call for the end of the level
     },
     keyDownListener: function( evt ) {
         //Prevent default on up and down so the

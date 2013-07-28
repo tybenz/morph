@@ -148,6 +148,9 @@ Game.Entity = Class.extend({
             }
         }
     },
+    say: function( quote ) {
+        console.log(quote);
+    },
     generateNextCoords: function( timeDiff ) {
         //Bool that will tell us if the entity animated
         this.animated = this.animate( timeDiff );

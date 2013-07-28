@@ -1727,5 +1727,16 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
         [ "#ffff00", "#ffff00", "#ffff00", "#ffff00", "#ffff00", "#ffff00", "#ffff00", "#ffff00", "#ffff00" ]
+    ],
+    'kid': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "#ff7f00", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "#ff7f00", "#ff7f00", "#ff7f00", "#ff7f00", "#ff7f00", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#ff7f00", "#ff7f00", "#ff7f00", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#ff7f00", "#ff7f00", "#ff7f00", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#ff7f00", "transparent", "#ff7f00", "transparent", "transparent", "transparent" ]
     ]
 };
