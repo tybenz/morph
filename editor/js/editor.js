@@ -1,10 +1,12 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+var TILESIZE = Settings.tileSize;
+
 Game.Editing = true;
 
 Editor = {
-    width: 50,
-    height: 25,
+    width: 25,
+    height: 14,
     paintSprite: 'terrain.land',
     gridEnabled: true,
     $game: $( '#game' ),
@@ -117,8 +119,8 @@ Editor = {
     rectangleUpdate: function( dt, dx, dy ) {
         var right = dt.startX + dx - Editor.$game.offset().left,
             bottom = dt.startY + dy - Editor.$game.offset().top,
-            maxWidth = Editor.width * Game.unit,
-            maxHeight = Editor.height * Game.unit;
+            maxWidth = Editor.width * TILESIZE,
+            maxHeight = Editor.height * TILESIZE;
 
         if ( right >= 0 && right < maxWidth && bottom >= 0 && bottom < maxHeight ) {
             Editor.$rectangle.width( dx );
@@ -132,10 +134,10 @@ Editor = {
             bottom = top + dy,
             i, j;
 
-        left = Math.floor( left / 18 );
-        top = Math.floor( top / 18 );
-        right = Math.ceil( right / 18 );
-        bottom = Math.ceil( bottom / 18 );
+        left = Math.floor( left / TILESIZE );
+        top = Math.floor( top / TILESIZE );
+        right = Math.ceil( right / TILESIZE );
+        bottom = Math.ceil( bottom / TILESIZE );
 
         for ( i = top; i < bottom; i++ ) {
             for ( j = left; j < right; j++ ) {
@@ -156,8 +158,8 @@ Editor = {
         }
     },
     dropSprite: function( dt, dx, dy ) {
-        x = Math.floor( ( dx + dt.startX - Editor.$game.offset().left + Editor.$game.scrollLeft() ) / Game.unit );
-        y = Math.floor( ( dy + dt.startY - Editor.$game.offset().top ) / Game.unit );
+        x = Math.floor( ( dx + dt.startX - Editor.$game.offset().left + Editor.$game.scrollLeft() ) / TILESIZE );
+        y = Math.floor( ( dy + dt.startY - Editor.$game.offset().top ) / TILESIZE );
 
         if ( x >= 0 && x < Editor.width && y >= 0 && y < Editor.height ) {
             currentSprite = Editor.level[y][x];
@@ -170,24 +172,24 @@ Editor = {
     initCanvas: function() {
         this.canvas = document.createElement( 'canvas' );
         this.$canvas = $( this.canvas );
-        this.canvas.width = Game.unit * Editor.width;
-        this.canvas.height = Game.unit * Editor.height;
+        this.canvas.width = TILESIZE * Editor.width;
+        this.canvas.height = TILESIZE * Editor.height;
         document.getElementById( 'game' ).appendChild( this.canvas );
         this.ctx = this.canvas.getContext( '2d' );
     },
     drawLevel: function() {
         var sprite, i, j;
 
-        this.ctx.clearRect( 0, 0, Game.unit * Editor.width, Game.unit * Editor.height );
+        this.ctx.clearRect( 0, 0, TILESIZE * Editor.width, TILESIZE * Editor.height );
 
         if ( this.gridEnabled ) {
             this.ctx.fillStyle = "#222";
             for ( i = 0; i < this.width; i++ ) {
-                this.ctx.fillRect( i * Game.unit, 0, 1, this.height * Game.unit );
+                this.ctx.fillRect( i * TILESIZE, 0, 1, this.height * TILESIZE );
             }
 
             for ( i = 0; i < this.height; i++ ) {
-                this.ctx.fillRect( 0, i * Game.unit, this.width * Game.unit, 1 );
+                this.ctx.fillRect( 0, i * TILESIZE, this.width * TILESIZE, 1 );
             }
         }
 
@@ -195,7 +197,7 @@ Editor = {
             for ( j in this.level[i] ) {
                 sprite = this.level[i][j];
                 if ( sprite != 'blank' ) {
-                    this.ctx.drawImage( this.sprites[ sprite ], j * Game.unit, i * Game.unit );
+                    this.ctx.drawImage( this.sprites[ sprite ], j * TILESIZE, i * TILESIZE );
                 }
             }
         }
@@ -208,7 +210,7 @@ Editor = {
         Editor.width++;
         Editor.$input.val( Editor.width );
 
-        Editor.canvas.width = Editor.width * Game.unit;
+        Editor.canvas.width = Editor.width * TILESIZE;
         Editor.drawLevel();
     },
     removeColumn: function() {
@@ -219,7 +221,7 @@ Editor = {
         Editor.width--;
         Editor.$input.val( Editor.width );
 
-        Editor.canvas.width = Editor.width * Game.unit;
+        Editor.canvas.width = Editor.width * TILESIZE;
         Editor.drawLevel();
     },
     adjustColumns: function() {
@@ -246,7 +248,7 @@ Editor = {
 
             Editor.width = val;
 
-            Editor.canvas.width = Editor.width * Game.unit;
+            Editor.canvas.width = Editor.width * TILESIZE;
             Editor.drawLevel();
 
         }
@@ -265,7 +267,7 @@ Editor = {
             obj, sprite, type,
             tempCanvas, tempContext,
             currentSprite,
-            rectSize = Game.unit / 9;
+            rectSize = TILESIZE / 9;
 
         for ( i in gameObjects ) {
             obj = gameObjects[i];
@@ -298,7 +300,7 @@ Editor = {
         var i, j, k,
             tempCanvas, tempContext,
             dataURL, currentTool,
-            rectSize = Game.unit / 9;
+            rectSize = TILESIZE / 9;
 
         i = 0;
         for ( var j in this.tools ) { i++; }

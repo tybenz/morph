@@ -3,7 +3,7 @@
 (function( window, document, undefined ) {
 
 window.SECONDS = 1000;
-var SCALE = 2,
+var SCALE = 3,
     TILESIZE = 9 * SCALE;
 
 window.Settings = {
@@ -12,8 +12,8 @@ window.Settings = {
     seaBackground: '#003',
     // Viewport stuff
     viewportShiftBoundary: 3,
-    defaultViewportWidth: 50,
-    defaultViewportHeight: 25,
+    defaultViewportWidth: 25,
+    defaultViewportHeight: 14,
     // Menu
     menuWidth: 30,
     menuHeight: 15,

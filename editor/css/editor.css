@@ -1,7 +1,7 @@
 #game-wrapper {
   overflow: hidden;
-  width: 900px;
-  height: 465px;
+  width: 675px;
+  height: 393px;
   margin: 0 auto;
   position: relative;
   top: -225px;
@@ -14,29 +14,38 @@
   overflow-x: scroll;
   overflow-y: hidden;
   padding-bottom: 15px;
+  width: 675px;
+  height: 378px;
 }
 
 #panel {
-  height: 435px;
-  width: 58px;
-  padding: 15px;
+  height: 378px;
+  width: 91px;
+  padding: 0 15px 15px;
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-left: -550px;
+  margin-left: -470px;
   margin-top: -226px;
   border: 1px solid #0f0;
+  overflow-y: auto;
 }
 
 #tools {
+  padding-top: 15px;
   padding-bottom: 10px;
   border-bottom: 1px solid white;
   overflow: hidden;
+  position: fixed;
+  height: 98px;
+  width: 76px;
+  z-index: 1;
+  background: #111;
 }
 
 #sprites {
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 130px;
 }
 
 .sprite, .tool {
@@ -72,14 +81,14 @@
   position: absolute;
   top: 50%;
   right: 50%;
-  margin-top: -226px;
-  margin-right: -485px;
+  margin-top: -196px;
+  margin-right: -375px;
   font-family: monospace;
   font-size: 1.3em;
 }
 
 #remove-column {
-  margin-top: -190px;
+  margin-top: -159px;
 }
 
 #columns {
@@ -87,9 +96,9 @@
   position: absolute;
   top: 50%;
   right: 50%;
-  margin-top: -250px;
-  margin-right: -485px;
-  width: 28px;
+  margin-top: -226px;
+  margin-right: -375px;
+  width: 26px;
   background: transparent;
   border: 1px solid white;
   color: white;
