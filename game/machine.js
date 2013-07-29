@@ -1,9 +1,14 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
+var MACHINE_WIDTH = Settings.machineWidth,
+    MACHINE_HEIGHT = Settings.machineHeight;
+
 Game.Entity.Machine = Game.Entity.extend({
     type: 'Machine',
-    width: Game.unit * 2,
-    height: Game.unit * 2,
+    width: MACHINE_WIDTH,
+    height: MACHINE_HEIGHT,
     initialSprite: 'machine-green',
     initialState: 'flashing-light',
     states: {
@@ -17,8 +22,8 @@ Game.Entity.Machine = Game.Entity.extend({
     },
     init: function( x, y ) {
         this._super( x, y );
-        this.width = Game.unit * 2;
-        this.height = Game.unit * 2;
         this.ignoreGravity = true;
     }
 });
+
+})( Game, Settings, window, document );

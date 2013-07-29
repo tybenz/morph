@@ -1,11 +1,16 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
+var INIT_MAX_CURRENCY = Settings.initialMaxCurrency,
+    INIT_MAX_HEALTH = Settings.initialMaxHealth;
+
 Game.Inventory = {
     currency: 0,
     items: [], //array of items collected
-    health: 10,
-    maxHealth: 10,
-    maxCurrency: 25,
+    health: INIT_MAX_HEALTH,
+    maxHealth: INIT_MAX_HEALTH,
+    maxCurrency: INIT_MAX_CURRENCY,
     decrementHealth: function() {
         if ( this.health > 0 ) {
             this.health--;
@@ -27,3 +32,5 @@ Game.Inventory = {
         }
     }
 };
+
+})( Game, Settings, window, document );

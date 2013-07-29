@@ -1,13 +1,17 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
+var TILESIZE = Settings.tileSize;
+
 Game.Level = Class.extend({
     init: function( type, next, grid, scene ) {
         var arr = [],
             i, j, entity;
 
         this.type = type;
-        this.width = Game.unit * grid[0].length;
-        this.height = Game.unit * grid.length;
+        this.width = TILESIZE * grid[0].length;
+        this.height = TILESIZE * grid.length;
         this.next = next;
         this.grid = grid;
         this.scene = scene;
@@ -195,3 +199,5 @@ Game.Levels = {
         [ 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land', 'terrain.land' ]
     ])
 };
+
+})( Game, Settings, window, document );

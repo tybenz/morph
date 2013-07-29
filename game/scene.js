@@ -1,5 +1,7 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
 Game.Scene = Class.extend({
     init: function( actors, actions ) {
         var entities = Game.currentLevel.entities;
@@ -93,3 +95,5 @@ Game.Scenes = {
         ]
     }
 };
+
+})( Game, Settings, window, document );

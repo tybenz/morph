@@ -1,11 +1,23 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-TURRET_INTERVAL = 2000;
-TURRET_SPEED = -0.4;
-QUICK_TURRET_INTERVAL = 800;
-QUICK_TURRET_SPEED = -0.8;
-SMART_TURRET_INTERVAL = 400;
-SMART_TURRET_SPEED = -0.6;
+(function( Game, Settings, window, document, undefined ) {
+
+var TURRET_INTERVAL = Settings.turretInterval,
+    QUICK_TURRET_INTERVAL = Settings.quickTurretInterval,
+    SMART_TURRET_INTERVAL = Settings.smartTurretInterval,
+    TURRET_SPEED = Settings.turretSpeed,
+    QUICK_TURRET_SPEED = Settings.quickTurretSpeed,
+    SMART_TURRET_SPEED = Settings.smartTurretSpeed,
+    SUBMARINE_SPEED = Settings.submarineSpeed,
+    BALLOON_SPEED = Settings.balloonSpeed,
+    BATTLESHIP_SPEED = Settings.battleshipSpeed,
+    BIRD_VELOCITY = Settings.birdVelocity,
+    SPIDER_VELOCITY = Settings.spiderVelocity,
+    SPIDER_CLIMBING_VELOCITY = Settings.spiderClimbingVelocity,
+    BALLOON_HORIZONTAL_VELOCITY = Settings.balloonHorizontalVelocity,
+    BALLOON_VERTICAL_VELOCITY = Settings.balloonVerticalVelocity,
+    BALLOON_VERTICAL_BOUNDARY = Settings.balloonVerticalBoundary,
+    MONSTER_WALKING_INTERVAL = Settings.monsterWalkingInterval;
 
 Game.Entity.Enemy = Game.Entity.extend({
     type: 'Enemy',
@@ -159,15 +171,15 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
             },
             actions: [
                 {
-                    delta: 500,
-                    action: function() { this.pos.x -= Game.unit; },
+                    delta: MONSTER_WALKING_INTERVAL,
+                    action: function() { this.pos.x -= Settings.tileSize; },
                     until: function() {
                         return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' );
                     }
                 },
                 {
-                    delta: 500,
-                    action: function() { this.pos.x += Game.unit; },
+                    delta: MONSTER_WALKING_INTERVAL,
+                    action: function() { this.pos.x += Settings.tileSize; },
                     until: function() {
                         return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' );
                     }
@@ -209,12 +221,12 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
     init: function( x, y ) {
         this._super( x, y );
         this.ignoreGravity = true;
-        this.velocity.x = -0.09;
+        this.velocity.x = BIRD_VELOCITY;
     },
     dropEgg: function() {
-        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < Game.unit * 4 ) {
+        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < Settings.tileSize * 4 ) {
             var eggWidth = Game.Entity.Interactable.Egg.prototype.width,
-                x = this.pos.x + ( Game.unit - eggWidth ) / 2,
+                x = this.pos.x + ( Settings.tileSize - eggWidth ) / 2,
                 y = this.pos.y + this.height,
                 xVelocity = this.velocity.x,
                 yVelocity = 0,
@@ -252,7 +264,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             actions: [{
                 delta: 0,
                 action: function() {
-                    this.velocity.x = -0.06;
+                    this.velocity.x = 0 - SPIDER_VELOCITY;
                 },
                 until: function() {
                     var land = this.adjacentTo( 'Terrain.Land', 'top' ).entity,
@@ -279,7 +291,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             actions: [{
                 delta: 0,
                 action: function() {
-                    this.velocity.x = 0.06;
+                    this.velocity.x = SPIDER_VELOCITY;
                 },
                 until: function() {
                     var land = this.adjacentTo( 'Terrain.Land', 'top' ).entity,
@@ -319,7 +331,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             actions: [{
                 delta: 100,
                 action: function() {
-                    this.velocity.y = -0.08;
+                    this.velocity.y = SPIDER_CLIMBING_VELOCITY;
                     this.ignoreGravity = true;
                 },
                 until: function() {
@@ -336,7 +348,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
             if ( this.state == 'falling' || this.state == 'climbing' ) {
                 for ( var i = this.initialY; i < this.pos.y; i++ ) {
-                    Game.ctx.drawImage( Game.Sprites[ 'spider-web' ], this.pos.x + ( Game.unit / 9 ) * 4 - Game.viewportOffset, i );
+                    Game.ctx.drawImage( Game.Sprites[ 'spider-web' ], this.pos.x + ( Settings.tileSize / 9 ) * 4 - Game.viewportOffset, i );
                 }
             }
         }
@@ -349,8 +361,8 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Game.unit && this.pos.y < Game.hero.pos.y ) {
-            this.pos.x = Math.round( this.pos.x / Game.unit ) * Game.unit;
+        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Settings.tileSize && this.pos.y < Game.hero.pos.y ) {
+            this.pos.x = Math.round( this.pos.x / Settings.tileSize ) * Settings.tileSize;
             this.changeState( 'falling' );
             this.fellOn = Date.now();
         }
@@ -396,9 +408,9 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
     initialSprite: 'battleship-left',
     rightSprite: 'battleship-right',
     leftSprite: 'battleship-left',
-    width: Game.unit * 3,
-    height: Game.unit,
-    bulletSpeed: TURRET_SPEED,
+    width: Settings.tileSize * 3,
+    height: Settings.tileSize,
+    bulletSpeed: BATTLESHIP_SPEED,
     initialState: 'cruising-left',
     states: {
         'cruising-right': {
@@ -450,9 +462,9 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
     shoot: function() {
         this.lockTarget();
         if ( this.direction == 'left' ) {
-            this.createBullet( this.pos.x, this.pos.y + ( Game.unit / 9 ) * 5, this.bulletSpeed, 0 );
+            this.createBullet( this.pos.x, this.pos.y + ( Settings.tileSize / 9 ) * 5, this.bulletSpeed, 0 );
         } else {
-            this.createBullet( this.pos.x, this.pos.y + ( Game.unit / 9 ) * 5, 0 - this.bulletSpeed, 0 );
+            this.createBullet( this.pos.x, this.pos.y + ( Settings.tileSize / 9 ) * 5, 0 - this.bulletSpeed, 0 );
         }
     },
     createBullet: function( x, y, xVelocity, yVelocity ) {
@@ -480,16 +492,16 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
 // TODO - need a dying animation for a 2x2 enemy
 Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
     type: 'Enemy.Balloon',
-    width: Game.unit * 2,
-    height: Game.unit * 2,
-    bulletSpeed: TURRET_SPEED,
+    width: Settings.tileSize * 2,
+    height: Settings.tileSize * 2,
+    bulletSpeed: BALLOON_SPEED,
     initialSprite: 'balloon',
     initialState: 'floating',
     init: function( x, y ) {
         this._super( x, y );
         this.ignoreGravity = true;
         this.startY = y;
-        this.velocity.x = -0.02;
+        this.velocity.x = BALLOON_HORIZONTAL_VELOCITY;
         this.direction = 'left';
     },
     states: {
@@ -498,18 +510,18 @@ Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
                 {
                     delta: TURRET_INTERVAL,
                     action: function() {
-                        this.velocity.y = 0.007;
+                        this.velocity.y = BALLOON_VERTICAL_VELOCITY;
                         this.shoot();
                     },
-                    until: function() { return Math.abs( this.pos.y - this.startY ) >= 7; }
+                    until: function() { return this.pos.y - this.startY >= BALLOON_VERTICAL_BOUNDARY; }
                 },
                 {
                     delta: TURRET_INTERVAL,
                     action: function() {
-                        this.velocity.y = -0.007;
+                        this.velocity.y = 0 - BALLOON_VERTICAL_VELOCITY;
                         this.shoot();
                     },
-                    until: function() { return Math.abs( this.pos.y - this.startY ) >= 7; }
+                    until: function() { return this.pos.y - this.startY <= 0 - BALLOON_VERTICAL_BOUNDARY; }
                 }
             ]
         },
@@ -541,9 +553,11 @@ Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
 
 Game.Entity.Enemy.Submarine = Game.Entity.Enemy.Balloon.extend({
     type: 'Enemy.Submarine',
-    width: Game.unit * 2,
-    height: Game.unit * 2,
-    bulletSpeed: TURRET_SPEED,
+    width: Settings.tileSize * 2,
+    height: Settings.tileSize * 2,
+    bulletSpeed: SUBMARINE_SPEED,
     initialSprite: 'submarine',
     initialState: 'floating'
 });
+
+})( Game, Settings, window, document );

@@ -1,5 +1,9 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
+var WAVE_SPEED = Settings.waveSpeed;
+
 Game.Entity.Terrain = Game.Entity.extend({
     type: 'Terrain',
     drawLayer: 1,
@@ -125,7 +129,7 @@ Game.Entity.Terrain.Wave = Game.Entity.Terrain.extend({
     states: {
         'rolling': {
             animation: {
-                delta: 400,
+                delta: WAVE_SPEED,
                 sequence: [ 'wave-1', 'wave-2', 'wave-3', 'wave-4', 'wave-5', 'wave-6', 'wave-7', 'wave-8', 'wave-9' ],
                 times: 'infinite'
             }
@@ -147,7 +151,7 @@ Game.Entity.Terrain.Waterfall = Game.Entity.Terrain.extend({
     states: {
         'falling': {
             animation: {
-                delta: 400,
+                delta: WAVE_SPEED,
                 sequence: [ 'waterfall-1', 'waterfall-2', 'waterfall-3', 'waterfall-4', 'waterfall-5', 'waterfall-6', 'waterfall-7', 'waterfall-8', 'waterfall-9' ],
                 times: 'infinite'
             }
@@ -163,7 +167,7 @@ Game.Entity.Terrain.Waterclimb = Game.Entity.Terrain.extend({
     states: {
         'climbing': {
             animation: {
-                delta: 400,
+                delta: WAVE_SPEED,
                 sequence: [ 'waterclimb-1', 'waterclimb-2', 'waterclimb-3', 'waterclimb-4', 'waterclimb-5', 'waterclimb-6', 'waterclimb-7', 'waterclimb-8', 'waterclimb-9' ],
                 times: 'infinite'
             }
@@ -203,3 +207,5 @@ Game.Entity.Terrain.Bubble = Game.Entity.Terrain.extend({
     initialState: 'still',
     initialSprite: 'bubble'
 });
+
+})( Game, Settings, window, document );

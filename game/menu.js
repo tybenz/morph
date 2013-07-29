@@ -1,14 +1,43 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
+var TILESIZE = Settings.tileSize;
+    MENU_WIDTH = Settings.menuWidth,
+    MENU_HEIGHT = Settings.menuHeight,
+    MENU_LINE_WIDTH = Settings.menuLineWidth,
+    MENU_PADDING = Settings.menuPadding,
+    MENU_HEADER_HEIGHT = Settings.menuHeaderHeight,
+    MENU_HEADER_FONT_SIZE = Settings.menuHeaderFontSize,
+    MENU_TITLE_TOP = Settings.menuTitleTop,
+    MENU_SELECTION_COLOR = Settings.menuSelectionColor,
+    MENU_LINE_COLOR = Settings.menuLineColor,
+    MENU_PADDING_LEFT = Settings.menuPaddingLeft,
+    MENU_ROW_SIZE = Settings.menuRowSize,
+    MENU_SELECTION_PADDING = Settings.menuSelectionPadding,
+    MENU_LINE_WIDTH = Settings.menuLineWidth,
+    MENU_ITEM_WIDTH = Settings.menuItemWidth,
+    MENU_ITEM_HEIGHT = Settings.menuItemHeight,
+    GAME_OVER_MENU_PADDING_LEFT = Settings.gameOverMenuPaddingLeft,
+    GAME_OVER_MENU_PADDING_TOP = Settings.gameOverMenuPaddingTop,
+    TRANSFORM_MENU_ROW_SIZE = Settings.transformMenuRowSize,
+    LEFT_KEY = Settings.leftKey,
+    RIGHT_KEY = Settings.rightKey,
+    DOWN_KEY = Settings.downKey,
+    UP_KEY = Settings.upKey,
+    ACTION_KEY = Settings.actionKey,
+    JUMP_KEY = Settings.jumpKey,
+    PAUSE_KEY = Settings.pauseKey,
+    ENTER_KEY = Settings.enterKey;
 
 Game.Menu = Class.extend({
     titleText: 'MENU',
     init: function( left, top, width, height, lineWidth ) {
         this.x = left;
         this.y = top;
-        this.padding = 40;
-        this.paddingLeft = this.padding + 50;
-        this.headerHeight = 30;
+        this.padding = MENU_PADDING;
+        this.paddingLeft = this.padding + MENU_PADDING_LEFT;
+        this.headerHeight = MENU_HEADER_HEIGHT;
         this.paddingTop = this.headerHeight + this.padding;
         this.width = width;
         this.height = height;
@@ -27,28 +56,28 @@ Game.Menu = Class.extend({
         var self = this;
 
         // Left
-        if ( 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) {
+        if ( LEFT_KEY in Game.keysDown && Game.keysDown[ LEFT_KEY ] != 'locked' ) {
             this.left();
-            Game.keysDown[37] = 'locked';
+            Game.keysDown[LEFT_KEY] = 'locked';
         }
         // Up
-        if ( 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) {
+        if ( UP_KEY in Game.keysDown && Game.keysDown[ UP_KEY ] != 'locked' ) {
             this.up();
-            Game.keysDown[38] = 'locked';
+            Game.keysDown[UP_KEY] = 'locked';
         }
         // Right
-        if ( 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) {
+        if ( RIGHT_KEY in Game.keysDown && Game.keysDown[ RIGHT_KEY ] != 'locked' ) {
             this.right();
-            Game.keysDown[39] = 'locked';
+            Game.keysDown[RIGHT_KEY] = 'locked';
         }
         // Down
-        if ( 40 in Game.keysDown && Game.keysDown[ 40 ] != 'locked' ) {
+        if ( DOWN_KEY in Game.keysDown && Game.keysDown[ DOWN_KEY ] != 'locked' ) {
             this.down();
-            Game.keysDown[40] = 'locked';
+            Game.keysDown[DOWN_KEY] = 'locked';
         }
 
         // Enter
-        if ( 13 in Game.keysDown && Game.keysDown[ 13 ] != 'locked' ) {
+        if ( ENTER_KEY in Game.keysDown && Game.keysDown[ ENTER_KEY ] != 'locked' ) {
             // Choose and exit
             this.exit();
         } else {
@@ -69,17 +98,17 @@ Game.Menu = Class.extend({
         this.contents();
     },
     selected: 0,
-    rowSize: 2,
-    selectionPadding: 7,
-    selectionLineWidth: 2,
-    selectionColor: '#00ff00',
-    itemWidth: Game.unit * 3,
-    itemHeight: Game.unit * 3,
+    rowSize: MENU_ROW_SIZE,
+    selectionPadding: MENU_SELECTION_PADDING,
+    selectionLineWidth: MENU_LINE_WIDTH,
+    selectionColor: MENU_SELECTION_COLOR,
+    itemWidth: MENU_ITEM_WIDTH,
+    itemHeight: MENU_ITEM_HEIGHT,
     contents: function() {
         this.title();
 
         var item,
-            spacing = 6 * Game.unit,
+            spacing = 6 * TILESIZE,
             x, y;
 
         for ( var i = 0; i < this.data.length; i++ ) {
@@ -117,10 +146,10 @@ Game.Menu = Class.extend({
         }
     },
     title: function() {
-        Game.ctx.font = 'normal 20px uni05';
+        Game.ctx.font = 'normal ' + Math.round( MENU_HEADER_FONT_SIZE ) + 'px uni05';
         Game.ctx.fillStyle = '#000';
         Game.ctx.textAlign = 'center';
-        Game.ctx.fillText( this.titleText, Game.viewportWidth / 2, this.y + 24 );
+        Game.ctx.fillText( this.titleText, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP );
     },
     overlay: function() {
         Game.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
@@ -130,7 +159,7 @@ Game.Menu = Class.extend({
         Game.ctx.fillStyle = '#000';
         Game.ctx.fillRect( this.x, this.y, this.width, this.height );
 
-        this.drawRectangle( this.x, this.y, this.width, this.height, this.lineWidth, '#00ff00' );
+        this.drawRectangle( this.x, this.y, this.width, this.height, this.lineWidth, MENU_LINE_COLOR );
         // Header
         Game.ctx.fillRect( this.x + this.lineWidth, this.y + this.lineWidth, this.width - this.lineWidth, this.headerHeight );
     },
@@ -183,8 +212,8 @@ Game.Menu.GameOver = Game.Menu.extend({
     titleText: 'GAME OVER',
     init: function( left, top, width, height, lineWidth ) {
         this._super( left, top, width, height, lineWidth );
-        this.paddingLeft = 185;
-        this.paddingTop = 110;
+        this.paddingLeft = GAME_OVER_MENU_PADDING_LEFT;
+        this.paddingTop = GAME_OVER_MENU_PADDING_TOP;
     },
     data: [
         { sprite: 'restart-double' },
@@ -237,8 +266,10 @@ Game.Menu.Transform = Game.Menu.extend({
             sprite: 'flame-double'
         }
     ],
-    rowSize: 4,
+    rowSize: TRANSFORM_MENU_ROW_SIZE,
     exit: function() {
         Game.startTransformAnimation( this.data[ this.selected ].className );
     }
 });
+
+})( Game, Settings, window, document );

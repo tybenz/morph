@@ -1,8 +1,26 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Settings, window, document, undefined ) {
+
+var TILESIZE = Settings.tileSize,
+    VIEWPORT_SHIFT_BOUNDARY = Settings.viewportShiftBoundary,
+    MENU_WIDTH = Settings.menuWidth,
+    MENU_HEIGHT = Settings.menuHeight,
+    MENU_LINE_WIDTH = Settings.menuLineWidth,
+    LEFT_KEY = Settings.leftKey,
+    RIGHT_KEY = Settings.rightKey,
+    DOWN_KEY = Settings.downKey,
+    UP_KEY = Settings.upKey,
+    ACTION_KEY = Settings.actionKey,
+    JUMP_KEY = Settings.jumpKey,
+    PAUSE_KEY = Settings.pauseKey,
+    ENTER_KEY = Settings.enterKey,
+    DEBUG_INVALID_RECT = Settings.debugInvalidRect,
+    DEBUG_INVALID_RECT_COLOR = Settings.debugInvalidRectColor,
+    LAND_BACKGROUND = Settings.landBackground,
+    SEA_BACKGROUND = Settings.seaBackground;
+
 var Game = {
-    //Global tilesize value
-    unit: 18,
     //Array of entities that should be destroyed on the following update
     toBeDestroyed: [],
     //Dictionary to lookup which keys are pressed on each update
@@ -10,21 +28,20 @@ var Game = {
     //Image count for loading sprites
     imageCount: 1,
     paused: false,
-    background: '#000',
     init: function( level ) {
         //Initialize viewport size
-        Game.viewportWidth = Game.viewportTileWidth * Game.unit;
-        Game.viewportHeight = Game.viewportTileHeight * Game.unit;
+        Game.viewportWidth = Game.viewportTileWidth * TILESIZE;
+        Game.viewportHeight = Game.viewportTileHeight * TILESIZE;
         Game.viewportOffset = 0;
         Game.viewportShiftBoundary = {
-            left: Game.viewportWidth / 2 + ( 3 * Game.unit ),
-            right: Game.viewportWidth / 2 - ( 3 * Game.unit )
+            left: Game.viewportWidth / 2 + ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE ),
+            right: Game.viewportWidth / 2 - ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE )
         };
 
         //Initialize pause menu
-        var pauseMenuWidth = Game.unit * 30,
-            pauseMenuHeight = Game.unit * 15,
-            pauseMenuLineWidth = 3;
+        var pauseMenuWidth = TILESIZE * MENU_WIDTH,
+            pauseMenuHeight = TILESIZE * MENU_HEIGHT,
+            pauseMenuLineWidth = MENU_LINE_WIDTH;
         Game.pauseMenu = new Game.Menu.Pause( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
 
         //Initialize transform menu
@@ -77,7 +94,7 @@ var Game = {
 
         //Same init as Game.Entity
         for ( var i in Game.Bitmaps ) {
-            Game.Sprites[i] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], Game.unit / 9 ) );
+            Game.Sprites[i] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], TILESIZE / 9 ) );
             Game.totalSprites++;
         }
 
@@ -95,7 +112,7 @@ var Game = {
         };
 
         for ( var i in heroList ) {
-            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( heroList[i], Game.unit / 3 ) );
+            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( heroList[i], TILESIZE / 3 ) );
             Game.totalSprites++;
         }
     },
@@ -171,7 +188,7 @@ var Game = {
         Game.$rightButton.on( 'vmousedown', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 39,
+                keyCode: RIGHT_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyDownListener( evt );
@@ -179,7 +196,7 @@ var Game = {
         Game.$rightButton.on( 'vmouseup', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 39,
+                keyCode: RIGHT_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyUpListener( evt );
@@ -189,7 +206,7 @@ var Game = {
         Game.$leftButton.on( 'vmousedown', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 37,
+                keyCode: LEFT_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyDownListener( evt );
@@ -197,7 +214,7 @@ var Game = {
         Game.$leftButton.on( 'vmouseup', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 37,
+                keyCode: LEFT_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyUpListener( evt );
@@ -207,7 +224,7 @@ var Game = {
         Game.$upButton.on( 'vmousedown', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 38,
+                keyCode: JUMP_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyDownListener( evt );
@@ -215,7 +232,7 @@ var Game = {
         Game.$upButton.on( 'vmouseup', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 38,
+                keyCode: JUMP_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyUpListener( evt );
@@ -225,7 +242,7 @@ var Game = {
         Game.$pauseButton.on( 'vmousedown', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 80,
+                keyCode: PAUSE_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyDownListener( evt );
@@ -233,7 +250,7 @@ var Game = {
         Game.$pauseButton.on( 'vmouseup', function( evt ) {
             evt.preventDefault();
             var evt = {
-                keyCode: 80,
+                keyCode: PAUSE_KEY,
                 preventDefault: function( evt ) {}
             };
             Game.keyUpListener( evt );
@@ -376,17 +393,13 @@ var Game = {
                 }
             }
 
-            Game.shiftInterval = 20;
             //Shift viewport if hero's pos is past the shift boundary
             if ( Game.currentLevel.type == 'sky' ) {
-                Game.lastShift = Game.lastShift || Date.now();
-                if ( ( Date.now() - Game.lastShift ) > Game.shiftInterval ) {
-                    if ( Game.viewportOffset < Game.viewportShiftBuffer ) {
-                        Game.lastShift = Date.now();
-                        Game.hero.pos.x += 2;
-                        Game.viewportShiftBoundary.left = Game.hero.pos.x - 2;
-                        Game.shiftViewport( 'left' );
-                    }
+                if ( Game.viewportOffset < Game.viewportShiftBuffer ) {
+                    Game.lastShift = Date.now();
+                    Game.hero.pos.x += TILESIZE / 18;
+                    Game.viewportShiftBoundary.left = Game.hero.pos.x - TILESIZE / 18;
+                    Game.shiftViewport( 'left' );
                 }
             } else {
                 if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
@@ -402,14 +415,14 @@ var Game = {
             Game.viewportShiftLeft = Game.hero.pos.x - Game.viewportShiftBoundary.left;
             Game.viewportShiftBoundary.left += Game.viewportShiftLeft;
             Game.viewportShiftBoundary.right += Game.viewportShiftLeft;
-            Game.viewportOffset += Game.viewportShiftLeft;//Game.unit;
+            Game.viewportOffset += Game.viewportShiftLeft;
 
             Game.lastAddedColumn = Game.lastAddedColumn || Game.viewportTileWidth - 1;
 
             // Load entities in
             var i, j,
                 entity,
-                tileOffset = Math.ceil( Game.viewportOffset / Game.unit ),
+                tileOffset = Math.ceil( Game.viewportOffset / TILESIZE ),
                 column = Game.viewportTileWidth + tileOffset;
 
             for ( i = Game.lastAddedColumn + 1; i <= column; i++ ) {
@@ -490,7 +503,7 @@ var Game = {
             box.width( width );
             box.height( height );
         } else {
-            box = $( '<div id="invalid-rect" style="border: 1px solid red;position:absolute;left:'+left+'px;top:'+top+'px;width:'+width+'px;height:'+height+'px"></div>' );
+            box = $( '<div id="invalid-rect" style="border: 1px solid ' + DEBUG_INVALID_RECT_COLOR + ';position:absolute;left:'+left+'px;top:'+top+'px;width:'+width+'px;height:'+height+'px"></div>' );
             $( 'body' ).append( box );
         }
     },
@@ -544,7 +557,7 @@ var Game = {
                 Game.viewportShiftRight = false;
             }
 
-            if ( Game.debugInvalidRect ) {
+            if ( DEBUG_INVALID_RECT ) {
                 Game.displayInvalidRect();
             }
 
@@ -576,11 +589,11 @@ var Game = {
 
             for ( i = 0; i < Game.Inventory.maxHealth; i++ ) {
                 if ( i % 2 == 0 && i < Game.Inventory.health ) {
-                    Game.ctx.drawImage( Game.Sprites[ 'heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                    Game.ctx.drawImage( Game.Sprites[ 'heart' ], Math.floor( i / 2 ) * TILESIZE + TILESIZE / 2, TILESIZE / 2 );
                 } else if ( i == Game.Inventory.health && i % 2 == 1 ) {
-                    Game.ctx.drawImage( Game.Sprites[ 'half-heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                    Game.ctx.drawImage( Game.Sprites[ 'half-heart' ], Math.floor( i / 2 ) * TILESIZE + TILESIZE / 2, TILESIZE / 2 );
                 } else if ( i % 2 == 0 ) {
-                    Game.ctx.drawImage( Game.Sprites[ 'empty-heart' ], Math.floor( i / 2 ) * Game.unit + Game.unit / 2, Game.unit / 2 );
+                    Game.ctx.drawImage( Game.Sprites[ 'empty-heart' ], Math.floor( i / 2 ) * TILESIZE + TILESIZE / 2, TILESIZE / 2 );
                 }
             }
 
@@ -593,9 +606,9 @@ var Game = {
             toLevel;
 
         if ( Game.currentLevel.type == 'sea' ) {
-            Game.background = '#003';
+            Game.background = SEA_BACKGROUND;
         } else {
-            Game.background = '#000';
+            Game.background = LAND_BACKGROUND;
         }
 
         Game.hero = null;
@@ -614,7 +627,7 @@ var Game = {
                     toLevel = entities[k].split( ':' )[1];
                     if ( entityString != 'blank' ) {
                         // Each entity gets initialized and put into our level's entity list
-                        entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * Game.unit + ', ' + i * Game.unit + ' )' );
+                        entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * TILESIZE + ', ' + i * TILESIZE + ' )' );
                         if ( toLevel ) {
                             entity.toLevel = toLevel;
                         }
@@ -649,10 +662,10 @@ var Game = {
     keyDownListener: function( evt ) {
         //Prevent default on up and down so the
         //browser doesn't attempt to scroll the page
-        if ( evt.keyCode == 38 || evt.keyCode == 40 ) {
+        if ( evt.keyCode == JUMP_KEY || evt.keyCode == DOWN_KEY ) {
             evt.preventDefault();
         }
-        if ( evt.keyCode == 80 ) { // "P" key
+        if ( evt.keyCode == PAUSE_KEY ) {
             if ( Game.paused ) {
                 Game.resume();
             } else {
@@ -740,10 +753,12 @@ var Game = {
     },
     debugInvalidRect: false
 };
-Game.viewportTileWidth = 50;
-Game.viewportTileHeight = 25;
+Game.viewportTileWidth = Settings.defaultViewportWidth;
+Game.viewportTileHeight = Settings.defaultViewportHeight;
 window.Game = Game;
 
 $(function() {
     $( window ).on( 'resize', Game.resize );
 });
+
+})( Settings, window, document );

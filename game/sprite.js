@@ -1,5 +1,7 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
 Game.Sprite = function( path ) {
     var image = new Image();
     image.onload = function() {
@@ -1740,3 +1742,5 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "transparent", "#ff7f00", "transparent", "#ff7f00", "transparent", "transparent", "transparent" ]
     ]
 };
+
+})( Game, Settings, window, document );

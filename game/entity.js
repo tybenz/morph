@@ -1,8 +1,12 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
+var TILESIZE = Settings.tileSize,
+    GRAVITY = Settings.gravity;
+
 Game.Entity = Class.extend({
     type: 'Entity',
-    maxVelocityY: 7,
     drawLayer: 0,
     initialState: 'still',
     states: {
@@ -20,8 +24,8 @@ Game.Entity = Class.extend({
         this.stateChanged = false;
     },
     init: function( x, y ) {
-        this.width = this.width || Game.unit;
-        this.height = this.height || Game.unit;
+        this.width = this.width || TILESIZE;
+        this.height = this.height || TILESIZE;
         this.ignoreGravity = false;
         this.lastAnimated = Date.now();
         this.activeSprite = this.initialSprite || 'transparent';
@@ -32,7 +36,7 @@ Game.Entity = Class.extend({
         var i, j, k,
             tempCanvas, tempContext,
             dataURL, currentSprite,
-            rectSize = Game.unit / 9;
+            rectSize = TILESIZE / 9;
 
         //Entities should be initialized with an x and y
         if ( x !== null && y !== null ) {
@@ -41,7 +45,7 @@ Game.Entity = Class.extend({
             this.pos = new Game.Vector( 0, 0 );
         }
         this.velocity = new Game.Vector( 0, 0 );
-        this.gravity = new Game.Vector( 0, 0.001 ); // Changed to test collisions
+        this.gravity = new Game.Vector( 0, GRAVITY ); // Changed to test collisions
 
         this.oldPos = this.pos;
 
@@ -562,7 +566,7 @@ Game.Entity = Class.extend({
             case 'Terrain.Land':
                 if ( this.velocity.y > 0 && collisionTypes ) {
                     this.velocity.y = 0;
-                    if ( this.oldPos.y % Game.unit == 0 ) {
+                    if ( this.oldPos.y % TILESIZE == 0 ) {
                         this.pos.y = this.oldPos.y;
                     } else {
                         this.pos.y = entity.pos.y - this.height;
@@ -583,3 +587,5 @@ Game.Entity = Class.extend({
         }
     }
 });
+
+})( Game, Settings, window, document );

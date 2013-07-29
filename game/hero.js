@@ -1,9 +1,38 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-var MAN_RIGHT = 0,
-    MAN_LEFT = 1,
-    MAN_HOLDING_RIGHT = 2,
-    MAN_HOLDING_LEFT = 3;
+(function( Game, Settings, window, document, undefined ) {
+
+var TILESIZE = Settings.tileSize,
+    PLANE_TAKEOFF_VELOCITY = Settings.planeTakeoffVelocity,
+    TRANSFORM_ANIMATION_DURATION = Settings.transformAnimationDuration,
+    LEFT_KEY = Settings.leftKey,
+    RIGHT_KEY = Settings.rightKey,
+    DOWN_KEY = Settings.downKey,
+    UP_KEY = Settings.upKey,
+    ACTION_KEY = Settings.actionKey,
+    JUMP_KEY = Settings.jumpKey,
+    PAUSE_KEY = Settings.pauseKey,
+    ENTER_KEY = Settings.enterKey,
+    TAKING_DAMAGE_DURATION = Settings.takingDamageDuration,
+    MAN_JUMP_VELOCITY = Settings.manJumpVelocity,
+    BLOCK_JUMP_VELOCITY = Settings.blockJumpVelocity,
+    ROCK_THROW_VELOCITY = Settings.rockThrowVelocity,
+    BOAT_BULLET_SPEED = Settings.boatBulletSpeed,
+    BOAT_BULLET_RELOAD_RATE = Settings.boatBulletReloadRate,
+    PLANE_BULLET_SPEED = Settings.planeBulletSpeed,
+    PLANE_BULLET_RELOAD_RATE = Settings.planeBulletReloadRate,
+    PLANE_HORIZONTAL_VELOCITY = Settings.planeHorizontalVelocity,
+    PLANE_LANDING_VELOCITY = Settings.planeLandingVelocity,
+    PLANE_TAKEOFF_VELOCITY = Settings.planeTakeoffVelocity,
+    TAKING_DAMAGE_DURATION = Settings.takingDamageDuration,
+    FROG_GRAVITY = Settings.frogGravity,
+    FROG_JUMP_VELOCITY = Settings.frogJumpVelocity,
+    FROG_TONGUE_VELOCITY = Settings.frogTongueVelocity,
+    JELLYFISH_GRAVITY = Settings.jellyfishGravity,
+    CLOCK_STOP_DURATION = Settings.clockStopDuration,
+    CLOCK_STOP_COOLDOWN = Settings.clockStopCooldown,
+    CLOCK_JUMP_VELOCITY = Settings.clockJumpVelocity,
+    FLAME_JUMP_VELOCITY = Settings.flameJumpVelocity;
 
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
@@ -38,13 +67,13 @@ Game.Entity.Hero = Game.Entity.extend({
     right: function() {
         this.direction = 'right';
         if ( !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
-            this.pos.x += Game.unit;
+            this.pos.x += TILESIZE;
         }
     },
     left: function() {
         this.direction = 'left';
         if ( !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
-            this.pos.x -= Game.unit;
+            this.pos.x -= TILESIZE;
         }
     },
     up: function() {},
@@ -85,7 +114,7 @@ Game.Entity.Hero = Game.Entity.extend({
                             wave = wave.entity;
                             newHero.pos = new Game.Vector( wave.pos.x, wave.pos.y );
                         } else {
-                            newHero.pos.x = oldX + Game.unit * 2;
+                            newHero.pos.x = oldX + machine.width;
                             if ( newHero.hasCollisionWith( 'Terrain.Land' ) ) {
                                 newHero.pos.x = oldX;
                             }
@@ -93,7 +122,7 @@ Game.Entity.Hero = Game.Entity.extend({
                     } else if ( type == 'Hero.Plane' ) {
                         if ( !newHero.below( 'Terrain.Land' ) ) {
                             Game.keysLocked = true;
-                            newHero.velocity.y = -0.3;
+                            newHero.velocity.y = PLANE_TAKEOFF_VELOCITY;
                         }
                     } else {
                         wave = newHero.adjacentTo( 'Terrain.Water', 'bottom' );
@@ -108,30 +137,34 @@ Game.Entity.Hero = Game.Entity.extend({
                 }
 
                 Game.doneTransforming();
-            }, 1000 );
+            }, TRANSFORM_ANIMATION_DURATION );
         }
     },
     //Handling user input
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
         if ( !Game.keysLocked ) {
-            if ( !Game.keysLocked && !this.doNotMove && 37 in Game.keysDown && Game.keysDown[ 37 ] != 'locked' ) { // LEFT
+            if ( !Game.keysLocked && !this.doNotMove && LEFT_KEY in Game.keysDown && Game.keysDown[ LEFT_KEY ] != 'locked' ) { // LEFT
                 this.left();
-                Game.keysDown[ 37 ] = 'locked';
+                Game.keysDown[ LEFT_KEY ] = 'locked';
             }
-            if ( !Game.keysLocked && !this.doNotMove && 39 in Game.keysDown && Game.keysDown[ 39 ] != 'locked' ) { // RIGHT
+            if ( !Game.keysLocked && !this.doNotMove && RIGHT_KEY in Game.keysDown && Game.keysDown[ RIGHT_KEY ] != 'locked' ) { // RIGHT
                 this.right();
-                Game.keysDown[ 39 ] = 'locked';
+                Game.keysDown[ RIGHT_KEY ] = 'locked';
             }
-            if ( !Game.keysLocked && !this.doNotMove && 38 in Game.keysDown && Game.keysDown[ 38 ] != 'locked' ) { // UP
+            if ( !Game.keysLocked && !this.doNotMove && UP_KEY in Game.keysDown && Game.keysDown[ UP_KEY ] != 'locked' ) { // UP
                 this.up();
-                Game.keysDown[ 38 ] = 'locked';
+                Game.keysDown[ UP_KEY ] = 'locked';
             }
-            if ( !Game.keysLocked && !this.doNotMove && 40 in Game.keysDown && Game.keysDown[ 40 ] != 'locked' ) { // UP
+            if ( !Game.keysLocked && !this.doNotMove && JUMP_KEY in Game.keysDown && Game.keysDown[ JUMP_KEY ] != 'locked' ) { // UP
+                this.up();
+                Game.keysDown[ JUMP_KEY ] = 'locked';
+            }
+            if ( !Game.keysLocked && !this.doNotMove && DOWN_KEY in Game.keysDown && Game.keysDown[ DOWN_KEY ] != 'locked' ) { // UP
                 this.down();
-                Game.keysDown[ 40 ] = 'locked';
+                Game.keysDown[ DOWN_KEY ] = 'locked';
             }
-            if ( 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) { // SPACE
+            if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) { // SPACE
                 var collisions = this.hasCollisionWith( 'Machine' );
                 if ( collisions && this.pos.x == collisions.entity.pos.x ) {
                     Game.openTransformMenu();
@@ -156,7 +189,7 @@ Game.Entity.Hero = Game.Entity.extend({
                 hero.takingDamage = false;
                 hero.changeState( oldState );
                 hero.visible = true;
-            }, 1000 );
+            }, TAKING_DAMAGE_DURATION );
         }
 
         if ( this.activeSprite == 'hero-dying-9' || this.activeSprite == 'flame-dying-9' ) {
@@ -212,6 +245,10 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     type: 'Hero.Man',
     initialSprite: 'man-right',
     initialState: 'walking',
+    init: function( x, y ) {
+        this.jumpVelocity = MAN_JUMP_VELOCITY;
+        this._super( x, y );
+    },
     states: {
         'dying': Game.Entity.Hero.prototype.states.dying,
         'blinking': Game.Entity.Hero.prototype.states.blinking,
@@ -222,20 +259,20 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
         this._super( timeDiff );
 
         //spacebar
-        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             if ( this.holding ) {
                 this.actions.throw.call( this );
-                Game.keysDown[ 88 ] = 'locked';
+                Game.keysDown[ ACTION_KEY ] = 'locked';
             } else {
                 var adjacent = this.adjacentTo( 'Interactable.Rock' ),
                     collision = this.hasCollisionWith( 'Interactable.Rock' );
 
                 if ( adjacent ) {
                     this.actions.pickup.call( this, adjacent.entity );
-                    Game.keysDown[ 88 ] = 'locked';
+                    Game.keysDown[ ACTION_KEY ] = 'locked';
                 } else if ( collision ) {
                     this.actions.pickup.call( this, collision.entity );
-                    Game.keysDown[ 88 ] = 'locked';
+                    Game.keysDown[ ACTION_KEY ] = 'locked';
                 }
             }
         }
@@ -264,7 +301,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     up: function() {
         //jump
         if ( !this.disableJump ) {
-            var jumpForce = new Game.Vector( 0, -0.4 );
+            var jumpForce = new Game.Vector( 0, this.jumpVelocity );
             this.velocity = this.velocity.add( jumpForce );
         }
     },
@@ -290,13 +327,13 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             Game.drawLayers[ this.holding.drawLayer ].push( this.holding );
 
             if ( this.direction == 'right' ) {
-                this.holding.velocity.x = 0.1;
+                this.holding.velocity.x = ROCK_THROW_VELOCITY;
                 this.activeSprite = 'man-right';
             } else {
-                this.holding.velocity.x = -0.1;
+                this.holding.velocity.x = 0 - ROCK_THROW_VELOCITY;
                 this.activeSprite = 'man-left';
             }
-            this.holding.velocity.y = -0.4;
+            this.holding.velocity.y = this.jumpVelocity;
 
             this.holding = false;
         }
@@ -315,7 +352,7 @@ Game.Entity.Hero.Block = Game.Entity.Hero.extend({
     },
     up: function() {
         if ( !this.disableJump ) {
-            var jumpForce = new Game.Vector( 0, -0.5 );
+            var jumpForce = new Game.Vector( 0, BLOCK_JUMP_VELOCITY );
             this.velocity = this.velocity.add( jumpForce );
         }
     },
@@ -332,8 +369,8 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
     type: 'Hero.Boat',
     initialSprite: 'boat-right',
     initialState: 'sailing',
-    bulletSpeed: -0.3,
-    bulletInterval: 500,
+    bulletSpeed: BOAT_BULLET_SPEED,
+    bulletInterval: BOAT_BULLET_RELOAD_RATE,
     lastFired: Date.now(),
     states: {
         'dying': Game.Entity.Hero.prototype.states.dying,
@@ -361,14 +398,14 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             this.shoot();
-            Game.keysDown[ 88 ] = 'locked';
+            Game.keysDown[ ACTION_KEY ] = 'locked';
         }
 
-        if ( !this.skipAction && !Game.keysLocked && 90 in Game.keysDown && Game.keysDown[ 90 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && JUMP_KEY in Game.keysDown && Game.keysDown[ JUMP_KEY ] != 'locked' ) {
             this.lockTarget();
-            Game.keysDown[ 90 ] = 'locked';
+            Game.keysDown[ JUMP_KEY ] = 'locked';
         }
 
         if ( this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
@@ -383,7 +420,7 @@ Game.Entity.Hero.Boat = Game.Entity.Hero.extend({
             xVelocity = 0 - xVelocity;
         }
         if ( ( Date.now() - this.lastFired ) > this.bulletInterval ) {
-            this.createBullet( this.pos.x, this.pos.y + ( Game.unit / 9 ) * 5, xVelocity, 0 );
+            this.createBullet( this.pos.x, this.pos.y + ( TILESIZE / 9 ) * 5, xVelocity, 0 );
             this.lastFired = Date.now();
         }
     },
@@ -428,12 +465,12 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
     },
     init: function( x, y ) {
         this._super( x, y );
-        this.gravity = new Game.Vector( 0, 0.0008 );
+        this.gravity = new Game.Vector( 0, FROG_GRAVITY );
     },
     up: function() {
         if ( !this.disableJump ) {
             this.changeState( 'jumping' );
-            var jumpForce = new Game.Vector( 0, -0.6 );
+            var jumpForce = new Game.Vector( 0, FROG_JUMP_VELOCITY );
             this.velocity = this.velocity.add( jumpForce );
             if ( this.direction == 'right' ) {
                 this.activeSprite = 'frog-right-jump';
@@ -449,11 +486,11 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
             case 'jumping':
                 this.activeSprite = 'frog-right-jump';
                 if ( !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
-                    this.pos.x += Game.unit;
+                    this.pos.x += TILESIZE;
                 }
                 // correct position if we jumped inside land
                 if ( this.hasCollisionWith( 'Terrain.Land', 'overlappingVertical' ) ) {
-                    this.pos.x -= Game.unit;
+                    this.pos.x -= TILESIZE;
                 }
                 break;
             case 'licking':
@@ -471,11 +508,11 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
             case 'jumping':
                 this.activeSprite = 'frog-left-jump';
                 if ( !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
-                    this.pos.x -= Game.unit;
+                    this.pos.x -= TILESIZE;
                 }
                 // correct position if we jumped inside land
                 if ( this.hasCollisionWith( 'Terrain.Land', 'overlappingVertical' ) ) {
-                    this.pos.x += Game.unit;
+                    this.pos.x += TILESIZE;
                 }
                 break;
             case 'licking':
@@ -488,10 +525,10 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
         }
     },
     lick: function() {
-        var tongue, rectSize = Game.unit / 9,
+        var tongue, rectSize = TILESIZE / 9,
             x = this.pos.x + this.width - rectSize * 4,
             y = this.pos.y + rectSize * 4,
-            velocity = this.direction == 'left' ? -0.12 : 0.12;
+            velocity = this.direction == 'left' ? 0 - FROG_TONGUE_VELOCITY : FROG_TONGUE_VELOCITY;
 
         if ( this.state.indexOf( 'licking' ) == -1 ) {
             if ( this.state == 'jumping' ) {
@@ -527,9 +564,9 @@ Game.Entity.Hero.Frog = Game.Entity.Hero.extend({
             this.invalidateRect();
         }
 
-        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             this.lick();
-            Game.keysDown[ 88 ] = 'locked';
+            Game.keysDown[ ACTION_KEY ] = 'locked';
         }
     }
 });
@@ -538,10 +575,9 @@ Game.Entity.Hero.Plane = Game.Entity.Hero.extend({
     type: 'Hero.Plane',
     initialSprite: 'plane-right',
     initialState: 'still',
-    bulletSpeed: 0.3,
-    bulletInterval: 300,
+    bulletSpeed: PLANE_BULLET_SPEED,
+    bulletInterval: PLANE_BULLET_RELOAD_RATE,
     lastFired: Date.now(),
-    beginLandingSequence: true,
     states: {
         'dying': Game.Entity.Hero.prototype.states.dying,
         'still': Game.Entity.prototype.states.still,
@@ -550,45 +586,46 @@ Game.Entity.Hero.Plane = Game.Entity.Hero.extend({
     },
     init: function( x, y ) {
         this._super( x, y );
+        this.beginLandingSequence = true;
         this.ignoreGravity = true;
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             this.shoot();
-            Game.keysDown[ 88 ] = 'locked';
+            Game.keysDown[ ACTION_KEY ] = 'locked';
         }
 
         if ( Game.viewportOffset >= Game.viewportShiftBuffer && this.beginLandingSequence ) {
-            this.velocity.x = 0.1;
+            this.velocity.x = PLANE_HORIZONTAL_VELOCITY;
             this.beginLandingSequence = false;
         }
     },
     up: function() {
         if ( !this.adjacentTo( 'Terrain.Land', 'top' ) && !this.adjacentToLevelEdge( 'top' ) ) {
-            this.pos.y -= Game.unit;
+            this.pos.y -= TILESIZE;
         }
     },
     down: function() {
         if ( !this.adjacentTo( 'Terrain.Land', 'bottom' ) && !this.adjacentToLevelEdge( 'bottom' ) ) {
-            this.pos.y += Game.unit;
+            this.pos.y += TILESIZE;
         }
     },
     left: function() {
-        if ( this.pos.x - Game.unit >= Game.viewportOffset && !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
-            this.pos.x -= Game.unit;
+        if ( this.pos.x - TILESIZE >= Game.viewportOffset && !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
+            this.pos.x -= TILESIZE;
         }
     },
     right: function() {
-        if ( ( this.pos.x + Game.unit < Game.viewportOffset + Game.viewportWidth ) && !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
-            this.pos.x += Game.unit;
+        if ( ( this.pos.x + TILESIZE < Game.viewportOffset + Game.viewportWidth ) && !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
+            this.pos.x += TILESIZE;
         }
     },
     shoot: function() {
         var xVelocity = this.bulletSpeed;
         if ( ( Date.now() - this.lastFired ) > this.bulletInterval ) {
-            this.createBullet( this.pos.x + this.width, this.pos.y + ( Game.unit / 9 ) * 5, xVelocity, 0 );
+            this.createBullet( this.pos.x + this.width, this.pos.y + ( TILESIZE / 9 ) * 5, xVelocity, 0 );
             this.lastFired = Date.now();
         }
     },
@@ -603,7 +640,7 @@ Game.Entity.Hero.Plane = Game.Entity.Hero.extend({
         if ( entity.type == 'Terrain.Invisible' ) {
             this.pos.x = entity.pos.x - this.width;
             this.velocity.x = 0;
-            this.velocity.y = 0.08;
+            this.velocity.y = PLANE_LANDING_VELOCITY;
         }
     }
 });
@@ -622,18 +659,18 @@ Game.Entity.Hero.Jellyfish = Game.Entity.Hero.extend({
         this._super( timeDiff );
 
         if ( Game.currentLevel.type == 'sea' ) {
-            this.gravity = new Game.Vector( 0, 0.0001 ); // Changed to test collisions
+            this.gravity = new Game.Vector( 0, JELLYFISH_GRAVITY ); // Changed to test collisions
         }
 
-        if ( !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+        if ( !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             this.shock();
-            Game.keysDown[ 88 ] = 'locked';
+            Game.keysDown[ ACTION_KEY ] = 'locked';
         }
     },
     shock: function() {
         var lightning;
 
-        lightning = new Game.Entity.Interactable.Lightning( this.pos.x - Game.unit, this.pos.y - Game.unit, this );
+        lightning = new Game.Entity.Interactable.Lightning( this.pos.x - TILESIZE, this.pos.y - TILESIZE, this );
         Game.currentLevel.entities.push( lightning );
     },
     up: function() {
@@ -646,8 +683,8 @@ Game.Entity.Hero.Clock = Game.Entity.Hero.extend({
     type: 'Hero.Clock',
     initialSprite: 'clock-1',
     initialState: 'ticking',
-    timeStopDuration: 5000,
-    coolDown: 15000,
+    timeStopDuration: CLOCK_STOP_DURATION,
+    coolDown: CLOCK_STOP_COOLDOWN,
     states: {
         'dying': Game.Entity.Hero.prototype.states.dying,
         'still': Game.Entity.prototype.states.still,
@@ -678,7 +715,7 @@ Game.Entity.Hero.Clock = Game.Entity.Hero.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( !this.timeStopped && !this.skipAction && !Game.keysLocked && 88 in Game.keysDown && Game.keysDown[ 88 ] != 'locked' ) {
+        if ( !this.timeStopped && !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             this.stopTime();
         }
 
@@ -690,7 +727,7 @@ Game.Entity.Hero.Clock = Game.Entity.Hero.extend({
     up: function() {
         //jump
         if ( !this.disableJump ) {
-            var jumpForce = new Game.Vector( 0, -0.3 );
+            var jumpForce = new Game.Vector( 0, CLOCK_JUMP_VELOCITY );
             this.velocity = this.velocity.add( jumpForce );
         }
     }
@@ -718,7 +755,7 @@ Game.Entity.Hero.Flame = Game.Entity.Hero.extend({
             this.activeSprite = 'flame-big';
             this.changeState( 'melting' );
             this.animated = true;
-            this.heat = new Game.Entity.Interactable.Heat( this.pos.x - 2 * Game.unit, this.pos.y - 2 * Game.unit, this );
+            this.heat = new Game.Entity.Interactable.Heat( this.pos.x - 2 * TILESIZE, this.pos.y - 2 * TILESIZE, this );
             Game.currentLevel.entities.push( this.heat );
             this.doNotMove = true;
         }
@@ -734,7 +771,7 @@ Game.Entity.Hero.Flame = Game.Entity.Hero.extend({
     generateNextCoords: function( timeDiff) {
         this._super( timeDiff );
 
-        if ( !this.skipAction && 88 in Game.keysDown ) {
+        if ( !this.skipAction && ACTION_KEY in Game.keysDown ) {
             this.meltStuff();
         } else {
             if ( this.state == 'melting' ) {
@@ -750,8 +787,10 @@ Game.Entity.Hero.Flame = Game.Entity.Hero.extend({
     up: function() {
         //jump
         if ( !this.disableJump ) {
-            var jumpForce = new Game.Vector( 0, -0.3 );
+            var jumpForce = new Game.Vector( 0, FLAME_JUMP_VELOCITY );
             this.velocity = this.velocity.add( jumpForce );
         }
     }
 });
+
+})( Game, Settings, window, document );

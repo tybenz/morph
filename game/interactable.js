@@ -1,5 +1,9 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
+(function( Game, Settings, window, document, undefined ) {
+
+var TILESIZE = Settings.tileSize;
+
 Game.Entity.Interactable = Game.Entity.extend({
     type: 'Interactable',
     drawLayer: 2,
@@ -75,8 +79,8 @@ Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
     type: 'Interactable.Bullet',
     initialSprite: 'bullet-green',
     drawLayer: 0,
-    width: 4,
-    height: 4,
+    width: ( TILESIZE / 9 ) * 2,
+    height: ( TILESIZE / 9 ) * 2,
     init: function( x, y ) {
         this._super( x, y );
         this.ignoreGravity = true;
@@ -91,8 +95,8 @@ Game.Entity.Interactable.Bullet = Game.Entity.Interactable.extend({
 Game.Entity.Interactable.Egg = Game.Entity.Interactable.extend({
     type: 'Interactable.Egg',
     initialSprite: 'egg',
-    width: 6,
-    height: 8,
+    width: ( TILESIZE / 9 ) * 3,
+    height: ( TILESIZE / 9 ) * 3,
     drawLayer: 0,
     collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Terrain.Land' ) {
@@ -104,10 +108,10 @@ Game.Entity.Interactable.Egg = Game.Entity.Interactable.extend({
 Game.Entity.Interactable.Tongue = Game.Entity.Interactable.extend({
     type: 'Interactable.Tongue',
     initialSprite: 'frog-tongue',
-    width: 20,
-    height: 2,
+    width: ( TILESIZE / 9 ) * 10,
+    height: TILESIZE / 9,
+    yOffset: ( TILESIZE / 9 ) * 4,
     drawLayer: 2,
-    yOffset: ( Game.unit / 9 ) * 4,
     init: function( x, y, frog, velocity ) {
         this._super( x, y );
         this.initialX = x;
@@ -120,25 +124,29 @@ Game.Entity.Interactable.Tongue = Game.Entity.Interactable.extend({
         if ( entity.type == 'Terrain.Land' ) {
             Game.destroyEntity( this );
         }
+        if ( entity.type ==  'Interactable.Coin' ) {
+            Game.destroyEntity( entity );
+            Game.Inventory.incrementCurrency();
+        }
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
         if ( this.frog.state.indexOf( 'jumping' ) != -1 ) {
-            this.pos.y = this.frog.pos.y + this.yOffset - ( Game.unit / 9 ) * 2;
+            this.pos.y = this.frog.pos.y + this.yOffset - ( TILESIZE / 9 ) * 2;
         } else {
             this.pos.y = this.frog.pos.y + this.yOffset;
         }
 
-        if ( Math.abs( this.pos.x - this.initialX ) >= this.width - 13 ) {
+        if ( Math.abs( this.pos.x - this.initialX ) >= this.width - ( ( TILESIZE / 9 ) * 6.5 ) ) {
             this.velocity.x = 0 - this.velocity.x;
         }
 
-        if ( this.initialVelocity > 0 && this.velocity.x < 0 && Math.abs( this.pos.x - this.initialX ) <= 10 ) {
+        if ( this.initialVelocity > 0 && this.velocity.x < 0 && Math.abs( this.pos.x - this.initialX ) <= ( ( TILESIZE / 9 ) * 5 ) ) {
             Game.hero.doneLicking();
             Game.destroyEntity( this );
         }
-        if ( this.initialVelocity < 0 && this.velocity.x > 0 && Math.abs( this.pos.x - this.initialX ) <= 10 ) {
+        if ( this.initialVelocity < 0 && this.velocity.x > 0 && Math.abs( this.pos.x - this.initialX ) <= ( ( TILESIZE / 9 ) * 5 ) ) {
             Game.hero.doneLicking();
             Game.destroyEntity( this );
         }
@@ -149,8 +157,8 @@ Game.Entity.Interactable.Lightning = Game.Entity.Interactable.extend({
     type: 'Interactable.Lightning',
     initialSprite: 'lightning',
     initialState: 'flashing',
-    width: Game.unit * 3,
-    height: Game.unit * 3,
+    width: TILESIZE * 3,
+    height: TILESIZE * 3,
     shockFor: 1000,
     init: function( x, y, jellyfish ) {
         this._super( x, y );
@@ -174,8 +182,8 @@ Game.Entity.Interactable.Lightning = Game.Entity.Interactable.extend({
             Game.destroyEntity( this );
         }
 
-        this.pos.x = this.jellyfish.pos.x - Game.unit;
-        this.pos.y = this.jellyfish.pos.y - Game.unit;
+        this.pos.x = this.jellyfish.pos.x - TILESIZE;
+        this.pos.y = this.jellyfish.pos.y - TILESIZE;
     }
 });
 
@@ -184,36 +192,22 @@ Game.Entity.Interactable.Heat = Game.Entity.Interactable.extend({
     drawLayer: 5,
     initialSprite: 'heat',
     initialState: 'wave',
-    width: Game.unit * 5,
-    height: Game.unit * 3,
-    xDelta: 5,
-    waveSpeed: 0.05,
+    width: TILESIZE * 5,
+    height: TILESIZE * 3,
     states: {
         'wave': {
             animation: {
                 delta: 50,
                 sequence: [ 'heat', 'heat-2' ],
                 times: 'infinite'
-            },
-            actions: [
-                {
-                    delta: 20,
-                    action: function() { this.velocity.x = this.waveSpeed; },
-                    until: function() { return ( Math.round( this.pos.x / Game.unit ) * Game.unit ) - this.pos.x >= this.xDelta; }
-                },
-                {
-                    delta: 20,
-                    action: function() { this.velocity.x = 0 - this.waveSpeed; },
-                    until: function() { return ( Math.round( this.pos.x / Game.unit ) * Game.unit ) - this.pos.x <= this.xDelta; }
-                }
-            ]
+            }
         }
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        this.pos.x = this.flame.pos.x - 2 * Game.unit;
-        this.pos.y = this.flame.pos.y - 2 * Game.unit;
+        this.pos.x = this.flame.pos.x - 2 * TILESIZE;
+        this.pos.y = this.flame.pos.y - 2 * TILESIZE;
     },
     init: function( x, y, flame ) {
         this._super( x, y );
@@ -221,3 +215,5 @@ Game.Entity.Interactable.Heat = Game.Entity.Interactable.extend({
         this.ignoreGravity = true;
     }
 });
+
+})( Game, Settings, window, document );
