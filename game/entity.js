@@ -173,17 +173,22 @@ Game.Entity = Class.extend({
         var positionChange = this.velocity.multiply( timeDiff );
         this.pos = this.pos.add( positionChange );
     },
-    invalidateRect: function() {
+    invalidateRect: function( offsetTop, offsetRight, offsetBottom, offsetLeft ) {
+        offsetTop = offsetTop || 0;
+        offsetRight = offsetRight || 0;
+        offsetBottom = offsetBottom || 0;
+        offsetLeft = offsetLeft || 0;
+
         var newX = this.pos.x,
             newY = this.pos.y,
             oldX = this.oldPos.x,
             oldY = this.oldPos.y,
             width = this.width,
             height = this.height,
-            top = oldY <= newY ? oldY : newY,
-            left = oldX <= newX ? oldX : newX,
-            bottom = ( oldY + height ) >= ( newY + height ) ? oldY + height : newY + height,
-            right = ( oldX + width ) >= ( newX + width ) ? oldX + width : newX + width;
+            top = oldY <= newY ? oldY + offsetTop : newY + offsetTop,
+            left = oldX <= newX ? oldX + offsetLeft : newX + offsetLeft,
+            bottom = ( oldY + height ) >= ( newY + height ) ? oldY + height + offsetBottom : newY + height + offsetBottom,
+            right = ( oldX + width ) >= ( newX + width ) ? oldX + width + offsetRight : newX + width + offsetRight;
 
         //Pass a rect (position/dimensions) to the global invalidRect
         Game.invalidateRect( top, right, bottom, left );
@@ -563,6 +568,7 @@ Game.Entity = Class.extend({
     //By default entities stop moving when they hit land
     collideWith: function( entity, collisionTypes ) {
         switch ( entity.type ) {
+            case 'Terrain.Trapdoor':
             case 'Terrain.Land':
                 if ( this.velocity.y > 0 && collisionTypes ) {
                     this.velocity.y = 0;

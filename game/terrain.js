@@ -122,6 +122,11 @@ Game.Entity.Terrain.Land = Game.Entity.Terrain.extend({
     }
 });
 
+Game.Entity.Terrain.Trapdoor = Game.Entity.Terrain.Land.extend({
+    type: 'Terrain.Trapdoor',
+    initialSprite: 'trapdoor'
+});
+
 Game.Entity.Terrain.Wave = Game.Entity.Terrain.extend({
     type: 'Terrain.Wave',
     drawLayer: 4,

@@ -300,7 +300,9 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     },
     up: function() {
         //jump
-        if ( !this.disableJump ) {
+        if ( this.activeSprite.match( 'holding' ) ) {
+            this.actions.drop.call( this );
+        } else if ( !this.disableJump ) {
             var jumpForce = new Game.Vector( 0, this.jumpVelocity );
             this.velocity = this.velocity.add( jumpForce );
         }
@@ -313,15 +315,17 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             entity.pos.x = this.pos.x;
             if ( this.direction == 'right' ) {
                 this.activeSprite = 'man-holding-right';
+                this.invalidateRect( 0, 0 + TILESIZE, 0, 0 );
             } else if ( this.direction == 'left' ) {
                 this.activeSprite = 'man-holding-left';
+                this.invalidateRect( 0, 0, 0, 0 - TILESIZE );
             }
 
             this.attach( [ entity ] );
             Game.destroyEntity( entity );
         },
         throw: function() {
-            var test = this.detach( this.holding );
+            this.detach( this.holding );
 
             Game.currentLevel.entities.push( this.holding );
             Game.drawLayers[ this.holding.drawLayer ].push( this.holding );
@@ -336,6 +340,36 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             this.holding.velocity.y = this.jumpVelocity;
 
             this.holding = false;
+        },
+        drop: function() {
+            var rightLand = this.adjacentTo( 'Terrain.Land', 'right' ),
+                leftLand = this.adjacentTo( 'Terrain.Land', 'left' );
+
+            this.detach( this.holding );
+            Game.currentLevel.entities.push( this.holding );
+            Game.drawLayers[ this.holding.drawLayer ].push( this.holding );
+
+            if ( this.direction == 'right' ) {
+                if ( !rightLand ) {
+                    this.holding.pos.x = this.pos.x + this.width;
+                    this.invalidateRect( 0, 0 + TILESIZE, 0, 0 );
+                } else {
+                    this.holding.pos.x = this.pos.x;
+                }
+                this.holding.pos.y = this.pos.y;
+                this.activeSprite = 'man-right';
+                this.holding = false;
+            } else {
+                if ( !leftLand ) {
+                    this.holding.pos.x = this.pos.x - this.holding.width;
+                    this.invalidateRect( 0, 0, 0, 0 - TILESIZE );
+                } else {
+                    this.holding.pos.x = this.pos.x;
+                }
+                this.holding.pos.y = this.pos.y;
+                this.activeSprite = 'man-left';
+                this.holding = false;
+            }
         }
     }
 });

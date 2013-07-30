@@ -1815,6 +1815,22 @@ Game.Bitmaps = {
         [ "transparent", "transparent", "transparent", "transparent", "#995511", "transparent", "transparent", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "#995511", "transparent", "transparent", "transparent", "transparent" ],
         [ "transparent", "transparent", "transparent", "transparent", "#995511", "transparent", "transparent", "transparent", "transparent" ]
+    ],
+    'switch': [
+        [ "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff" ],
+        [ "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff" ],
+        [ "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff", "#ff00ff" ]
+    ],
+    'trapdoor': [
+        [ "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000" ],
+        [ "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent" ],
+        [ "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000" ],
+        [ "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent" ],
+        [ "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000" ],
+        [ "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent" ],
+        [ "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000" ],
+        [ "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent" ],
+        [ "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000", "transparent", "#008000" ]
     ]
 };
 

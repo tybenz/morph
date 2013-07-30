@@ -603,6 +603,10 @@ var Game = {
     loadLevel: function() {
         var entities,
             entityString,
+            offsetMatch,
+            offset,
+            linkMatch,
+            links = [],
             toLevel;
 
         if ( Game.currentLevel.type == 'sea' ) {
@@ -624,10 +628,23 @@ var Game = {
                 entities = Game.currentLevel.grid[i][j].split( '|' );
                 for ( k = 0; k < entities.length; k++ ) {
                     entityString = entities[k].split( ':' )[0];
+
+                    offsetMatch = entityString.match( /\[([^\[\]]*)\]/ );
+                    offset = offsetMatch ? offsetMatch[1] : 0;
+
+                    linkMatch = entityString.match( /\(([^\(\)]*)\)/ );
+                    linkIndex = linkMatch ? linkMatch[1] : null;
+
+                    entityString = entityString.replace( /\[[^\[\]]*\]/, '' ).replace( /\([^\(\)]*\)/, '' );
                     toLevel = entities[k].split( ':' )[1];
                     if ( entityString != 'blank' ) {
                         // Each entity gets initialized and put into our level's entity list
-                        entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * TILESIZE + ', ' + i * TILESIZE + ' )' );
+                        entity = eval( 'new Game.Entity.' + entityString.capitalize( '.' ) + '( ' + j * TILESIZE + ', ' + ( i * TILESIZE + offset * ( TILESIZE / 9 ) ) + ' )' );
+
+                        if ( linkIndex ) {
+                            links[ linkIndex ] = links[ linkIndex ] || [];
+                            links[ linkIndex ].push( entity );
+                        }
                         if ( toLevel ) {
                             entity.toLevel = toLevel;
                         }
@@ -657,6 +674,18 @@ var Game = {
             }
             // One last call for the end of the level
             Game.terrainGroup = null;
+        }
+
+        for ( var i = 1, l1 = links.length; i < l1; i++ ) {
+            var linkGroup = links[i];
+            if ( linkGroup ) {
+                var button = linkGroup[0].type == 'Interactable.Switch' ? linkGroup[0] : linkGroup[1],
+                    trapdoor = linkGroup[1].type == 'Terrain.Trapdoor' ? linkGroup[1] : linkGroup[0];
+
+                if ( button && trapdoor ) {
+                    button.setDoor( trapdoor );
+                }
+            }
         }
     },
     keyDownListener: function( evt ) {

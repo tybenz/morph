@@ -211,11 +211,11 @@ Game.Entity.Enemy.Monster.Cautious = Game.Entity.Enemy.Monster.extend({
                     delta: MONSTER_WALKING_INTERVAL,
                     action: function() { this.pos.x -= Settings.tileSize; },
                     until: function() {
-                        var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity,
+                        var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity || this.adjacentTo( 'Terrain.Trapdoor', 'bottom' ).entity,
                             edgePiece;
 
                         if ( land ) {
-                            edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentToLevelEdge( 'left' );
+                            edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentTo( 'Terrain.Trapdoor', 'left' ) && !land.adjacentToLevelEdge( 'left' );
                             if ( ( edgePiece && this.pos.x <= land.pos.x ) || this.adjacentTo( 'Terrain.Land', 'left') ) {
                                 return true;
                             }
@@ -228,11 +228,11 @@ Game.Entity.Enemy.Monster.Cautious = Game.Entity.Enemy.Monster.extend({
                     delta: MONSTER_WALKING_INTERVAL,
                     action: function() { this.pos.x += Settings.tileSize; },
                     until: function() {
-                        var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity,
+                        var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity || this.adjacentTo( 'Terrain.Trapdoor', 'bottom' ).entity,
                             edgePiece;
 
                         if ( land ) {
-                            edgePiece = !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentToLevelEdge( 'right' );
+                            edgePiece = !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentTo( 'Terrain.Trapdoor', 'right' ) && !land.adjacentToLevelEdge( 'right' );
                             if ( ( edgePiece && this.pos.x >= land.pos.x + land.width - this.width ) || this.adjacentTo( 'Terrain.Land', 'right' ) ) {
                                 return true;
                             }

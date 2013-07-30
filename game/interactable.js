@@ -30,10 +30,10 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         if ( entity.type == 'Terrain.Land' ) {
             if ( this.velocity.x > 0 && this.velocity.y == 0 && collisionTypes ) {
                 this.velocity.x = 0;
-                this.pos.x = entity.pos.x - entity.width;
+                this.pos.x = entity.pos.x - this.width;
             } else if ( this.velocity.x < 0 && this.velocity.y == 0 && collisionTypes ) {
                 this.velocity.x = 0;
-                this.pos.x = entity.pos.x + entity.width;
+                this.pos.x = entity.pos.x + this.width;
             }
         }
         this._super( entity, collisionTypes );
@@ -213,6 +213,25 @@ Game.Entity.Interactable.Heat = Game.Entity.Interactable.extend({
         this._super( x, y );
         this.flame = flame;
         this.ignoreGravity = true;
+    }
+});
+
+Game.Entity.Interactable.Switch = Game.Entity.Interactable.extend({
+    type: 'Interactable.Switch',
+    initialSprite: 'switch',
+    width: TILESIZE,
+    height: ( TILESIZE / 9 ) * 3,
+    init: function( x, y ) {
+        this._super( x, y );
+        this.ignoreGravity = true;
+    },
+    setDoor: function( door ) {
+        this.door = door;
+    },
+    collideWith: function( entity, collisions ) {
+        if ( entity.type == 'Interactable.Rock' && entity.pos.y <= this.pos.y ) {
+            this.door.changeState( 'dying' );
+        }
     }
 });
 
