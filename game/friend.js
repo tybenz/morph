@@ -8,6 +8,16 @@ Game.Entity.Friend = Game.Entity.extend({
     type: 'Friend'
 });
 
+Game.Entity.Friend.Man = Game.Entity.extend({
+    type: 'Friend.Man',
+    initialSprite: 'friend-man'
+});
+
+Game.Entity.Friend.Monster = Game.Entity.extend({
+    type: 'Friend.Monster',
+    initialSprite: 'friend-monster'
+});
+
 Game.Entity.Friend.Kid = Game.Entity.Friend.extend({
     type: 'Friend.Kid',
     initialSprite: 'kid',

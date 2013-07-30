@@ -2,7 +2,8 @@
 
 (function( Game, Settings, window, document, undefined ) {
 
-var WAVE_SPEED = Settings.waveSpeed;
+var WAVE_SPEED = Settings.waveSpeed,
+    TILESIZE = Settings.tileSize;
 
 Game.Entity.Terrain = Game.Entity.extend({
     type: 'Terrain',
@@ -206,6 +207,30 @@ Game.Entity.Terrain.Bubble = Game.Entity.Terrain.extend({
     type: 'Terrain.Bubble',
     initialState: 'still',
     initialSprite: 'bubble'
+});
+
+Game.Entity.Terrain.Wood = Game.Entity.Terrain.extend({
+    type: 'Terrain.Wood',
+    initialSprite: 'wood'
+});
+
+Game.Entity.Terrain.Window = Game.Entity.Terrain.extend({
+    type: 'Terrain.Window',
+    initialSprite: 'window'
+});
+
+Game.Entity.Terrain.Door = Game.Entity.Terrain.extend({
+    type: 'Terrain.Door',
+    width: 3 * TILESIZE,
+    height: 2 * TILESIZE,
+    initialSprite: 'door'
+});
+
+Game.Entity.Terrain.Sign = Game.Entity.Terrain.extend({
+    type: 'Terrain.Sign',
+    width: TILESIZE,
+    height: 2 * TILESIZE,
+    initialSprite: 'sign'
 });
 
 })( Game, Settings, window, document );

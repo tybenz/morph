@@ -260,7 +260,8 @@ Editor = {
                 Game.Entity.Terrain,
                 Game.Entity.Hero,
                 Game.Entity.Enemy,
-                Game.Entity.Interactable.Rock,
+                Game.Entity.Friend,
+                Game.Entity.Interactable,
                 Game.Entity.Machine
             ],
             i, j, k,
