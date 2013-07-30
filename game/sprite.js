@@ -85,21 +85,21 @@ Game.Bitmaps = {
     'monster-open': [
         [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-        [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
+        [ "transparent", "#ff0000", "#000000", "#ff0000", "#ff0000", "#ff0000", "#000000", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-        [ "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000" ],
-        [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
-        [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
+        [ "#ff0000", "#ff0000", "#000000", "#ff0000", "#000000", "#ff0000", "#000000", "#ff0000", "#ff0000" ],
+        [ "#ff0000", "#ff0000", "#000000", "#000000", "#000000", "#000000", "#000000", "#ff0000", "#ff0000" ],
+        [ "transparent", "#ff0000", "#000000", "#000000", "#000000", "#000000", "#000000", "#ff0000", "transparent" ],
         [ "transparent", "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
     ],
     'monster-closing': [
         [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-        [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
+        [ "transparent", "#ff0000", "#000000", "#ff0000", "#ff0000", "#ff0000", "#000000", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
-        [ "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000" ],
-        [ "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "#ff0000" ],
+        [ "#ff0000", "#ff0000", "#000000", "#ff0000", "#000000", "#ff0000", "#000000", "#ff0000", "#ff0000" ],
+        [ "#ff0000", "#ff0000", "#000000", "#000000", "#000000", "#000000", "#000000", "#ff0000", "#ff0000" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
         [ "transparent", "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
@@ -107,10 +107,10 @@ Game.Bitmaps = {
     'monster-gnashed': [
         [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-        [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
+        [ "transparent", "#ff0000", "#000000", "#ff0000", "#ff0000", "#ff0000", "#000000", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
         [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
-        [ "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000" ],
+        [ "#ff0000", "#ff0000", "#000000", "#ff0000", "#000000", "#ff0000", "#000000", "#ff0000", "#ff0000" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
         [ "transparent", "transparent", "#ff0000", "#ff0000", "rgba(0,0,0,0)", "#ff0000", "#ff0000", "transparent", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent" ]
@@ -118,7 +118,7 @@ Game.Bitmaps = {
     'monster-closed': [
         [ "transparent", "#ff0000", "transparent", "transparent", "transparent", "transparent", "transparent", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "transparent", "transparent", "transparent", "#ff0000", "#ff0000", "transparent" ],
-        [ "transparent", "#ff0000", "transparent", "#ff0000", "#ff0000", "#ff0000", "transparent", "#ff0000", "transparent" ],
+        [ "transparent", "#ff0000", "#000000", "#ff0000", "#ff0000", "#ff0000", "#000000", "#ff0000", "transparent" ],
         [ "transparent", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "transparent" ],
         [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
         [ "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff0000" ],
@@ -1217,26 +1217,26 @@ Game.Bitmaps = {
         [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00" ]
     ],
     'restart': [
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
-        [ "transparent", "#00ff00", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
-        [ "transparent", "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
-        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
-        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
-        [ "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
-        [ "transparent", "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+        [ "transparent", "transparent", "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)", "transparent" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "#00ff00", "rgba(0,0,0,0)" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "rgba(0,0,0,0)", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00" ],
+        [ "transparent", "rgba(0,0,0,0)", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "rgba(0,0,0,0)" ],
+        [ "transparent", "transparent", "rgba(0,0,0,0)", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)", "transparent" ]
     ],
     'exit': [
-        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ],
-        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
-        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
-        [ "transparent", "#00ff00", "transparent", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)", "transparent", "#00ff00" ],
-        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
-        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "rgba(0,0,0,0)", "transparent", "transparent" ],
-        [ "transparent", "#00ff00", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
-        [ "transparent", "#00ff00", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "rgba(0,0,0,0)", "#00ff00", "rgba(0,0,0,0)", "transparent" ],
-        [ "transparent", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "rgba(0,0,0,0)", "transparent" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "transparent", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent", "#00ff00" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "#00ff00", "rgba(0,0,0,0)", "transparent", "transparent", "transparent", "transparent", "#00ff00", "transparent", "transparent" ],
+        [ "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "#00ff00", "transparent", "transparent" ]
     ],
     'plane-right': [
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],

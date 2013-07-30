@@ -36,7 +36,7 @@ var TILESIZE = Settings.tileSize,
 
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
-    drawLayer: 3,
+    drawLayer: 4,
     states: {
         'blinking': {
             animation: {
@@ -647,7 +647,6 @@ Game.Entity.Hero.Plane = Game.Entity.Hero.extend({
 
 Game.Entity.Hero.Jellyfish = Game.Entity.Hero.extend({
     type: 'Hero.Jellyfish',
-    drawLayer: 5,
     initialSprite: 'jellyfish',
     states: {
         'dying': Game.Entity.Hero.prototype.states.dying,

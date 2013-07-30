@@ -196,6 +196,56 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
     }
 });
 
+Game.Entity.Enemy.Monster.Cautious = Game.Entity.Enemy.Monster.extend({
+    type: 'Enemy.Monster.Cautious',
+    states: {
+        dying: Game.Entity.Enemy.prototype.states.dying,
+        'walking': {
+            animation: {
+                delta: 150,
+                sequence: [ 'monster-open', 'monster-open', 'monster-open', 'monster-open', 'monster-open', 'monster-closing', 'monster-closed', 'monster-closed', ],
+                times: 'infinite'
+            },
+            actions: [
+                {
+                    delta: MONSTER_WALKING_INTERVAL,
+                    action: function() { this.pos.x -= Settings.tileSize; },
+                    until: function() {
+                        var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity,
+                            edgePiece;
+
+                        if ( land ) {
+                            edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentToLevelEdge( 'left' );
+                            if ( ( edgePiece && this.pos.x <= land.pos.x ) || this.adjacentTo( 'Terrain.Land', 'left') ) {
+                                return true;
+                            }
+                            return false;
+                        }
+                        return true;
+                    }
+                },
+                {
+                    delta: MONSTER_WALKING_INTERVAL,
+                    action: function() { this.pos.x += Settings.tileSize; },
+                    until: function() {
+                        var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity,
+                            edgePiece;
+
+                        if ( land ) {
+                            edgePiece = !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentToLevelEdge( 'right' );
+                            if ( ( edgePiece && this.pos.x >= land.pos.x + land.width - this.width ) || this.adjacentTo( 'Terrain.Land', 'right' ) ) {
+                                return true;
+                            }
+                            return false;
+                        }
+                        return true;
+                    }
+                }
+            ]
+        }
+    }
+});
+
 Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
     type: 'Enemy.Bird',
     count: 0,
@@ -269,7 +319,6 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                 until: function() {
                     var land = this.adjacentTo( 'Terrain.Land', 'top' ).entity,
                         edgePiece;
-                    window.land = land;
                     if ( land ) {
                         edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentToLevelEdge( 'left' );
                         if ( ( edgePiece && this.pos.x <= land.pos.x ) || this.adjacentTo( 'Terrain.Land', 'left') ) {

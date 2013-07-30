@@ -108,7 +108,7 @@ Game.Menu = Class.extend({
         this.title();
 
         var item,
-            spacing = 6 * TILESIZE,
+            spacing = 4 * TILESIZE,
             x, y;
 
         for ( var i = 0; i < this.data.length; i++ ) {
@@ -225,7 +225,7 @@ Game.Menu.GameOver = Game.Menu.extend({
             Game.Inventory.health = Game.Inventory.maxHealth;
             Game.lastUpdate = null;
             Game.stop();
-            Game.init( 'intro' );
+            Game.init( 'first' );
         }
     }
 });

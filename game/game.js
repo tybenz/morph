@@ -112,7 +112,7 @@ var Game = {
         };
 
         for ( var i in heroList ) {
-            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( heroList[i], TILESIZE / 3 ) );
+            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( heroList[i], TILESIZE / 4.5 ) );
             Game.totalSprites++;
         }
     },
@@ -141,11 +141,11 @@ var Game = {
             [],
             //Interactables
             [],
-            //Enemies && Hero
+            //Enemies
+            [],
+            //Hero
             [],
             //Water
-            [],
-            //Underwater entities
             []
         ];
     },

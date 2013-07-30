@@ -139,13 +139,13 @@ Game.Entity.Terrain.Wave = Game.Entity.Terrain.extend({
 
 Game.Entity.Terrain.Water = Game.Entity.Terrain.extend({
     type: 'Terrain.Water',
-    drawLayer: 4,
+    drawLayer: 5,
     initialSprite: 'water'
 });
 
 Game.Entity.Terrain.Waterfall = Game.Entity.Terrain.extend({
     type: 'Terrain.Waterfall',
-    drawLayer: 4,
+    drawLayer: 5,
     initialSprite: 'waterfall-1',
     initialState: 'falling',
     states: {
@@ -161,7 +161,7 @@ Game.Entity.Terrain.Waterfall = Game.Entity.Terrain.extend({
 
 Game.Entity.Terrain.Waterclimb = Game.Entity.Terrain.extend({
     type: 'Terrain.Waterclimb',
-    drawLayer: 4,
+    drawLayer: 5,
     initialSprite: 'waterclimb-1',
     initialState: 'climbing',
     states: {
