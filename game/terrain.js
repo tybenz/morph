@@ -234,8 +234,11 @@ Game.Entity.Terrain.Door = Game.Entity.Terrain.extend({
 Game.Entity.Terrain.Sign = Game.Entity.Terrain.extend({
     type: 'Terrain.Sign',
     width: TILESIZE,
-    height: 2 * TILESIZE,
-    initialSprite: 'sign'
+    height: TILESIZE,
+    initialSprite: 'sign',
+    setContent: function( content ) {
+        this.content = content;
+    }
 });
 
 })( Game, Settings, window, document );

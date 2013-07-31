@@ -5,15 +5,18 @@
 KID_JUMP_VELOCITY = Settings.kidJumpVelocity;
 
 Game.Entity.Friend = Game.Entity.extend({
-    type: 'Friend'
+    type: 'Friend',
+    setContent: function( content ) {
+        this.content = content;
+    }
 });
 
-Game.Entity.Friend.Man = Game.Entity.extend({
+Game.Entity.Friend.Man = Game.Entity.Friend.extend({
     type: 'Friend.Man',
     initialSprite: 'friend-man'
 });
 
-Game.Entity.Friend.Monster = Game.Entity.extend({
+Game.Entity.Friend.Monster = Game.Entity.Friend.extend({
     type: 'Friend.Monster',
     initialSprite: 'friend-monster'
 });

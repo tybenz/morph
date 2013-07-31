@@ -30,6 +30,26 @@ var TILESIZE = Settings.tileSize;
     PAUSE_KEY = Settings.pauseKey,
     ENTER_KEY = Settings.enterKey;
 
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    var words = text.split(' '),
+        line = '';
+
+    for( var n = 0; n < words.length; n++ ) {
+        var testLine = line + words[n] + ' ';
+        var metrics = context.measureText( testLine );
+        var testWidth = metrics.width;
+        if ( testWidth > maxWidth && n > 0 ) {
+            context.fillText( line, x, y );
+            line = words[n] + ' ';
+            y += lineHeight;
+        }
+        else {
+            line = testLine;
+        }
+    }
+    context.fillText(line, x, y);
+}
+
 Game.Menu = Class.extend({
     titleText: 'MENU',
     init: function( left, top, width, height, lineWidth ) {
@@ -51,7 +71,11 @@ Game.Menu = Class.extend({
             self.loop();
         });
     },
-    exit: function() {},
+    exit: function() {
+        Game.keyUpListener( { keyCode: ACTION_KEY } );
+        Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
+        Game.requestID = requestAnimationFrame( Game.loop );
+    },
     loop: function() {
         var self = this;
 
@@ -77,7 +101,7 @@ Game.Menu = Class.extend({
         }
 
         // Enter
-        if ( ENTER_KEY in Game.keysDown && Game.keysDown[ ENTER_KEY ] != 'locked' ) {
+        if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             // Choose and exit
             this.exit();
         } else {
@@ -149,7 +173,7 @@ Game.Menu = Class.extend({
         Game.ctx.font = 'normal ' + Math.round( MENU_HEADER_FONT_SIZE ) + 'px uni05';
         Game.ctx.fillStyle = '#000';
         Game.ctx.textAlign = 'center';
-        Game.ctx.fillText( this.titleText, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP );
+        Game.ctx.fillText( this.titleCopy || this.titleText, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP );
     },
     overlay: function() {
         Game.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
@@ -269,6 +293,34 @@ Game.Menu.Transform = Game.Menu.extend({
     rowSize: TRANSFORM_MENU_ROW_SIZE,
     exit: function() {
         Game.startTransformAnimation( this.data[ this.selected ].className );
+    }
+});
+
+Game.Menu.Sign = Game.Menu.extend({
+    init: function( left, top, width, height, lineWidth, content ) {
+        this._super( left, top, width, height, lineWidth );
+        this.titleCopy = content.title;
+        this.body = content.body;
+    },
+    contents: function() {
+        this.title();
+
+        Game.ctx.fillStyle = '#0f0';
+        Game.ctx.textAlign = 'center';
+        Game.ctx.font = 'normal ' + 20 + 'px uni05';
+
+        wrapText( Game.ctx, this.body, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP + MENU_PADDING * 2, MENU_WIDTH * TILESIZE - 2 * TILESIZE, 28 );
+    }
+});
+
+Game.Menu.Dialog = Game.Menu.extend({
+    init: function( left, top, width, height, lineWidth, content ) {
+        this._super( left, top, width, height, lineWidth );
+        this.titleCopy = content.name;
+        this.content = content;
+    },
+    contents: function() {
+        this.title();
     }
 });
 

@@ -165,10 +165,23 @@ Game.Entity.Hero = Game.Entity.extend({
                 Game.keysDown[ DOWN_KEY ] = 'locked';
             }
             if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) { // SPACE
-                var collisions = this.hasCollisionWith( 'Machine' );
-                if ( collisions && this.pos.x == collisions.entity.pos.x ) {
-                    Game.openTransformMenu();
-                    this.skipAction = true;
+                var adjacent = this.adjacentTo( 'Terrain.Sign' );
+                if ( adjacent ) {
+                    if ( adjacent.entity.content ) {
+                        Game.openSign( adjacent.entity.content );
+                    }
+                }
+                adjacent = this.adjacentTo( 'Friend.Man' );
+                if ( adjacent ) {
+                    if ( adjacent.entity.content ) {
+                        Game.openSign( adjacent.entity.content );
+                    }
+                } else {
+                    var collisions = this.hasCollisionWith( 'Machine' );
+                    if ( collisions && this.pos.x == collisions.entity.pos.x ) {
+                        Game.openTransformMenu();
+                        this.skipAction = true;
+                    }
                 }
             }
         }
@@ -258,7 +271,6 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        //spacebar
         if ( !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             if ( this.holding ) {
                 this.actions.throw.call( this );

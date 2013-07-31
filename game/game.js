@@ -288,10 +288,12 @@ var Game = {
         }
         Game.lastUpdate = timestamp;
         if ( !Game.clickStep ) {
-            if ( ( !Game.stopLoop && !Game.startTransform ) && !Game.paused ) {
+            if ( ( !Game.stopLoop && !Game.startTransform && !Game.showSign ) && !Game.paused ) {
                 Game.requestID = requestAnimationFrame( Game.loop ); 
             } else if ( Game.startTransform ) {
                 Game.showTransformMenu();
+            } else if ( Game.showSign ) {
+                Game.showSignMenu();
             } else if ( Game.switchToLevel ) {
                 Game.performLevelSwitch();
             }
@@ -605,6 +607,8 @@ var Game = {
             entityString,
             offsetMatch,
             offset,
+            signMatch,
+            signIndex,
             linkMatch,
             links = [],
             toLevel;
@@ -635,7 +639,10 @@ var Game = {
                     linkMatch = entityString.match( /\(([^\(\)]*)\)/ );
                     linkIndex = linkMatch ? linkMatch[1] : null;
 
-                    entityString = entityString.replace( /\[[^\[\]]*\]/, '' ).replace( /\([^\(\)]*\)/, '' );
+                    signMatch = entityString.match( /\{([^\{\}]*)\}/ );
+                    signIndex = signMatch ? signMatch[1] : null;
+
+                    entityString = entityString.replace( /\[[^\[\]]*\]/, '' ).replace( /\([^\(\)]*\)/, '' ).replace( /\{[^\{\}]*\}/, '' );
                     toLevel = entities[k].split( ':' )[1];
                     if ( entityString != 'blank' ) {
                         // Each entity gets initialized and put into our level's entity list
@@ -644,6 +651,9 @@ var Game = {
                         if ( linkIndex ) {
                             links[ linkIndex ] = links[ linkIndex ] || [];
                             links[ linkIndex ].push( entity );
+                        }
+                        if ( signIndex ) {
+                            entity.setContent( Game.currentLevel.signs[ signIndex ] );
                         }
                         if ( toLevel ) {
                             entity.toLevel = toLevel;
@@ -725,6 +735,19 @@ var Game = {
     },
     openTransformMenu: function() {
         Game.startTransform = true;
+    },
+    openSign: function( content ) {
+        var menuWidth = TILESIZE * MENU_WIDTH,
+            menuHeight = TILESIZE * MENU_HEIGHT,
+            menuLineWidth = MENU_LINE_WIDTH;
+
+        Game.keyUpListener( { keyCode: ACTION_KEY } );
+        Game.currentSign = new Game.Menu.Sign( ( Game.viewportWidth - menuWidth ) / 2, ( Game.viewportHeight - menuHeight ) / 2, menuWidth, menuHeight, menuLineWidth, content );
+        Game.showSign = true;
+    },
+    showSignMenu: function() {
+        Game.currentSign.show();
+        Game.showSign = false;
     },
     startTransformAnimation: function( newType ) {
         Game.startTransform = false;
