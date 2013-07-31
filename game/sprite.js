@@ -1794,6 +1794,17 @@ Game.Bitmaps = {
         [ "transparent", "#00ffff", "#00ffff", "transparent", "transparent", "transparent", "#00ffff", "#00ffff", "transparent" ],
         [ "#00ffff", "#00ffff", "#00ffff", "transparent", "transparent", "transparent", "#00ffff", "#00ffff", "#00ffff" ]
     ],
+    'friend-man-closeup': [
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ffff", "#00ffff", "#00ffff", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ffff", "#00ffff", "#00ffff", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "#00ffff", "#00ffff", "#00ffff", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],
+        [ "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff" ]
+    ],
     'friend-monster': [
         [ "transparent", "#00ffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ffff", "transparent" ],
         [ "transparent", "#00ffff", "#00ffff", "transparent", "transparent", "transparent", "#00ffff", "#00ffff", "transparent" ],
@@ -1804,6 +1815,17 @@ Game.Bitmaps = {
         [ "transparent", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "transparent" ],
         [ "transparent", "transparent", "#00ffff", "#00ffff", "transparent", "#00ffff", "#00ffff", "transparent", "transparent" ],
         [ "transparent", "#00ffff", "#00ffff", "#00ffff", "transparent", "#00ffff", "#00ffff", "#00ffff", "transparent" ]
+    ],
+    'friend-monster-closeup': [
+        [ "#00ffff", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "transparent", "transparent", "transparent", "transparent", "transparent", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#000000", "#00ffff", "#00ffff", "#00ffff", "#000000", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#000000", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#000000", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#000000", "#000000", "#000000", "#000000", "#000000", "#00ffff", "#00ffff" ],
+        [ "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff", "#00ffff" ]
     ],
     'sign': [
         [ "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent", "transparent" ],

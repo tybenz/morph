@@ -174,7 +174,13 @@ Game.Entity.Hero = Game.Entity.extend({
                 adjacent = this.adjacentTo( 'Friend.Man' );
                 if ( adjacent ) {
                     if ( adjacent.entity.content ) {
-                        Game.openSign( adjacent.entity.content );
+                        Game.openDialog( adjacent.entity.content );
+                    }
+                }
+                adjacent = this.adjacentTo( 'Friend.Monster' );
+                if ( adjacent ) {
+                    if ( adjacent.entity.content ) {
+                        Game.openDialog( adjacent.entity.content );
                     }
                 } else {
                     var collisions = this.hasCollisionWith( 'Machine' );

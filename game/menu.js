@@ -32,13 +32,17 @@ var TILESIZE = Settings.tileSize;
 
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
     var words = text.split(' '),
-        line = '';
+        line = '',
+        startY = y,
+        largestWidth = 0;
 
     for( var n = 0; n < words.length; n++ ) {
         var testLine = line + words[n] + ' ';
         var metrics = context.measureText( testLine );
         var testWidth = metrics.width;
         if ( testWidth > maxWidth && n > 0 ) {
+            var width = context.measureText( line ).width;
+            if ( width > largestWidth ) largestWidth = width;
             context.fillText( line, x, y );
             line = words[n] + ' ';
             y += lineHeight;
@@ -47,7 +51,11 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
             line = testLine;
         }
     }
+    width = context.measureText( line ).width;
+    if ( width > largestWidth ) largestWidth = width;
     context.fillText(line, x, y);
+
+    return { width: largestWidth, height: ( y - startY ), bottom: y + lineHeight * 2 };
 }
 
 Game.Menu = Class.extend({
@@ -62,6 +70,8 @@ Game.Menu = Class.extend({
         this.width = width;
         this.height = height;
         this.lineWidth = lineWidth || 1;
+        this.selected = 0;
+        this.timeToExit = true;
     },
     data: [],
     show: function() {
@@ -101,7 +111,7 @@ Game.Menu = Class.extend({
         }
 
         // Enter
-        if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
+        if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' && this.timeToExit ) {
             // Choose and exit
             this.exit();
         } else {
@@ -121,7 +131,6 @@ Game.Menu = Class.extend({
 
         this.contents();
     },
-    selected: 0,
     rowSize: MENU_ROW_SIZE,
     selectionPadding: MENU_SELECTION_PADDING,
     selectionLineWidth: MENU_LINE_WIDTH,
@@ -316,12 +325,119 @@ Game.Menu.Sign = Game.Menu.extend({
 Game.Menu.Dialog = Game.Menu.extend({
     init: function( left, top, width, height, lineWidth, content ) {
         this._super( left, top, width, height, lineWidth );
+        this.face = content.face;
         this.titleCopy = content.name;
         this.content = content;
+        this.timeToExit = false;
     },
     contents: function() {
         this.title();
-    }
+
+        this.drawFace();
+
+        this.currentDialog();
+    },
+    drawFace: function() {
+        var sprite = Game.Sprites[ this.face + '-double' ],
+            x = this.x + MENU_WIDTH * TILESIZE - MENU_ITEM_WIDTH - MENU_PADDING,
+            y = this.y + MENU_HEADER_HEIGHT + MENU_PADDING;
+
+        Game.ctx.drawImage( sprite, this.x + MENU_WIDTH * TILESIZE - MENU_ITEM_WIDTH - MENU_PADDING, this.y + MENU_HEADER_HEIGHT + MENU_PADDING );
+
+        this.drawRectangle( x - MENU_SELECTION_PADDING,
+                            y - MENU_SELECTION_PADDING,
+                            MENU_ITEM_WIDTH + MENU_SELECTION_PADDING * 2 - 2,
+                            MENU_ITEM_HEIGHT + MENU_SELECTION_PADDING * 2 - 2,
+                            MENU_LINE_WIDTH,
+                            MENU_SELECTION_COLOR );
+    },
+    currentDialog: function() {
+        this.activeDialog = this.activeDialog || 0;
+
+        var dialogObj = this.content.dialog[ this.activeDialog ],
+            text = dialogObj.prompt,
+            options = dialogObj.options,
+            left = Game.viewportWidth / 2 - MENU_WIDTH * TILESIZE / 2 + MENU_PADDING,
+            top = this.y + MENU_TITLE_TOP + MENU_PADDING * 1.8;
+
+        // Draw prompt
+        Game.ctx.fillStyle = '#0f0';
+        Game.ctx.textAlign = 'left';
+        Game.ctx.font = 'normal ' + 18 + 'px uni05';
+
+        wrapText( Game.ctx, text, left, top, MENU_WIDTH * TILESIZE - 4.5 * TILESIZE, 24 );
+
+        // Draw options for response
+        var fontSize = 13;
+        Game.ctx.font = 'normal ' + fontSize + 'px uni05';
+
+        var optionHeight = 0;
+        for ( var i = 0, len = options.length; i < len; i++ ) {
+            var top = optionHeight || top + TILESIZE * 3;
+
+            dimensions = wrapText( Game.ctx, options[i].text, left, top, MENU_WIDTH * TILESIZE - 2 * TILESIZE, fontSize + (fontSize / 5) );
+            optionHeight = dimensions.bottom;
+
+            if ( i == this.selected ) {
+                this.drawRectangle( left - MENU_SELECTION_PADDING,
+                                    top - fontSize - 5,
+                                    dimensions.width + MENU_SELECTION_PADDING * 2 - 2,
+                                    dimensions.height + fontSize * 2 - 2,
+                                    2,
+                                    MENU_SELECTION_COLOR );
+            }
+        }
+    },
+    reply: function( response ) {
+        this.activeDialog = this.activeDialog || 0;
+
+        var action = this.content.dialog[ this.activeDialog ].options[ response ].action;
+
+        if ( action != 'exit' ) {
+            this.selected = 0;
+        }
+
+        if ( action == 'next' ) {
+            this.activeDialog++;
+        } else if ( action == 'skip' ) {
+            this.activeDialog += 2;
+        } else if ( action == 'prev' ) {
+            this.activeDialog--;
+        } else if ( action == 'exit' ) {
+            this.timeToExit = true;
+            return true;
+        }
+    },
+    loop: function() {
+        if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
+            var exit = this.reply( this.selected );
+
+            if ( !exit ) {
+                Game.keysDown[ ACTION_KEY ] = 'locked';
+            }
+        }
+
+        this._super();
+    },
+    up: function() {
+        if ( this.selected - 1 >= 0 ) {
+            this.selected--;
+        }
+    },
+    down: function() {
+        this.activeDialog = this.activeDialog || 0;
+
+        var dialogObj = this.content.dialog[ this.activeDialog ],
+            text = dialogObj.prompt,
+            options = dialogObj.options,
+            len = options.length;
+
+        if ( this.selected + 1 < len ) {
+            this.selected++;
+        }
+    },
+    left: function() {},
+    right: function() {}
 });
 
 })( Game, Settings, window, document );

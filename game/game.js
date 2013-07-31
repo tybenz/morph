@@ -108,7 +108,9 @@ var Game = {
             'clock': Game.Bitmaps[ 'clock-1' ],
             'flame': Game.Bitmaps[ 'flame-big' ],
             'restart': Game.Bitmaps[ 'restart' ],
-            'exit': Game.Bitmaps[ 'exit' ]
+            'exit': Game.Bitmaps[ 'exit' ],
+            'friend-man-closeup': Game.Bitmaps[ 'friend-man-closeup' ],
+            'friend-monster-closeup': Game.Bitmaps[ 'friend-monster-closeup' ]
         };
 
         for ( var i in heroList ) {
@@ -608,7 +610,7 @@ var Game = {
             offsetMatch,
             offset,
             signMatch,
-            signIndex,
+            signName,
             linkMatch,
             links = [],
             toLevel;
@@ -640,7 +642,7 @@ var Game = {
                     linkIndex = linkMatch ? linkMatch[1] : null;
 
                     signMatch = entityString.match( /\{([^\{\}]*)\}/ );
-                    signIndex = signMatch ? signMatch[1] : null;
+                    signName = signMatch ? signMatch[1] : null;
 
                     entityString = entityString.replace( /\[[^\[\]]*\]/, '' ).replace( /\([^\(\)]*\)/, '' ).replace( /\{[^\{\}]*\}/, '' );
                     toLevel = entities[k].split( ':' )[1];
@@ -652,8 +654,12 @@ var Game = {
                             links[ linkIndex ] = links[ linkIndex ] || [];
                             links[ linkIndex ].push( entity );
                         }
-                        if ( signIndex ) {
-                            entity.setContent( Game.currentLevel.signs[ signIndex ] );
+                        if ( signName ) {
+                            if ( entity.type.indexOf( 'Friend' ) === 0 ) {
+                                entity.setContent( Game.Dialog[ signName ] );
+                            } else {
+                                entity.setContent( Game.Signs[ signName ] );
+                            }
                         }
                         if ( toLevel ) {
                             entity.toLevel = toLevel;
@@ -743,6 +749,15 @@ var Game = {
 
         Game.keyUpListener( { keyCode: ACTION_KEY } );
         Game.currentSign = new Game.Menu.Sign( ( Game.viewportWidth - menuWidth ) / 2, ( Game.viewportHeight - menuHeight ) / 2, menuWidth, menuHeight, menuLineWidth, content );
+        Game.showSign = true;
+    },
+    openDialog: function( content ) {
+        var menuWidth = TILESIZE * MENU_WIDTH,
+            menuHeight = TILESIZE * MENU_HEIGHT,
+            menuLineWidth = MENU_LINE_WIDTH;
+
+        Game.keyUpListener( { keyCode: ACTION_KEY } );
+        Game.currentSign = new Game.Menu.Dialog( ( Game.viewportWidth - menuWidth ) / 2, ( Game.viewportHeight - menuHeight ) / 2, menuWidth, menuHeight, menuLineWidth, content );
         Game.showSign = true;
     },
     showSignMenu: function() {
