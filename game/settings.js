@@ -11,7 +11,7 @@ window.Settings = {
     landBackground: '#000',
     seaBackground: '#003',
     // Viewport stuff
-    viewportShiftBoundary: 3,
+    viewportShiftBoundary: 2,
     defaultViewportWidth: 25,
     defaultViewportHeight: 14,
     // Menu

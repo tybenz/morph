@@ -34,8 +34,8 @@ var Game = {
         Game.viewportHeight = Game.viewportTileHeight * TILESIZE;
         Game.viewportOffset = 0;
         Game.viewportShiftBoundary = {
-            left: Game.viewportWidth / 2 + ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE ),
-            right: Game.viewportWidth / 2 - ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE )
+            left: Math.floor( Game.viewportTileWidth / 2 ) * TILESIZE + ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE ),
+            right: Math.floor( Game.viewportTileWidth / 2 ) * TILESIZE - ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE )
         };
 
         //Initialize pause menu

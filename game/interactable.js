@@ -96,7 +96,7 @@ Game.Entity.Interactable.Egg = Game.Entity.Interactable.extend({
     type: 'Interactable.Egg',
     initialSprite: 'egg',
     width: ( TILESIZE / 9 ) * 3,
-    height: ( TILESIZE / 9 ) * 3,
+    height: ( TILESIZE / 9 ) * 4,
     drawLayer: 0,
     collideWith: function( entity, collisionTypes ) {
         if ( entity.type == 'Terrain.Land' ) {
