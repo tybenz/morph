@@ -11,6 +11,7 @@
 
 Game.Quests = {
     'main': {
+        'title': 'Find yourself',
         'initial': {
             text: 'What happened to me? I can\'t remember anything. I have this sense of urgency. I have to found out more. I gotta find help.'
         },
@@ -23,6 +24,7 @@ Game.Quests = {
         }
     },
     'axe': {
+        'title': 'Family cuts deep',
         'floyd': {
             text: 'Talked to FLOYD in Coppertown. He says his brother LLOYD (IRONTOWN) stole an axe of his. If I get it back for him, he promised a reward'
         }

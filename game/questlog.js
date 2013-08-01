@@ -7,18 +7,20 @@ Game.Questlog = {
     push: function( questID, id ) {
         if ( !this.inLog( id ) ) {
 
-            var questObj = Game.Quests[ questID ][ id ];
+            var questTitle = Game.Quests[ questID ].title,
+                questEntry = Game.Quests[ questID ][ id ];
 
-            this.log[ questID ] = this.log[ questID ] || [];
-            this.log[ questID ].push({
+            this.log[ questID ] = this.log[ questID ] || { entries: [] };
+            this.log[ questID ].title = questTitle;
+            this.log[ questID ].entries.push({
                 id: id,
-                text: questObj.text,
-                items: questObj.items
+                text: questEntry.text,
+                items: questEntry.items
             });
 
-            if ( questObj.items ) {
-                for ( var i = 0, len = questObj.items.length; i < len; i++ ) {
-                    Game.Inventory.push( questObj.items[i] );
+            if ( questEntry.items ) {
+                for ( var i = 0, len = questEntry.items.length; i < len; i++ ) {
+                    Game.Inventory.push( questEntry.items[i] );
                 }
             }
 
@@ -26,8 +28,8 @@ Game.Questlog = {
     },
     inLog: function( id ) {
         for ( var i in this.log ) {
-            for ( var j = 0, len = this.log[i].length; j < len; j++ ) {
-                if ( this.log[i][j].id == id ) {
+            for ( var j = 0, len = this.log[i].entries.length; j < len; j++ ) {
+                if ( this.log[i].entries[j].id == id ) {
                     return true;
                 }
             }

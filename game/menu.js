@@ -82,6 +82,7 @@ Game.Menu = Class.extend({
         });
     },
     exit: function() {
+        Game.paused = false;
         Game.keyUpListener( { keyCode: ACTION_KEY } );
         Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
         Game.requestID = requestAnimationFrame( Game.loop );
@@ -154,8 +155,8 @@ Game.Menu = Class.extend({
 
                     this.drawRectangle( x - this.selectionPadding,
                                         y - this.selectionPadding,
-                                        this.itemWidth + this.selectionPadding * 2 - 2,
-                                        this.itemHeight + this.selectionPadding * 2 - 2,
+                                        this.itemWidth + this.selectionPadding * 2 - 4,
+                                        this.itemHeight + this.selectionPadding * 2 - 4,
                                         this.selectionLineWidth,
                                         this.selectionColor );
 
@@ -377,7 +378,7 @@ Game.Menu.Dialog = Game.Menu.extend({
             text = dialogObj.prompt,
             options = dialogObj.options,
             questlog = dialogObj.questlog,
-            left = Game.viewportWidth / 2 - MENU_WIDTH * TILESIZE / 2 + MENU_PADDING,
+            left = this.x + MENU_PADDING,
             top = this.y + MENU_TITLE_TOP + MENU_PADDING * 1.8;
 
         if ( questlog ) {
@@ -453,6 +454,128 @@ Game.Menu.Dialog = Game.Menu.extend({
     },
     left: function() {},
     right: function() {}
+});
+
+Game.Menu.Questlog = Game.Menu.extend({
+    titleText: 'QUESTLOG',
+    contents: function() {
+        this.title();
+
+        this.currentQuest = this.currentQuest || null;
+
+        var quests = Game.Questlog.log,
+            quest,
+            dimensions,
+            fontSize = 15,
+            left = this.x + MENU_PADDING,
+            top = this.y + MENU_TITLE_TOP + MENU_PADDING + TILESIZE * 0.7;
+
+        Game.ctx.fillStyle = '#0f0';
+        Game.ctx.textAlign = 'left';
+        Game.ctx.font = 'normal ' + fontSize + 'px uni05';
+
+        if ( this.currentQuest ) {
+            // Quest is selected list journal entries
+            quest = quests[ this.currentQuest ].entries;
+
+            for ( var i = quest.length - 1; i >= 0; i-- ) {
+
+                dimensions = wrapText( Game.ctx, quest[i].text, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING * 2, fontSize + ( fontSize / 5 ) );
+
+                if ( i == ( quest.length - 1 - this.selected ) ) {
+                    this.drawRectangle( left - MENU_SELECTION_PADDING,
+                                        top - fontSize - 5,
+                                        MENU_WIDTH * TILESIZE - MENU_PADDING * 2,
+                                        dimensions.height + fontSize * 2 - 2,
+                                        2,
+                                        MENU_SELECTION_COLOR );
+                }
+
+                top = dimensions.bottom;
+            }
+        } else {
+            // List all quests
+            var j = 0;
+            for ( var i in quests ) {
+                quest = quests[i];
+
+                dimensions = wrapText( Game.ctx, quest.title, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING, fontSize + ( fontSize / 5 ) );
+
+                if ( j == this.selected ) {
+                    this.drawRectangle( left - MENU_SELECTION_PADDING,
+                                        top - fontSize - 5,
+                                        MENU_WIDTH * TILESIZE - MENU_PADDING * 2,
+                                        dimensions.height + fontSize * 2 - 2,
+                                        2,
+                                        MENU_SELECTION_COLOR );
+                }
+
+                top = dimensions.bottom;
+
+                j++;
+            }
+        }
+    },
+    choose: function( selection ) {
+        var quests = Game.Questlog.log;
+
+        if ( this.currentQuest ) {
+        } else {
+            var j = 0;
+            for ( var i in quests ) {
+                if ( j == selection ) {
+                    this.lastSelected = this.selected;
+                    this.selected = 0;
+                    this.currentQuest = i;
+                    break;
+                }
+                j++;
+            }
+        }
+
+    },
+    back: function() {
+        if ( this.currentQuest ) {
+            this.currentQuest = false;
+            this.selected = this.lastSelected;
+            return false;
+        }
+
+        return true;
+    },
+    loop: function() {
+        if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
+            this.choose( this.selected );
+            Game.keysDown[ ACTION_KEY ] = 'locked';
+        }
+
+        if ( JUMP_KEY in Game.keysDown && Game.keysDown[ JUMP_KEY ] != 'locked' ) {
+            var exit = this.back();
+
+            if ( !exit ) Game.keysDown[ JUMP_KEY ] = 'locked';
+        }
+
+
+        this._super();
+    },
+    up: function() {
+        if ( this.selected - 1 >= 0 ) {
+            this.selected--;
+        }
+    },
+    down: function() {
+        if ( this.currentQuest ) {
+            if ( this.selected + 1 < Game.Questlog.log[ this.currentQuest ].entries.length ) {
+                this.selected++;
+            }
+        } else {
+            var len = 0;
+            for ( var i in Game.Questlog.log ) len++;
+            if ( this.selected + 1 < len ) {
+                this.selected++;
+            }
+        }
+    },
 });
 
 })( Game, Settings, window, document );

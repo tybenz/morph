@@ -14,6 +14,8 @@ var TILESIZE = Settings.tileSize,
     ACTION_KEY = Settings.actionKey,
     JUMP_KEY = Settings.jumpKey,
     PAUSE_KEY = Settings.pauseKey,
+    QUESTLOG_KEY = Settings.questlogKey,
+    INVENTORY_KEY = Settings.inventoryKey,
     ENTER_KEY = Settings.enterKey,
     DEBUG_INVALID_RECT = Settings.debugInvalidRect,
     DEBUG_INVALID_RECT_COLOR = Settings.debugInvalidRectColor,
@@ -43,6 +45,9 @@ var Game = {
             pauseMenuHeight = TILESIZE * MENU_HEIGHT,
             pauseMenuLineWidth = MENU_LINE_WIDTH;
         Game.pauseMenu = new Game.Menu.Pause( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
+
+        //Initialize questlog menu
+        Game.questlogMenu = new Game.Menu.Questlog( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
 
         //Initialize transform menu
         Game.transformMenu = new Game.Menu.Transform( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
@@ -716,7 +721,13 @@ var Game = {
             if ( Game.paused ) {
                 Game.resume();
             } else {
-                Game.pause();
+                Game.pause( 'pause' );
+            }
+        } else if ( evt.keyCode == QUESTLOG_KEY ) {
+            if ( !Game.paused ) {
+                Game.pause( 'questlog' );
+            } else {
+                Game.resume();
             }
         }
         if ( Game.keysDown[ evt.keyCode ] != 'locked' ) {
@@ -726,8 +737,12 @@ var Game = {
     keyUpListener: function( evt ) {
         delete Game.keysDown[ evt.keyCode ];
     },
-    pause: function() {
-        Game.pauseMenu.render();
+    pause: function( menu ) {
+        if ( menu == 'pause' ) {
+            Game.pauseMenu.show();
+        } else if ( menu == 'questlog' ) {
+            Game.questlogMenu.show();
+        }
         Game.paused = true;
         cancelAnimationFrame( Game.requestID );
     },

@@ -41,6 +41,8 @@ window.Settings = {
     actionKey: 88, // X
     jumpKey: 90, // Z
     pauseKey: 80, // P
+    questlogKey: 81, // Q
+    inventoryKey: 73, // I
     enterKey: 13,
     // Debug flags
     debugInvalidRect: false,
