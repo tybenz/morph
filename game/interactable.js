@@ -235,4 +235,8 @@ Game.Entity.Interactable.Switch = Game.Entity.Interactable.extend({
     }
 });
 
+Game.Entity.Interactable.Map = Game.Entity.Interactable.extend({
+    type: 'Interactable.Map'
+});
+
 })( Game, Settings, window, document );

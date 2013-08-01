@@ -353,14 +353,36 @@ Game.Menu.Dialog = Game.Menu.extend({
                             MENU_LINE_WIDTH,
                             MENU_SELECTION_COLOR );
     },
-    currentDialog: function() {
+    getDialog: function() {
+        var dialogObj,
+            found = false;
+
         this.activeDialog = this.activeDialog || 0;
 
-        var dialogObj = this.content.dialog[ this.activeDialog ],
+        for ( var i in this.content.dialog ) {
+            if ( Game.Questlog.inLog( i ) ) {
+                dialogObj = this.content.dialog[ i ][ this.activeDialog ];
+                found = true;
+            }
+        }
+
+        if ( !found ) {
+            dialogObj = this.content.dialog.default[ this.activeDialog ];
+        }
+
+        return dialogObj;
+    },
+    currentDialog: function() {
+        var dialogObj = this.getDialog(),
             text = dialogObj.prompt,
             options = dialogObj.options,
+            questlog = dialogObj.questlog,
             left = Game.viewportWidth / 2 - MENU_WIDTH * TILESIZE / 2 + MENU_PADDING,
             top = this.y + MENU_TITLE_TOP + MENU_PADDING * 1.8;
+
+        if ( questlog ) {
+            Game.Questlog.push( questlog.questID, questlog.id );
+        }
 
         // Draw prompt
         Game.ctx.fillStyle = '#0f0';
@@ -391,9 +413,7 @@ Game.Menu.Dialog = Game.Menu.extend({
         }
     },
     reply: function( response ) {
-        this.activeDialog = this.activeDialog || 0;
-
-        var action = this.content.dialog[ this.activeDialog ].options[ response ].action;
+        var action = this.getDialog().options[ response ].action;
 
         if ( action != 'exit' ) {
             this.selected = 0;
@@ -427,14 +447,7 @@ Game.Menu.Dialog = Game.Menu.extend({
         }
     },
     down: function() {
-        this.activeDialog = this.activeDialog || 0;
-
-        var dialogObj = this.content.dialog[ this.activeDialog ],
-            text = dialogObj.prompt,
-            options = dialogObj.options,
-            len = options.length;
-
-        if ( this.selected + 1 < len ) {
+        if ( this.selected + 1 < this.getDialog().options.length ) {
             this.selected++;
         }
     },

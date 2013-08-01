@@ -70,6 +70,8 @@ var Game = {
 
         Game.keysLocked = false;
 
+        Game.Questlog.push( 'main', 'initial' );
+
         //Initialize drawLayers
         Game.initDrawLayers();
 

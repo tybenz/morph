@@ -30,6 +30,36 @@ Game.Inventory = {
         if ( this.currency < this.maxCurrency ) {
             this.currency++;
         }
+    },
+    push: function( item ) {
+        var instance;
+
+        if ( typeof item == 'function' ) {
+            instance = new item;
+        } else {
+            instance = item;
+        }
+
+        if ( !this.inInventory( instance ) ) {
+            this.items.push( instance );
+        }
+    },
+    inInventory: function( item ) {
+        var instance;
+
+        if ( typeof item == 'function' ) {
+            instance = new item;
+        } else {
+            instance = item;
+        }
+
+        for ( var i = 0, len = this.items.length; i < len; i++ ) {
+            if ( this.items[i].type == instance.type ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 
