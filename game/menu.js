@@ -111,7 +111,8 @@ Game.Menu = Class.extend({
         }
 
         // Enter
-        if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' && this.timeToExit ) {
+        if ( ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' && this.timeToExit ) || ( JUMP_KEY in Game.keysDown && Game.keysDown[ JUMP_KEY ] != 'locked' ) ) {
+            if ( JUMP_KEY in Game.keysDown ) Game.keysDown[ JUMP_KEY ] = 'locked';
             // Choose and exit
             this.exit();
         } else {
@@ -301,6 +302,7 @@ Game.Menu.Transform = Game.Menu.extend({
     ],
     rowSize: TRANSFORM_MENU_ROW_SIZE,
     exit: function() {
+        Game.keyUpListener( { keyCode: ACTION_KEY } );
         Game.startTransformAnimation( this.data[ this.selected ].className );
     }
 });

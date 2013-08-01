@@ -736,6 +736,7 @@ var Game = {
         Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     showTransformMenu: function() {
+        Game.keyUpListener( { keyCode: ACTION_KEY } );
         Game.transformMenu.show();
         Game.startTransform = false;
     },
