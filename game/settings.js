@@ -48,7 +48,7 @@ window.Settings = {
     coinColor: '#ffff00',
     kidColor: '#ff7f00',
     machineColor: '#7f007f',
-    woodColor: '#995511',
+    woodColor: '#59340d',
     // Keys
     leftKey: 37, // left arrow
     rightKey: 39, // right arrow
