@@ -295,6 +295,14 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
             Game.destroyEntity( this );
         }
         this._super( timeDiff );
+    },
+    collideWith: function( entity, collisionTypes ) {
+        this._super( entity, collisionTypes );
+        if ( entity.type == 'Terrain.Land' && this.state != 'dying' ) {
+            this.pos.x = entity.pos.x + entity.width;
+            this.velocity.x = 0;
+            this.changeState( 'dying' );
+        }
     }
 });
 
