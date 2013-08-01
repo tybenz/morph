@@ -2,20 +2,39 @@
 
 (function( Game, Settings, window, document, undefined ) {
 
-var tr = 'transparent',
-    gn = '#00ff00',
-    re = '#ff0000',
-    bu = '#0000ff',
-    cy = '#00ffff',
-    gy = '#777777',
-    pi = '#ff55ff',
-    wh = '#ffffff',
-    bk = '#000000',
-    sg = '#008000',
-    yl = '#ffff00',
-    or = '#ff7f00',
-    pu = '#7f007f',
-    br = '#995511';
+function getRGB(color) {
+    if (result = /rgb(s*([0-9]{1,3})s*,s*([0-9]{1,3})s*,s*([0-9]{1,3})s*)/.exec(color)) return [parseInt(result[1]), parseInt(result[2]), parseInt(result[3])];
+    if (result = /rgb(s*([0-9]+(?:.[0-9]+)?)%s*,s*([0-9]+(?:.[0-9]+)?)%s*,s*([0-9]+(?:.[0-9]+)?)%s*)/.exec(color)) return [parseFloat(result[1]) * 2.55, parseFloat(result[2]) * 2.55, parseFloat(result[3]) * 2.55];
+    if (result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color)) return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
+    if (result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color)) return [parseInt(result[1] + result[1], 16), parseInt(result[2] + result[2], 16), parseInt(result[3] + result[3], 16)];
+}
+
+/*
+$('h1').css('text-shadow', function() {
+    var rgb = getRGB($(this).css('color'));
+
+    for(var i = 0; i < rgb.length; i++){
+        rgb[i] = Math.min(rgb[i] + 90, 255);
+    }
+	
+    var newColor = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+});
+*/
+
+var tr = Settings.transparentColor,
+    gn = Settings.heroColor,
+    re = Settings.enemyColor,
+    bu = Settings.waterColor,
+    cy = Settings.friendColor,
+    gy = Settings.rockColor,
+    pi = Settings.heartColor,
+    wh = Settings.cloudColor,
+    bk = Settings.blackColor,
+    sg = Settings.landColor,
+    yl = Settings.coinColor,
+    or = Settings.kidColor,
+    pu = Settings.machineColor,
+    br = Settings.woodColor;
 
 Game.Sprite = function( path ) {
     var image = new Image();

@@ -33,6 +33,22 @@ window.Settings = {
     gameOverMenuPaddingLeft: 7.2 * TILESIZE,
     gameOverMenuPaddingTop: 4.5 * TILESIZE,
     transformMenuRowSize: 4,
+    // Colors
+    transparentColor: 'transparent',
+    blackColor: '#000000',
+    heroColor: '#00ff00',
+    enemyColor: '#ff0000',
+    waterColor: '#0000ff',
+    friendColor: '#00ffff',
+    rockColor: '#777777',
+    heartColor: '#ff55ff',
+    tongueColor: '#ff55ff',
+    cloudColor: '#ffffff',
+    landColor: '#008000',
+    coinColor: '#ffff00',
+    kidColor: '#ff7f00',
+    machineColor: '#7f007f',
+    woodColor: '#995511',
     // Keys
     leftKey: 37, // left arrow
     rightKey: 39, // right arrow
