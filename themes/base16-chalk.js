@@ -1,0 +1,14 @@
+Settings.blackColor    = '#151515'; // 00 - Black
+Settings.enemyColor    = '#fb9fb1'; // 08 - Red
+Settings.heroColor     = '#acc267'; // 0B - Green
+Settings.coinColor     = '#ddb26f'; // 0A - Yellow
+Settings.waterColor    = '#6fc2ef'; // 0D - Blue
+Settings.heartColor    = '#e1a3ee'; // 0E - Magenta
+Settings.tongueColor   = '#e1a3ee'; // 0E - Magenta
+Settings.friendColor   = '#12cfc0'; // 0C - Cyan
+Settings.cloudColor    = '#f5f5f5'; // 07 - Bright White
+Settings.landColor     = '#505050'; // 03 - Bright Black
+Settings.rockColor     = '#b0b0b0'; // 04 - Grey
+Settings.kidColor      = '#eda987'; // 09 - Orange
+Settings.machineColor  = '#e1a3ee'; // 0E - Magenta
+Settings.woodColor     = '#deaf8f'; // 0F - Brown

@@ -36,6 +36,7 @@ window.Settings = {
     transformMenuRowSize: 4,
     // Colors
     transparentColor: 'transparent',
+    levelNameColor: '#ffffff',
     blackColor: '#000000',
     heroColor: '#0ed839',
     enemyColor: '#e92f2f',

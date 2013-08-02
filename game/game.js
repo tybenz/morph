@@ -20,7 +20,8 @@ var TILESIZE = Settings.tileSize,
     DEBUG_INVALID_RECT = Settings.debugInvalidRect,
     DEBUG_INVALID_RECT_COLOR = Settings.debugInvalidRectColor,
     LAND_BACKGROUND = Settings.landBackground,
-    SEA_BACKGROUND = Settings.seaBackground;
+    SEA_BACKGROUND = Settings.seaBackground,
+    LEVEL_NAME_COLOR = Settings.levelNameColor;
 
 var Game = {
     //Array of entities that should be destroyed on the following update
@@ -614,14 +615,14 @@ var Game = {
             var levelName = Game.currentLevel.title;
 
             if ( levelName && Game.go) {
-                Game.ctx.fillStyle = '#000';
+                Game.ctx.fillStyle = Game.background;
 
                 Game.ctx.font = 'normal 18px uni05';
                 Game.ctx.textAlign = 'right';
 
                 Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );
 
-                Game.ctx.fillStyle = '#ffffff';
+                Game.ctx.fillStyle = LEVEL_NAME_COLOR;
                 Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );
             }
 
