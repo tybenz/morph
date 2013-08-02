@@ -38,9 +38,10 @@ window.Settings = {
     dialogPromptSize: Math.round( 0.666667 * TILESIZE ),
     dialogResponseSize: Math.round( 0.481481 * TILESIZE ),
     questlogFontSize: Math.round( 0.555556 * TILESIZE ),
+    levelNameFontSize: Math.round( 0.666667 * TILESIZE ),
     // Colors
+    levelNameColor: '#f9f9f9',
     transparentColor: 'transparent',
-    levelNameColor: '#ffffff',
     blackColor: '#000000',
     heroColor: '#0ed839',
     enemyColor: '#e92f2f',
