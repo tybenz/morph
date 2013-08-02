@@ -738,16 +738,14 @@ var Game = {
             evt.preventDefault();
         }
         if ( evt.keyCode == PAUSE_KEY ) {
-            if ( Game.paused ) {
-                Game.resume();
-            } else {
+            if ( !Game.paused ) {
+                Game.keysDown[ PAUSE_KEY ] = 'locked';
                 Game.pause( 'pause' );
             }
         } else if ( evt.keyCode == QUESTLOG_KEY ) {
             if ( !Game.paused ) {
+                Game.keysDown[ QUESTLOG_KEY ] = 'locked';
                 Game.pause( 'questlog' );
-            } else {
-                Game.resume();
             }
         }
         if ( Game.keysDown[ evt.keyCode ] != 'locked' ) {
@@ -799,6 +797,7 @@ var Game = {
         Game.showSign = true;
     },
     showSignMenu: function() {
+        Game.paused = true;
         Game.currentSign.show();
         Game.showSign = false;
     },
@@ -813,6 +812,7 @@ var Game = {
         Game.requestID = requestAnimationFrame( Game.loop );
     },
     doneTransforming: function() {
+        Game.paused = false;
         Game.transforming = false;
         Game.keysLocked = false;
         Game.startTransform = false;

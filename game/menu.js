@@ -34,7 +34,8 @@ var TILESIZE = Settings.tileSize;
     ACTION_KEY = Settings.actionKey,
     JUMP_KEY = Settings.jumpKey,
     PAUSE_KEY = Settings.pauseKey,
-    ENTER_KEY = Settings.enterKey;
+    ENTER_KEY = Settings.enterKey,
+    QUESTLOG_KEY = Settings.questlogKey;
 
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
     var words = text.split(' '),
@@ -236,7 +237,15 @@ Game.Menu = Class.extend({
 });
 
 Game.Menu.Pause = Game.Menu.extend({
-    titleText: 'PAUSE'
+    titleText: 'PAUSE',
+    loop: function() {
+        if ( PAUSE_KEY in Game.keysDown && Game.keysDown[ PAUSE_KEY ] != 'locked' ) {
+            Game.keysDown[ ACTION_KEY ] = true;
+            this.timeToExit = true;
+        }
+
+        this._super();
+    }
 });
 
 Game.Menu.GameOver = Game.Menu.extend({
@@ -550,6 +559,11 @@ Game.Menu.Questlog = Game.Menu.extend({
             var exit = this.back();
 
             if ( !exit ) Game.keysDown[ JUMP_KEY ] = 'locked';
+        }
+
+        if ( QUESTLOG_KEY in Game.keysDown && Game.keysDown[ QUESTLOG_KEY ] != 'locked' ) {
+            Game.keysDown[ ACTION_KEY ] = true;
+            this.timeToExit = true;
         }
 
 
