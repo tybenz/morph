@@ -608,8 +608,23 @@ var Game = {
                 }
             }
 
+            var levelName = Game.currentLevel.title;
+
+            if ( levelName && Game.go) {
+                Game.ctx.fillStyle = '#000';
+
+                Game.ctx.font = 'normal 18px uni05';
+                Game.ctx.textAlign = 'right';
+
+                Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );
+
+                Game.ctx.fillStyle = '#ffffff';
+                Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );
+            }
+
         }
     },
+    go: true,
     //Iterate through level grid and instantiate all entities based on class name
     loadLevel: function() {
         var entities,
