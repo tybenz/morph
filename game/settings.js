@@ -3,7 +3,7 @@
 (function( window, document, undefined ) {
 
 window.SECONDS = 1000;
-var SCALE = 3,
+var SCALE = 4,
     TILESIZE = 9 * SCALE;
 
 window.Settings = {
@@ -20,7 +20,7 @@ window.Settings = {
     menuLineWidth: 3,
     menuPadding: 1.2 * TILESIZE,
     menuHeaderHeight: 1.666667 * TILESIZE,
-    menuHeaderFontSize: 1.111111 * TILESIZE,
+    menuHeaderFontSize: Math.round( 1.111111 * TILESIZE ),
     menuTitleTop: 1.333333 * TILESIZE,
     menuSelectionColor: '#f9f9f9',
     menuLineColor: '#0ed839',
@@ -34,6 +34,10 @@ window.Settings = {
     gameOverMenuPaddingLeft: 7.2 * TILESIZE,
     gameOverMenuPaddingTop: 4.5 * TILESIZE,
     transformMenuRowSize: 4,
+    signFontSize: Math.round( 0.740741 * TILESIZE ),
+    dialogPromptSize: Math.round( 0.666667 * TILESIZE ),
+    dialogResponseSize: Math.round( 0.481481 * TILESIZE ),
+    questlogFontSize: Math.round( 0.555556 * TILESIZE ),
     // Colors
     transparentColor: 'transparent',
     levelNameColor: '#ffffff',

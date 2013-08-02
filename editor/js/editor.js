@@ -399,16 +399,19 @@ Editor = {
         image.src = path;
         return image;
     },
+    levelName: function() {
+        return $( '#level-name' ).val();
+    },
     save: function() {
         var json = JSON.stringify( this.level, undefined, 4 );
         json = json.replace( /",\n(\s)*/g, '", ' ).
                     replace( /\[\n\s*"/g, '[ "' ).
                     replace( /"\n\s*\]/g, '" ]' );
-        window.open( 'data:text/json,' + encodeURIComponent( json ) );
+        window.open( 'data:text/plain,new Game.Level( \'land\', \'' + Editor.levelName() + '\', null, ' + encodeURIComponent( json ) + '),' );
     },
     preview: function() {
         Editor.$canvas.hide();
-        Game.Levels.preview = new Game.Level( null, null, this.level );
+        Game.Levels.preview = new Game.Level( null, Editor.levelName(), null, this.level );
         Game.skipResize = true;
         Game.Editing = false;
         Game.init( 'preview' );

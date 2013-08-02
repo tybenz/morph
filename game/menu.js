@@ -19,6 +19,10 @@ var TILESIZE = Settings.tileSize;
     MENU_LINE_WIDTH = Settings.menuLineWidth,
     MENU_ITEM_WIDTH = Settings.menuItemWidth,
     MENU_ITEM_HEIGHT = Settings.menuItemHeight,
+    SIGN_FONT_SIZE = Settings.signFontSize,
+    DIALOG_PROMPT_SIZE = Settings.dialogPromptSize,
+    DIALOG_RESPONSE_SIZE = Settings.dialogResponseSize,
+    QUESTLOG_FONT_SIZE = Settings.questlogFontSize,
     BLACK = Settings.blackColor,
     GAME_OVER_MENU_PADDING_LEFT = Settings.gameOverMenuPaddingLeft,
     GAME_OVER_MENU_PADDING_TOP = Settings.gameOverMenuPaddingTop,
@@ -162,17 +166,7 @@ Game.Menu = Class.extend({
                                         this.selectionLineWidth,
                                         this.selectionColor );
 
-                } else {
-
-                    this.drawRectangle( x - this.selectionPadding,
-                                        y - this.selectionPadding,
-                                        Game.ctx.measureText( item.text ).width,
-                                        30,
-                                        this.selectionLineWidth,
-                                        this.selectionColor );
-
                 }
-
             }
             if ( item.sprite ) {
                 Game.ctx.drawImage( Game.Sprites[ item.sprite ], x, y );
@@ -183,7 +177,7 @@ Game.Menu = Class.extend({
         }
     },
     title: function() {
-        Game.ctx.font = 'normal ' + Math.round( MENU_HEADER_FONT_SIZE ) + 'px uni05';
+        Game.ctx.font = 'normal ' + MENU_HEADER_FONT_SIZE + 'px uni05';
         Game.ctx.fillStyle = BLACK;
         Game.ctx.textAlign = 'center';
         Game.ctx.fillText( this.titleCopy || this.titleText, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP );
@@ -321,9 +315,9 @@ Game.Menu.Sign = Game.Menu.extend({
 
         Game.ctx.fillStyle = MENU_TEXT_COLOR;
         Game.ctx.textAlign = 'center';
-        Game.ctx.font = 'normal ' + 20 + 'px uni05';
+        Game.ctx.font = 'normal ' + SIGN_FONT_SIZE + 'px uni05';
 
-        wrapText( Game.ctx, this.body, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP + MENU_PADDING * 2, MENU_WIDTH * TILESIZE - 2 * TILESIZE, 28 );
+        wrapText( Game.ctx, this.body, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP + MENU_PADDING * 2, MENU_WIDTH * TILESIZE - 2 * TILESIZE, SIGN_FONT_SIZE + ( SIGN_FONT_SIZE / 2.5 ) );
     }
 });
 
@@ -390,12 +384,12 @@ Game.Menu.Dialog = Game.Menu.extend({
         // Draw prompt
         Game.ctx.fillStyle = MENU_TEXT_COLOR;
         Game.ctx.textAlign = 'left';
-        Game.ctx.font = 'normal ' + 18 + 'px uni05';
+        Game.ctx.font = 'normal ' + DIALOG_PROMPT_SIZE + 'px uni05';
 
-        wrapText( Game.ctx, text, left, top, MENU_WIDTH * TILESIZE - 4.5 * TILESIZE, 24 );
+        wrapText( Game.ctx, text, left, top, MENU_WIDTH * TILESIZE - 4.5 * TILESIZE, DIALOG_PROMPT_SIZE + ( DIALOG_PROMPT_SIZE / 3 ) );
 
         // Draw options for response
-        var fontSize = 13;
+        var fontSize = DIALOG_RESPONSE_SIZE;
         Game.ctx.font = 'normal ' + fontSize + 'px uni05';
 
         var optionHeight = 0;
@@ -469,7 +463,7 @@ Game.Menu.Questlog = Game.Menu.extend({
         var quests = Game.Questlog.log,
             quest,
             dimensions,
-            fontSize = 15,
+            fontSize = QUESTLOG_FONT_SIZE,
             left = this.x + MENU_PADDING,
             top = this.y + MENU_TITLE_TOP + MENU_PADDING + TILESIZE * 0.7;
 

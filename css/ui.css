@@ -26,11 +26,11 @@ a {
 }
 
 #game {
-  height: 378px;
-  width: 675px;
+  height: 504px;
+  width: 900px;
   margin: 0 auto;
   position: relative;
-  top: -225px;
+  top: -252px;
   box-shadow: 0 0 0 1px #0ed839;
 }
 

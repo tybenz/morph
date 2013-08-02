@@ -1,7 +1,7 @@
 #game-wrapper {
   overflow: hidden;
-  width: 675px;
-  height: 393px;
+  height: 519px;
+  width: 900px;
   margin: 0 auto;
   position: relative;
   top: -225px;
@@ -14,18 +14,18 @@
   overflow-x: scroll;
   overflow-y: hidden;
   padding-bottom: 15px;
-  width: 675px;
-  height: 378px;
+  height: 504px;
+  width: 900px;
 }
 
 #panel {
-  height: 378px;
-  width: 91px;
+  height: 504px;
+  width: 181px;
   padding: 0 15px 15px;
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-left: -470px;
+  margin-left: -680px;
   margin-top: -226px;
   border: 1px solid #0f0;
   overflow-y: auto;
@@ -38,7 +38,7 @@
   overflow: hidden;
   position: fixed;
   height: 98px;
-  width: 76px;
+  width: 150px;
   z-index: 1;
   background: #111;
 }
@@ -82,7 +82,7 @@
   top: 50%;
   right: 50%;
   margin-top: -196px;
-  margin-right: -375px;
+  margin-right: -495px;
   font-family: monospace;
   font-size: 1.3em;
 }
@@ -97,7 +97,7 @@
   top: 50%;
   right: 50%;
   margin-top: -226px;
-  margin-right: -375px;
+  margin-right: -495px;
   width: 26px;
   background: transparent;
   border: 1px solid white;
@@ -105,4 +105,25 @@
   user-select: text;
   -moz-user-select: text;
   -webkit-user-select: text;
+}
+
+#level-name {
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  outline: none;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  background: transparent;
+  border: 1px solid white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  font-size: 20px;
+  font-family: 'uni05';
+  width: 400px;
+  margin-left: -200px;
+  margin-top: -300px;
 }
