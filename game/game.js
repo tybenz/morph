@@ -424,6 +424,9 @@ var Game = {
     shiftViewport: function( direction ) {
         if ( direction == 'left' ) {
             Game.viewportShiftLeft = Game.hero.pos.x - Game.viewportShiftBoundary.left;
+            if ( Game.viewportShiftLeft + Game.viewportOffset > Game.viewportShiftBuffer ) {
+                Game.viewportShiftLeft = Game.viewportShiftBuffer - Game.viewportOffset;
+            }
             Game.viewportShiftBoundary.left += Game.viewportShiftLeft;
             Game.viewportShiftBoundary.right += Game.viewportShiftLeft;
             Game.viewportOffset += Game.viewportShiftLeft;

@@ -211,6 +211,8 @@ Game.Entity.Enemy.Monster.Cautious = Game.Entity.Enemy.Monster.extend({
                     delta: MONSTER_WALKING_INTERVAL,
                     action: function() { this.pos.x -= Settings.tileSize; },
                     until: function() {
+                        if ( this.adjacentToLevelEdge( 'left' ) ) return true;
+
                         var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity || this.adjacentTo( 'Terrain.Trapdoor', 'bottom' ).entity,
                             edgePiece;
 
@@ -228,6 +230,8 @@ Game.Entity.Enemy.Monster.Cautious = Game.Entity.Enemy.Monster.extend({
                     delta: MONSTER_WALKING_INTERVAL,
                     action: function() { this.pos.x += Settings.tileSize; },
                     until: function() {
+                        if ( this.adjacentToLevelEdge( 'right' ) ) return true;
+
                         var land = this.adjacentTo( 'Terrain.Land', 'bottom' ).entity || this.adjacentTo( 'Terrain.Trapdoor', 'bottom' ).entity,
                             edgePiece;
 

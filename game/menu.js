@@ -12,6 +12,7 @@ var TILESIZE = Settings.tileSize;
     MENU_TITLE_TOP = Settings.menuTitleTop,
     MENU_SELECTION_COLOR = Settings.menuSelectionColor,
     MENU_LINE_COLOR = Settings.menuLineColor,
+    MENU_TEXT_COLOR = Settings.menuTextColor,
     MENU_PADDING_LEFT = Settings.menuPaddingLeft,
     MENU_ROW_SIZE = Settings.menuRowSize,
     MENU_SELECTION_PADDING = Settings.menuSelectionPadding,
@@ -317,7 +318,7 @@ Game.Menu.Sign = Game.Menu.extend({
     contents: function() {
         this.title();
 
-        Game.ctx.fillStyle = '#0f0';
+        Game.ctx.fillStyle = MENU_TEXT_COLOR;
         Game.ctx.textAlign = 'center';
         Game.ctx.font = 'normal ' + 20 + 'px uni05';
 
@@ -386,7 +387,7 @@ Game.Menu.Dialog = Game.Menu.extend({
         }
 
         // Draw prompt
-        Game.ctx.fillStyle = '#0f0';
+        Game.ctx.fillStyle = MENU_TEXT_COLOR;
         Game.ctx.textAlign = 'left';
         Game.ctx.font = 'normal ' + 18 + 'px uni05';
 
@@ -470,7 +471,7 @@ Game.Menu.Questlog = Game.Menu.extend({
             left = this.x + MENU_PADDING,
             top = this.y + MENU_TITLE_TOP + MENU_PADDING + TILESIZE * 0.7;
 
-        Game.ctx.fillStyle = '#0f0';
+        Game.ctx.fillStyle = MENU_TEXT_COLOR;
         Game.ctx.textAlign = 'left';
         Game.ctx.font = 'normal ' + fontSize + 'px uni05';
 
