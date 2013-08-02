@@ -19,6 +19,7 @@ var TILESIZE = Settings.tileSize;
     MENU_LINE_WIDTH = Settings.menuLineWidth,
     MENU_ITEM_WIDTH = Settings.menuItemWidth,
     MENU_ITEM_HEIGHT = Settings.menuItemHeight,
+    BLACK = Settings.blackColor,
     GAME_OVER_MENU_PADDING_LEFT = Settings.gameOverMenuPaddingLeft,
     GAME_OVER_MENU_PADDING_TOP = Settings.gameOverMenuPaddingTop,
     TRANSFORM_MENU_ROW_SIZE = Settings.transformMenuRowSize,
@@ -183,7 +184,7 @@ Game.Menu = Class.extend({
     },
     title: function() {
         Game.ctx.font = 'normal ' + Math.round( MENU_HEADER_FONT_SIZE ) + 'px uni05';
-        Game.ctx.fillStyle = '#000';
+        Game.ctx.fillStyle = BLACK;
         Game.ctx.textAlign = 'center';
         Game.ctx.fillText( this.titleCopy || this.titleText, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP );
     },
@@ -192,7 +193,7 @@ Game.Menu = Class.extend({
         Game.ctx.fillRect( 0, 0, Game.viewportWidth, Game.viewportHeight );
     },
     container: function() {
-        Game.ctx.fillStyle = '#000';
+        Game.ctx.fillStyle = BLACK;
         Game.ctx.fillRect( this.x, this.y, this.width, this.height );
 
         this.drawRectangle( this.x, this.y, this.width, this.height, this.lineWidth, MENU_LINE_COLOR );
@@ -353,7 +354,7 @@ Game.Menu.Dialog = Game.Menu.extend({
                             MENU_ITEM_WIDTH + MENU_SELECTION_PADDING * 2 - 2,
                             MENU_ITEM_HEIGHT + MENU_SELECTION_PADDING * 2 - 2,
                             MENU_LINE_WIDTH,
-                            MENU_SELECTION_COLOR );
+                            MENU_LINE_COLOR );
     },
     getDialog: function() {
         var dialogObj,
@@ -401,6 +402,7 @@ Game.Menu.Dialog = Game.Menu.extend({
         for ( var i = 0, len = options.length; i < len; i++ ) {
             var top = optionHeight || top + TILESIZE * 3;
 
+            Game.ctx.fillStyle = MENU_TEXT_COLOR;
             dimensions = wrapText( Game.ctx, options[i].text, left, top, MENU_WIDTH * TILESIZE - 2 * TILESIZE, fontSize + (fontSize / 5) );
             optionHeight = dimensions.bottom;
 

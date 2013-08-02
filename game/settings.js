@@ -22,7 +22,7 @@ window.Settings = {
     menuHeaderHeight: 1.666667 * TILESIZE,
     menuHeaderFontSize: 1.111111 * TILESIZE,
     menuTitleTop: 1.333333 * TILESIZE,
-    menuSelectionColor: '#0ed839',
+    menuSelectionColor: '#f9f9f9',
     menuLineColor: '#0ed839',
     menuTextColor: '#0ed839',
     menuPaddingLeft: 2.2 * TILESIZE,
