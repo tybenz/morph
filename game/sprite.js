@@ -1878,15 +1878,15 @@ Game.Bitmaps = {
         [ pi, pi, pi, pi, pi, pi, pi, pi, pi ]
     ],
     'trapdoor': [
-        [ sg, tr, sg, tr, sg, tr, sg, tr, sg ],
-        [ tr, sg, tr, sg, tr, sg, tr, sg, tr ],
-        [ sg, tr, sg, tr, sg, tr, sg, tr, sg ],
-        [ tr, sg, tr, sg, tr, sg, tr, sg, tr ],
-        [ sg, tr, sg, tr, sg, tr, sg, tr, sg ],
-        [ tr, sg, tr, sg, tr, sg, tr, sg, tr ],
-        [ sg, tr, sg, tr, sg, tr, sg, tr, sg ],
-        [ tr, sg, tr, sg, tr, sg, tr, sg, tr ],
-        [ sg, tr, sg, tr, sg, tr, sg, tr, sg ]
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ],
+        [ sg, tr, sg, sg, tr, sg, sg, tr, sg ]
     ]
 };
 

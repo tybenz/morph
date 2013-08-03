@@ -225,12 +225,15 @@ Game.Entity.Interactable.Switch = Game.Entity.Interactable.extend({
         this._super( x, y );
         this.ignoreGravity = true;
     },
-    setDoor: function( door ) {
-        this.door = door;
+    setDoors: function( doors ) {
+        doors = $.isArray( doors ) ? doors : [ doors ];
+        this.doors = doors;
     },
     collideWith: function( entity, collisions ) {
         if ( entity.type == 'Interactable.Rock' && entity.pos.y <= this.pos.y ) {
-            this.door.changeState( 'dying' );
+            for ( var i = 0, len = this.doors.length; i < len; i++ ) {
+                this.doors[i].changeState( 'dying' );
+            }
         }
     }
 });

@@ -2,7 +2,8 @@
 
 (function( Game, Settings, window, document, undefined ) {
 
-var TURRET_INTERVAL = Settings.turretInterval,
+var TILESIZE = Settings.tileSize,
+    TURRET_INTERVAL = Settings.turretInterval,
     QUICK_TURRET_INTERVAL = Settings.quickTurretInterval,
     SMART_TURRET_INTERVAL = Settings.smartTurretInterval,
     TURRET_SPEED = Settings.turretSpeed,
@@ -172,14 +173,14 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
             actions: [
                 {
                     delta: MONSTER_WALKING_INTERVAL,
-                    action: function() { this.pos.x -= Settings.tileSize; },
+                    action: function() { this.pos.x -= TILESIZE; },
                     until: function() {
                         return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' );
                     }
                 },
                 {
                     delta: MONSTER_WALKING_INTERVAL,
-                    action: function() { this.pos.x += Settings.tileSize; },
+                    action: function() { this.pos.x += TILESIZE; },
                     until: function() {
                         return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' );
                     }
@@ -209,7 +210,7 @@ Game.Entity.Enemy.Monster.Cautious = Game.Entity.Enemy.Monster.extend({
             actions: [
                 {
                     delta: MONSTER_WALKING_INTERVAL,
-                    action: function() { this.pos.x -= Settings.tileSize; },
+                    action: function() { this.pos.x -= TILESIZE; },
                     until: function() {
                         if ( this.adjacentToLevelEdge( 'left' ) ) return true;
 
@@ -228,7 +229,7 @@ Game.Entity.Enemy.Monster.Cautious = Game.Entity.Enemy.Monster.extend({
                 },
                 {
                     delta: MONSTER_WALKING_INTERVAL,
-                    action: function() { this.pos.x += Settings.tileSize; },
+                    action: function() { this.pos.x += TILESIZE; },
                     until: function() {
                         if ( this.adjacentToLevelEdge( 'right' ) ) return true;
 
@@ -278,9 +279,9 @@ Game.Entity.Enemy.Bird = Game.Entity.Enemy.extend({
         this.velocity.x = BIRD_VELOCITY;
     },
     dropEgg: function() {
-        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < Settings.tileSize * 4 ) {
+        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < TILESIZE * 4 ) {
             var eggWidth = Game.Entity.Interactable.Egg.prototype.width,
-                x = this.pos.x + ( Settings.tileSize - eggWidth ) / 2,
+                x = this.pos.x + ( TILESIZE - eggWidth ) / 2,
                 y = this.pos.y + this.height,
                 xVelocity = this.velocity.x,
                 yVelocity = 0,
@@ -331,9 +332,21 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                 until: function() {
                     var land = this.adjacentTo( 'Terrain.Land', 'top' ).entity,
                         edgePiece;
+
+                    if ( !land ) {
+                        land = this.adjacentTo( 'Terrain.Trapdoor', 'top' ).entity;
+                    }
+
+                    if ( land && land.type == 'Terrain.Trapdoor' && land.state == 'dying' ) {
+                        this.changeState( 'dying' );
+                        this.ignoreGravity = false;
+                        this.activeSprite = 'spider-falling';
+                        return true;
+                    }
+
                     if ( land ) {
-                        edgePiece = !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentToLevelEdge( 'left' );
-                        if ( ( edgePiece && this.pos.x <= land.pos.x ) || this.adjacentTo( 'Terrain.Land', 'left') ) {
+                        edgePiece = ( !land.adjacentTo( 'Terrain.Land', 'left' ) && !land.adjacentTo( 'Terrain.Trapdoor', 'left' ) ) || land.adjacentToLevelEdge( 'left' ) ;
+                        if ( ( edgePiece && this.pos.x <= land.pos.x ) ) {
                             this.changeState( 'walking-right' );
                             return true;
                         }
@@ -357,9 +370,22 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                 until: function() {
                     var land = this.adjacentTo( 'Terrain.Land', 'top' ).entity,
                         edgePiece;
+
+                    if ( !land ) {
+                        land = this.adjacentTo( 'Terrain.Trapdoor', 'top' ).entity;
+                    }
+
+                    if ( land.type == 'Terrain.Trapdoor' && land.state == 'dying' ) {
+                        this.changeState( 'dying' );
+                        this.ignoreGravity = false;
+                        this.activeSprite = 'spider-falling';
+                        return true;
+                    }
+
                     if ( land ) {
-                        edgePiece = !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentToLevelEdge( 'right' );
-                        if ( ( edgePiece && this.pos.x >= land.pos.x + land.width - this.width ) || this.adjacentTo( 'Terrain.Land', 'right' ) ) {
+                        edgePiece = ( !land.adjacentTo( 'Terrain.Land', 'right' ) && !land.adjacentTo( 'Terrain.Trapdoor', 'right' ) ) || land.adjacentToLevelEdge( 'right' ) ;
+                        if ( ( edgePiece && this.pos.x >= land.pos.x + land.width - this.width ) ) {
+                            this.pos.x = land.pos.x + land.width - this.width;
                             this.changeState( 'walking-left' );
                             return true;
                         }
@@ -409,7 +435,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             Game.ctx.drawImage( Game.Sprites[ this.activeSprite ], this.pos.x - Game.viewportOffset, this.pos.y );
             if ( this.state == 'falling' || this.state == 'climbing' ) {
                 for ( var i = this.initialY; i < this.pos.y; i++ ) {
-                    Game.ctx.drawImage( Game.Sprites[ 'spider-web' ], this.pos.x + ( Settings.tileSize / 9 ) * 4 - Game.viewportOffset, i );
+                    Game.ctx.drawImage( Game.Sprites[ 'spider-web' ], this.pos.x + ( TILESIZE / 9 ) * 4 - Game.viewportOffset, i );
                 }
             }
         }
@@ -422,8 +448,8 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
 
-        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * Settings.tileSize && this.pos.y < Game.hero.pos.y ) {
-            this.pos.x = Math.round( this.pos.x / Settings.tileSize ) * Settings.tileSize;
+        if ( Math.abs( Game.hero.pos.x - this.pos.x ) < 2 * TILESIZE && this.pos.y < Game.hero.pos.y ) {
+            this.pos.x = Math.round( this.pos.x / TILESIZE ) * TILESIZE;
             this.changeState( 'falling' );
             this.fellOn = Date.now();
         }
@@ -443,6 +469,19 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
             this.visible = false;
             Game.destroyEntity( this );
         }
+    },
+    collideWith: function( entity, collisionTypes ) {
+        if ( this.velocity.x != 0 && entity.pos.y == this.pos.y && entity.type == 'Terrain.Land' || entity.type == 'Terrain.Trapdoor' ) {
+            if ( this.velocity.x < 0 ) {
+                this.pos.x = entity.pos.x + entity.width;
+                this.changeState( 'walking-right' );
+            } else {
+                this.pos.x = entity.pos.x - this.width;
+                this.changeState( 'walking-left' );
+            }
+        }
+
+        this._super( entity, collisionTypes );
     }
 });
 
@@ -469,8 +508,8 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
     initialSprite: 'battleship-left',
     rightSprite: 'battleship-right',
     leftSprite: 'battleship-left',
-    width: Settings.tileSize * 3,
-    height: Settings.tileSize,
+    width: TILESIZE * 3,
+    height: TILESIZE,
     bulletSpeed: BATTLESHIP_SPEED,
     initialState: 'cruising-left',
     states: {
@@ -523,9 +562,9 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
     shoot: function() {
         this.lockTarget();
         if ( this.direction == 'left' ) {
-            this.createBullet( this.pos.x, this.pos.y + ( Settings.tileSize / 9 ) * 5, this.bulletSpeed, 0 );
+            this.createBullet( this.pos.x, this.pos.y + ( TILESIZE / 9 ) * 5, this.bulletSpeed, 0 );
         } else {
-            this.createBullet( this.pos.x, this.pos.y + ( Settings.tileSize / 9 ) * 5, 0 - this.bulletSpeed, 0 );
+            this.createBullet( this.pos.x, this.pos.y + ( TILESIZE / 9 ) * 5, 0 - this.bulletSpeed, 0 );
         }
     },
     createBullet: function( x, y, xVelocity, yVelocity ) {
@@ -553,8 +592,8 @@ Game.Entity.Enemy.Battleship = Game.Entity.Enemy.extend({
 // TODO - need a dying animation for a 2x2 enemy
 Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
     type: 'Enemy.Balloon',
-    width: Settings.tileSize * 2,
-    height: Settings.tileSize * 2,
+    width: TILESIZE * 2,
+    height: TILESIZE * 2,
     bulletSpeed: BALLOON_SPEED,
     initialSprite: 'balloon',
     initialState: 'floating',
@@ -614,8 +653,8 @@ Game.Entity.Enemy.Balloon = Game.Entity.Enemy.extend({
 
 Game.Entity.Enemy.Submarine = Game.Entity.Enemy.Balloon.extend({
     type: 'Enemy.Submarine',
-    width: Settings.tileSize * 2,
-    height: Settings.tileSize * 2,
+    width: TILESIZE * 2,
+    height: TILESIZE * 2,
     bulletSpeed: SUBMARINE_SPEED,
     initialSprite: 'submarine',
     initialState: 'floating'

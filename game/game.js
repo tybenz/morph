@@ -719,17 +719,27 @@ var Game = {
             Game.terrainGroup = null;
         }
 
-        for ( var i = 1, l1 = links.length; i < l1; i++ ) {
-            var linkGroup = links[i];
-            if ( linkGroup ) {
-                var button = linkGroup[0].type == 'Interactable.Switch' ? linkGroup[0] : linkGroup[1],
-                    trapdoor = linkGroup[1].type == 'Terrain.Trapdoor' ? linkGroup[1] : linkGroup[0];
+        var buttonIndex,
+            button,
+            linkGroup;
 
-                if ( button && trapdoor ) {
-                    button.setDoor( trapdoor );
+        for ( var i = 0, l1 = links.length; i < l1; i++ ) {
+            linkGroup = links[i]
+
+            if ( linkGroup ) {
+                for ( var j = 0, len = linkGroup.length; j < len; j++ ) {
+                    if ( linkGroup[j] && linkGroup[j].type == 'Interactable.Switch' ) {
+                        button = linkGroup[j];
+                        buttonIndex = j;
+                        break;
+                    }
                 }
+
+                linkGroup.splice( j, 1 );
+                button.setDoors( linkGroup );
             }
         }
+
     },
     keyDownListener: function( evt ) {
         //Prevent default on up and down so the

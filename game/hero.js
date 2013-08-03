@@ -211,6 +211,11 @@ Game.Entity.Hero = Game.Entity.extend({
             }, TAKING_DAMAGE_DURATION );
         }
 
+        var adj = this.adjacentTo( 'Terrain.Land' );
+        if ( adj.exact ) {
+            this.pos.y = adj.entity.pos.y - adj.entity.height;
+        }
+
         if ( this.activeSprite == 'hero-dying-9' || this.activeSprite == 'flame-dying-9' ) {
             this.visible = false;
             Game.destroyEntity( this );
@@ -253,7 +258,9 @@ Game.Entity.Hero = Game.Entity.extend({
 
         var hit = ( entityType.indexOf( 'Enemy' ) == 0 && !( this.type == 'Hero.Block' && this.oldPos.y < entity.pos.y ) ) || ( entityType == 'Interactable.Egg' && entity.oldPos.y < this.pos.y );
 
-        if ( hit && entity.state != 'dying' && this.takingDamage != 'locked' ) {
+        // If the here is hit, not dying, not already taking and not "holding" anything
+        // e.g. a rock should protect him
+        if ( hit && entity.state != 'dying' && this.takingDamage != 'locked' && !this.holding ) {
             this.takingDamage = true;
         }
         this._super( entity, collisionTypes );
