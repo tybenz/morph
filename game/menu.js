@@ -35,7 +35,8 @@ var TILESIZE = Settings.tileSize;
     JUMP_KEY = Settings.jumpKey,
     PAUSE_KEY = Settings.pauseKey,
     ENTER_KEY = Settings.enterKey,
-    QUESTLOG_KEY = Settings.questlogKey;
+    QUESTLOG_KEY = Settings.questlogKey,
+    MAP_KEY = Settings.mapKey;
 
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
     var words = text.split(' '),
@@ -486,6 +487,7 @@ Game.Menu.Questlog = Game.Menu.extend({
 
             for ( var i = quest.length - 1; i >= 0; i-- ) {
 
+                Game.ctx.fillStyle = MENU_TEXT_COLOR;
                 dimensions = wrapText( Game.ctx, quest[i].text, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING * 2, fontSize + ( fontSize / 5 ) );
 
                 if ( i == ( quest.length - 1 - this.selected ) ) {
@@ -505,6 +507,7 @@ Game.Menu.Questlog = Game.Menu.extend({
             for ( var i in quests ) {
                 quest = quests[i];
 
+                Game.ctx.fillStyle = MENU_TEXT_COLOR;
                 dimensions = wrapText( Game.ctx, quest.title, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING, fontSize + ( fontSize / 5 ) );
 
                 if ( j == this.selected ) {
@@ -566,7 +569,6 @@ Game.Menu.Questlog = Game.Menu.extend({
             this.timeToExit = true;
         }
 
-
         this._super();
     },
     up: function() {
@@ -587,6 +589,74 @@ Game.Menu.Questlog = Game.Menu.extend({
             }
         }
     },
+});
+
+Game.Menu.Map = Game.Menu.extend({
+    titleText: 'MAP',
+    init: function( left, top, width, height, lineWidth, content ) {
+        this.content = content;
+        this._super( left, top, width, height, lineWidth );
+    },
+    contents: function() {
+        this.title();
+
+        var places = this.content,
+            dimensions,
+            fontSize = QUESTLOG_FONT_SIZE,
+            left = this.x + MENU_PADDING,
+            top = this.y + MENU_TITLE_TOP + MENU_PADDING + TILESIZE * 0.7;
+
+        Game.ctx.fillStyle = MENU_TEXT_COLOR;
+        Game.ctx.textAlign = 'left';
+        Game.ctx.font = 'normal ' + fontSize + 'px uni05';
+
+        for ( var i = 0, len = places.length; i < len; i++ ) {
+            var place = places[i];
+
+            Game.ctx.fillStyle = MENU_TEXT_COLOR;
+            dimensions = wrapText( Game.ctx, place, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING, fontSize );
+
+            if ( i == this.selected ) {
+                this.drawRectangle( left - MENU_SELECTION_PADDING,
+                                    top - fontSize - 5,
+                                    MENU_WIDTH * TILESIZE - MENU_PADDING * 2,
+                                    dimensions.height + fontSize * 2 - 2,
+                                    2,
+                                    MENU_SELECTION_COLOR );
+            }
+
+            top = dimensions.bottom;
+        }
+    },
+    loop: function() {
+        if ( ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
+            this.timeToExit = true;
+        }
+
+        if ( MAP_KEY in Game.keysDown && Game.keysDown[ MAP_KEY ] != 'locked' ) {
+            Game.keysDown[ ACTION_KEY ] = true;
+            this.timeToExit = true;
+        }
+
+        this._super();
+    },
+    up: function() {
+        if ( this.selected - 1 >= 0 ) {
+            this.selected--;
+        }
+    },
+    down: function() {
+        if ( this.selected + 1 < this.content.length ) {
+            this.selected++;
+        }
+    },
+    exit: function() {
+        var place = this.content[ this.selected ].toLowerCase().replace( ' ', '-' );
+
+        Game.switchToLevel = place;
+        Game.performLevelSwitch();
+        Game.paused = false;
+    }
 });
 
 })( Game, Settings, window, document );

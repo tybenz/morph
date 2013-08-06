@@ -15,6 +15,7 @@ var TILESIZE = Settings.tileSize,
     JUMP_KEY = Settings.jumpKey,
     PAUSE_KEY = Settings.pauseKey,
     QUESTLOG_KEY = Settings.questlogKey,
+    MAP_KEY = Settings.mapKey,
     INVENTORY_KEY = Settings.inventoryKey,
     ENTER_KEY = Settings.enterKey,
     DEBUG_INVALID_RECT = Settings.debugInvalidRect,
@@ -42,11 +43,17 @@ var Game = {
             right: Math.floor( Game.viewportTileWidth / 2 ) * TILESIZE - ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE )
         };
 
+        //Initialize map
+        Game.Map.init();
+
         //Initialize pause menu
         var pauseMenuWidth = TILESIZE * MENU_WIDTH,
             pauseMenuHeight = TILESIZE * MENU_HEIGHT,
             pauseMenuLineWidth = MENU_LINE_WIDTH;
         Game.pauseMenu = new Game.Menu.Pause( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
+
+        //Initialize map menu
+        Game.mapMenu = new Game.Menu.Map( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth, Game.Map.locationNames() );
 
         //Initialize questlog menu
         Game.questlogMenu = new Game.Menu.Questlog( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
@@ -758,6 +765,11 @@ var Game = {
                 Game.keysDown[ QUESTLOG_KEY ] = 'locked';
                 Game.pause( 'questlog' );
             }
+        } else if ( evt.keyCode == MAP_KEY ) {
+            if ( !Game.paused ) {
+                Game.keysDown[ MAP_KEY ] = 'locked';
+                Game.pause( 'map' );
+            }
         }
         if ( Game.keysDown[ evt.keyCode ] != 'locked' ) {
             Game.keysDown[ evt.keyCode ] = true;
@@ -769,6 +781,8 @@ var Game = {
     pause: function( menu ) {
         if ( menu == 'pause' ) {
             Game.pauseMenu.show();
+        } else if ( menu == 'map' ) {
+            Game.mapMenu.show();
         } else if ( menu == 'questlog' ) {
             Game.questlogMenu.show();
         }

@@ -66,6 +66,7 @@ window.Settings = {
     pauseKey: 80, // P
     questlogKey: 81, // Q
     inventoryKey: 73, // I
+    mapKey: 77, // M?
     enterKey: 13,
     // Debug flags
     debugInvalidRect: false,
