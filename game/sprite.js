@@ -1775,6 +1775,17 @@ Game.Bitmaps = {
         [ tr, tr, tr, or, or, or, tr, tr, tr ],
         [ tr, tr, tr, or, tr, or, tr, tr, tr ]
     ],
+    'kid-closeup': [
+        [ tr, tr, tr, tr, tr, tr, tr, tr, tr ],
+        [ tr, tr, tr, or, or, or, tr, tr, tr ],
+        [ tr, tr, tr, or, or, or, tr, tr, tr ],
+        [ tr, tr, tr, or, or, or, tr, tr, tr ],
+        [ tr, tr, tr, tr, tr, tr, tr, tr, tr ],
+        [ tr, tr, tr, tr, tr, tr, tr, tr, tr ],
+        [ or, or, or, or, or, or, or, or, or ],
+        [ or, or, or, or, or, or, or, or, or ],
+        [ or, or, or, or, or, or, or, or, or ]
+    ],
     'wood': [
         [ br, br, br, br, br, br, br, br, br ],
         [ br, br, br, br, br, br, br, br, br ],

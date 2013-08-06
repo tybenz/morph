@@ -119,7 +119,8 @@ var Game = {
             'restart': Game.Bitmaps[ 'restart' ],
             'exit': Game.Bitmaps[ 'exit' ],
             'friend-man-closeup': Game.Bitmaps[ 'friend-man-closeup' ],
-            'friend-monster-closeup': Game.Bitmaps[ 'friend-monster-closeup' ]
+            'friend-monster-closeup': Game.Bitmaps[ 'friend-monster-closeup' ],
+            'kid-closeup': Game.Bitmaps[ 'kid-closeup' ]
         };
 
         for ( var i in heroList ) {

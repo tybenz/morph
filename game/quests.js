@@ -21,6 +21,9 @@ Game.Quests = {
         'map': {
             text: 'Now that I have my MAP, I need to find this KID and see what he knows.',
             items: [ Game.Entity.Interactable.Map ]
+        },
+        'discs': {
+            text: 'Talked to THE KID. He says I have to find some lost DISCS in order to be able to defeat GRUNGOR - the other shape shifter.'
         }
     },
     'axe': {

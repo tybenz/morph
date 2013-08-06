@@ -171,6 +171,12 @@ Game.Entity.Hero = Game.Entity.extend({
                         Game.openSign( adjacent.entity.content );
                     }
                 }
+                adjacent = this.adjacentTo( 'Friend.Kid' );
+                if ( adjacent ) {
+                    if ( adjacent.entity.content ) {
+                        Game.openDialog( adjacent.entity.content );
+                    }
+                }
                 adjacent = this.adjacentTo( 'Friend.Man' );
                 if ( adjacent ) {
                     if ( adjacent.entity.content ) {

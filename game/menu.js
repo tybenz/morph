@@ -426,15 +426,15 @@ Game.Menu.Dialog = Game.Menu.extend({
             this.selected = 0;
         }
 
-        if ( action == 'next' ) {
-            this.activeDialog++;
-        } else if ( action == 'skip' ) {
+        if ( action == 'skip' ) {
             this.activeDialog += 2;
         } else if ( action == 'prev' ) {
             this.activeDialog--;
         } else if ( action == 'exit' ) {
             this.timeToExit = true;
             return true;
+        } else {
+            this.activeDialog++;
         }
     },
     loop: function() {
