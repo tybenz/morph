@@ -38,34 +38,6 @@ var TILESIZE = Settings.tileSize;
     QUESTLOG_KEY = Settings.questlogKey,
     MAP_KEY = Settings.mapKey;
 
-function wrapText(context, text, x, y, maxWidth, lineHeight) {
-    var words = text.split(' '),
-        line = '',
-        startY = y,
-        largestWidth = 0;
-
-    for( var n = 0; n < words.length; n++ ) {
-        var testLine = line + words[n] + ' ';
-        var metrics = context.measureText( testLine );
-        var testWidth = metrics.width;
-        if ( testWidth > maxWidth && n > 0 ) {
-            var width = context.measureText( line ).width;
-            if ( width > largestWidth ) largestWidth = width;
-            context.fillText( line, x, y );
-            line = words[n] + ' ';
-            y += lineHeight;
-        }
-        else {
-            line = testLine;
-        }
-    }
-    width = context.measureText( line ).width;
-    if ( width > largestWidth ) largestWidth = width;
-    context.fillText(line, x, y);
-
-    return { width: largestWidth, height: ( y - startY ), bottom: y + lineHeight * 2 };
-}
-
 Game.Menu = Class.extend({
     titleText: 'MENU',
     init: function( left, top, width, height, lineWidth ) {
@@ -161,7 +133,7 @@ Game.Menu = Class.extend({
             if ( this.selected == i ) {
                 if ( item.sprite ) {
 
-                    this.drawRectangle( x - this.selectionPadding,
+                    Game.drawRectangle( x - this.selectionPadding,
                                         y - this.selectionPadding,
                                         this.itemWidth + this.selectionPadding * 2 - 4,
                                         this.itemHeight + this.selectionPadding * 2 - 4,
@@ -192,28 +164,9 @@ Game.Menu = Class.extend({
         Game.ctx.fillStyle = BLACK;
         Game.ctx.fillRect( this.x, this.y, this.width, this.height );
 
-        this.drawRectangle( this.x, this.y, this.width, this.height, this.lineWidth, MENU_LINE_COLOR );
+        Game.drawRectangle( this.x, this.y, this.width, this.height, this.lineWidth, MENU_LINE_COLOR );
         // Header
         Game.ctx.fillRect( this.x + this.lineWidth, this.y + this.lineWidth, this.width - this.lineWidth, this.headerHeight );
-    },
-    //Draws four sides of a rectangle to make it hollow
-    //path's stroke did not render colors well
-    drawRectangle: function( left, top, width, height, lineWidth, color ) {
-        var right = left + width,
-            bottom = top + height;
-
-        width += lineWidth;
-        height += lineWidth;
-
-        Game.ctx.fillStyle = color;
-        // TL -> TR
-        Game.ctx.fillRect( left, top, width, lineWidth );
-        // TR -> BR
-        Game.ctx.fillRect( right, top, lineWidth, height );
-        // BL -> BR
-        Game.ctx.fillRect( left, bottom, width, lineWidth );
-        // TL -> BL
-        Game.ctx.fillRect( left, top, lineWidth, height );
     },
     up: function() {
         if ( this.selected - this.rowSize >= 0 ) {
@@ -327,7 +280,7 @@ Game.Menu.Sign = Game.Menu.extend({
         Game.ctx.textAlign = 'center';
         Game.ctx.font = 'normal ' + SIGN_FONT_SIZE + 'px uni05';
 
-        wrapText( Game.ctx, this.body, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP + MENU_PADDING * 2, MENU_WIDTH * TILESIZE - 2 * TILESIZE, SIGN_FONT_SIZE + ( SIGN_FONT_SIZE / 2.5 ) );
+        Game.wrapText( Game.ctx, this.body, Game.viewportWidth / 2, this.y + MENU_TITLE_TOP + MENU_PADDING * 2, MENU_WIDTH * TILESIZE - 2 * TILESIZE, SIGN_FONT_SIZE + ( SIGN_FONT_SIZE / 2.5 ) );
     }
 });
 
@@ -353,7 +306,7 @@ Game.Menu.Dialog = Game.Menu.extend({
 
         Game.ctx.drawImage( sprite, this.x + MENU_WIDTH * TILESIZE - MENU_ITEM_WIDTH - MENU_PADDING, this.y + MENU_HEADER_HEIGHT + MENU_PADDING );
 
-        this.drawRectangle( x - MENU_SELECTION_PADDING,
+        Game.drawRectangle( x - MENU_SELECTION_PADDING,
                             y - MENU_SELECTION_PADDING,
                             MENU_ITEM_WIDTH + MENU_SELECTION_PADDING * 2 - 2,
                             MENU_ITEM_HEIGHT + MENU_SELECTION_PADDING * 2 - 2,
@@ -396,7 +349,7 @@ Game.Menu.Dialog = Game.Menu.extend({
         Game.ctx.textAlign = 'left';
         Game.ctx.font = 'normal ' + DIALOG_PROMPT_SIZE + 'px uni05';
 
-        wrapText( Game.ctx, text, left, top, MENU_WIDTH * TILESIZE - 4.5 * TILESIZE, DIALOG_PROMPT_SIZE + ( DIALOG_PROMPT_SIZE / 3 ) );
+        Game.wrapText( Game.ctx, text, left, top, MENU_WIDTH * TILESIZE - 4.5 * TILESIZE, DIALOG_PROMPT_SIZE + ( DIALOG_PROMPT_SIZE / 3 ) );
 
         // Draw options for response
         var fontSize = DIALOG_RESPONSE_SIZE;
@@ -407,11 +360,11 @@ Game.Menu.Dialog = Game.Menu.extend({
             var top = optionHeight || top + TILESIZE * 3;
 
             Game.ctx.fillStyle = MENU_TEXT_COLOR;
-            dimensions = wrapText( Game.ctx, options[i].text, left, top, MENU_WIDTH * TILESIZE - 2 * TILESIZE, fontSize + (fontSize / 5) );
+            dimensions = Game.wrapText( Game.ctx, options[i].text, left, top, MENU_WIDTH * TILESIZE - 2 * TILESIZE, fontSize + (fontSize / 5) );
             optionHeight = dimensions.bottom;
 
             if ( i == this.selected ) {
-                this.drawRectangle( left - MENU_SELECTION_PADDING,
+                Game.drawRectangle( left - MENU_SELECTION_PADDING,
                                     top - fontSize - 5,
                                     dimensions.width + MENU_SELECTION_PADDING * 2 - 2,
                                     dimensions.height + fontSize * 2 - 2,
@@ -488,10 +441,10 @@ Game.Menu.Questlog = Game.Menu.extend({
             for ( var i = quest.length - 1; i >= 0; i-- ) {
 
                 Game.ctx.fillStyle = MENU_TEXT_COLOR;
-                dimensions = wrapText( Game.ctx, quest[i].text, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING * 2, fontSize + ( fontSize / 5 ) );
+                dimensions = Game.wrapText( Game.ctx, quest[i].text, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING * 2, fontSize + ( fontSize / 5 ) );
 
                 if ( i == ( quest.length - 1 - this.selected ) ) {
-                    this.drawRectangle( left - MENU_SELECTION_PADDING,
+                    Game.drawRectangle( left - MENU_SELECTION_PADDING,
                                         top - fontSize - 5,
                                         MENU_WIDTH * TILESIZE - MENU_PADDING * 2,
                                         dimensions.height + fontSize * 2 - 2,
@@ -508,10 +461,10 @@ Game.Menu.Questlog = Game.Menu.extend({
                 quest = quests[i];
 
                 Game.ctx.fillStyle = MENU_TEXT_COLOR;
-                dimensions = wrapText( Game.ctx, quest.title, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING, fontSize + ( fontSize / 5 ) );
+                dimensions = Game.wrapText( Game.ctx, quest.title, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING, fontSize + ( fontSize / 5 ) );
 
                 if ( j == this.selected ) {
-                    this.drawRectangle( left - MENU_SELECTION_PADDING,
+                    Game.drawRectangle( left - MENU_SELECTION_PADDING,
                                         top - fontSize - 5,
                                         MENU_WIDTH * TILESIZE - MENU_PADDING * 2,
                                         dimensions.height + fontSize * 2 - 2,
@@ -614,10 +567,10 @@ Game.Menu.Map = Game.Menu.extend({
             var place = places[i];
 
             Game.ctx.fillStyle = MENU_TEXT_COLOR;
-            dimensions = wrapText( Game.ctx, place, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING, fontSize );
+            dimensions = Game.wrapText( Game.ctx, place, left, top, MENU_WIDTH * TILESIZE - MENU_PADDING, fontSize );
 
             if ( i == this.selected ) {
-                this.drawRectangle( left - MENU_SELECTION_PADDING,
+                Game.drawRectangle( left - MENU_SELECTION_PADDING,
                                     top - fontSize - 5,
                                     MENU_WIDTH * TILESIZE - MENU_PADDING * 2,
                                     dimensions.height + fontSize * 2 - 2,

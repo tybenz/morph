@@ -39,6 +39,9 @@ window.Settings = {
     dialogResponseSize: Math.round( 0.481481 * TILESIZE ),
     questlogFontSize: Math.round( 0.555556 * TILESIZE ),
     levelNameFontSize: Math.round( 0.666667 * TILESIZE ),
+    walkthroughMaxWidth: 10 * TILESIZE,
+    walkthroughAlign: 'left',
+    walkthroughLineHeight: Math.round( 0.6666667 * TILESIZE ) * 1.3,
     // Colors
     levelNameColor: '#f9f9f9',
     transparentColor: 'transparent',

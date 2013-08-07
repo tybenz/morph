@@ -337,7 +337,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                         land = this.adjacentTo( 'Terrain.Trapdoor', 'top' ).entity;
                     }
 
-                    if ( land && land.type == 'Terrain.Trapdoor' && land.state == 'dying' ) {
+                    if ( !land || land.type == 'Terrain.Trapdoor' && land.state == 'dying' ) {
                         this.changeState( 'dying' );
                         this.ignoreGravity = false;
                         this.activeSprite = 'spider-falling';
@@ -375,7 +375,7 @@ Game.Entity.Enemy.Spider = Game.Entity.Enemy.extend({
                         land = this.adjacentTo( 'Terrain.Trapdoor', 'top' ).entity;
                     }
 
-                    if ( land.type == 'Terrain.Trapdoor' && land.state == 'dying' ) {
+                    if ( !land || land.type == 'Terrain.Trapdoor' && land.state == 'dying' ) {
                         this.changeState( 'dying' );
                         this.ignoreGravity = false;
                         this.activeSprite = 'spider-falling';

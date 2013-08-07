@@ -317,6 +317,24 @@ var Game = {
                 Game.performLevelSwitch();
             }
         }
+
+        if ( Game.activeWalkthrough ) {
+            var check = Game.activeWalkthrough.callback();
+
+            if ( !check ) {
+                Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
+            } else {
+                Game.activeWalkthrough.render();
+            }
+        }
+    },
+    nextWalkthrough: function() {
+        if ( Game.currentLevel.walkthroughs && Game.currentLevel.walkthroughs[ Game.lastWalkthrough + 1 ] ) {
+            Game.lastWalkthrough++;
+            Game.activeWalkthrough = Game.currentLevel.walkthroughs[ Game.lastWalkthrough ];
+        } else {
+            Game.activeWalkthrough = null;
+        }
     },
     update: function( timeDiff ) {
         if ( 73 in Game.keysDown && Game.keysDown[ 73 ] != 'locked' ) {
@@ -748,6 +766,10 @@ var Game = {
             }
         }
 
+        if ( Game.currentLevel.walkthroughs && Game.currentLevel.walkthroughs.length ) {
+            Game.activeWalkthrough = Game.currentLevel.walkthroughs[0];
+            Game.lastWalkthrough = 0;
+        }
     },
     keyDownListener: function( evt ) {
         //Prevent default on up and down so the
@@ -880,6 +902,56 @@ var Game = {
         Game.stopLoop = false;
         Game.keysLocked = false;
         Game.switchToLevel = null;
+    },
+    //Draws four sides of a rectangle to make it hollow
+    //path's stroke did not render colors well
+    drawRectangle: function( left, top, width, height, lineWidth, color ) {
+        var right = left + width,
+            bottom = top + height;
+
+        width += lineWidth;
+        height += lineWidth;
+
+        Game.ctx.fillStyle = color;
+        // TL -> TR
+        Game.ctx.fillRect( left, top, width, lineWidth );
+        // TR -> BR
+        Game.ctx.fillRect( right, top, lineWidth, height );
+        // BL -> BR
+        Game.ctx.fillRect( left, bottom, width, lineWidth );
+        // TL -> BL
+        Game.ctx.fillRect( left, top, lineWidth, height );
+    },
+    wrapText: function ( context, text, x, y, maxWidth, lineHeight, measureOnly ) {
+        var words = text.split(' '),
+            line = '',
+            startY = y,
+            largestWidth = 0;
+
+        for( var n = 0; n < words.length; n++ ) {
+            var testLine = line + words[n] + ' ';
+            var metrics = context.measureText( testLine );
+            var testWidth = metrics.width;
+            if ( testWidth > maxWidth && n > 0 ) {
+                var width = context.measureText( line ).width;
+                if ( width > largestWidth ) largestWidth = width;
+                if ( !measureOnly ) {
+                    context.fillText( line, x, y );
+                }
+                line = words[n] + ' ';
+                y += lineHeight;
+            }
+            else {
+                line = testLine;
+            }
+        }
+        width = context.measureText( line ).width;
+        if ( width > largestWidth ) largestWidth = width;
+        if ( !measureOnly ) {
+            context.fillText(line, x, y);
+        }
+
+        return { width: largestWidth, height: ( y - startY ), bottom: y + lineHeight * 2 };
     },
     debugInvalidRect: false
 };
