@@ -124,12 +124,13 @@ Game.Menu = Class.extend({
 
         var item,
             spacing = 4 * TILESIZE,
-            x, y;
+            x, y,
+            j = 0;
 
         for ( var i = 0; i < this.data.length; i++ ) {
             item = this.data[i];
-            x = this.x + this.paddingLeft + ( i % this.rowSize ) * spacing;
-            y = this.y + this.paddingTop + spacing * Math.floor( i / this.rowSize );
+            x = this.x + this.paddingLeft + ( j % this.rowSize ) * spacing;
+            y = this.y + this.paddingTop + spacing * Math.floor( j / this.rowSize );
             if ( this.selected == i ) {
                 if ( item.sprite ) {
 
@@ -148,6 +149,7 @@ Game.Menu = Class.extend({
                 Game.ctx.textAlign = 'left';
                 Game.ctx.fillText( item.text, x, y );
             }
+            j++;
         }
     },
     title: function() {
@@ -229,34 +231,42 @@ Game.Menu.Transform = Game.Menu.extend({
     data: [
         {
             className: Game.Entity.Hero.Block,
+            questID: 'initial',
             sprite: 'block-double'
         },
         {
             className: Game.Entity.Hero.Man,
+            questID: 'man',
             sprite: 'man-right-double'
         },
         {
             className: Game.Entity.Hero.Boat,
+            questID: 'boat',
             sprite: 'boat-right-double'
         },
         {
             className: Game.Entity.Hero.Frog,
+            questID: 'frog',
             sprite: 'frog-right-double'
         },
         {
             className: Game.Entity.Hero.Plane,
+            questID: 'plane',
             sprite: 'plane-right-double'
         },
         {
             className: Game.Entity.Hero.Jellyfish,
+            questID: 'jellyfish',
             sprite: 'jellyfish-double'
         },
         {
             className: Game.Entity.Hero.Clock,
+            questID: 'clock',
             sprite: 'clock-double'
         },
         {
             className: Game.Entity.Hero.Flame,
+            questID: 'flame',
             sprite: 'flame-double'
         }
     ],

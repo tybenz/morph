@@ -73,6 +73,41 @@ Game.Walkthroughs = {
                 return false;
             }
             return true;
+        }),
+        new Game.Walkthrough( 'Use the arrow keys to move around...', function() {
+            Game.walkthroughTimestamp = Game.walkthroughTimestamp || Date.now();
+
+            if ( Date.now() - Game.walkthroughTimestamp > 4 * SECONDS ) {
+                Game.walkthroughTimestamp = null;
+                Game.activeWalkthrough = null;
+                Game.nextWalkthrough();
+                return false;
+            }
+            return true;
+        }),
+        new Game.Walkthrough( 'Use Z to jump. Try jumping on those red guys.', function() {
+            Game.walkthroughTimestamp = Game.walkthroughTimestamp || Date.now();
+
+            if ( Date.now() - Game.walkthroughTimestamp > 4 * SECONDS ) {
+                Game.walkthroughTimestamp = null;
+                Game.activeWalkthrough = null;
+                Game.nextWalkthrough();
+                return false;
+            }
+            return true;
+        })
+    ],
+    'interacting': [
+        new Game.Walkthrough( 'The X button is the INTERACT button. Use it to read signs, talk to friends, and a lot more.', function() {
+            Game.walkthroughTimestamp = Game.walkthroughTimestamp || Date.now();
+
+            if ( Date.now() - Game.walkthroughTimestamp > 4 * SECONDS ) {
+                Game.walkthroughTimestamp = null;
+                Game.activeWalkthrough = null;
+                Game.nextWalkthrough();
+                return false;
+            }
+            return true;
         })
     ]
 };

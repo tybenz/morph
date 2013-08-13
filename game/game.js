@@ -20,6 +20,7 @@ var TILESIZE = Settings.tileSize,
     ENTER_KEY = Settings.enterKey,
     DEBUG_INVALID_RECT = Settings.debugInvalidRect,
     DEBUG_INVALID_RECT_COLOR = Settings.debugInvalidRectColor,
+    GOD_MODE = Settings.godMode,
     LAND_BACKGROUND = Settings.landBackground,
     SEA_BACKGROUND = Settings.seaBackground,
     LEVEL_NAME_COLOR = Settings.levelNameColor,
@@ -315,16 +316,6 @@ var Game = {
                 Game.showSignMenu();
             } else if ( Game.switchToLevel ) {
                 Game.performLevelSwitch();
-            }
-        }
-
-        if ( Game.activeWalkthrough ) {
-            var check = Game.activeWalkthrough.callback();
-
-            if ( !check ) {
-                Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
-            } else {
-                Game.activeWalkthrough.render();
             }
         }
     },
@@ -641,7 +632,7 @@ var Game = {
 
             var levelName = Game.currentLevel.title;
 
-            if ( levelName && Game.go) {
+            if ( levelName ) {
                 Game.ctx.fillStyle = Game.background;
 
                 Game.ctx.font = 'normal ' + LEVEL_NAME_FONT_SIZE + 'px uni05';
@@ -653,9 +644,18 @@ var Game = {
                 Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );
             }
 
+            if ( Game.activeWalkthrough ) {
+                var check = Game.activeWalkthrough.callback();
+
+                if ( !check ) {
+                    Game.invalidateRect( 0 - TILESIZE, Game.viewportWidth + 2 * TILESIZE, Game.viewportHeight + 2 * TILESIZE, 0 - TILESIZE );
+                } else {
+                    Game.activeWalkthrough.render();
+                }
+            }
+
         }
     },
-    go: true,
     //Iterate through level grid and instantiate all entities based on class name
     loadLevel: function() {
         var entities,
@@ -823,7 +823,12 @@ var Game = {
         Game.startTransform = false;
     },
     openTransformMenu: function() {
-        Game.startTransform = true;
+        if ( Game.Questlog.inLog( 'man' ) || Game.godMode ) {
+            Game.startTransform = true;
+            return true;
+        }
+        // Can't transform - play sound
+        return false;
     },
     openSign: function( content ) {
         var menuWidth = TILESIZE * MENU_WIDTH,
@@ -953,7 +958,7 @@ var Game = {
 
         return { width: largestWidth, height: ( y - startY ), bottom: y + lineHeight * 2 };
     },
-    debugInvalidRect: false
+    godMode: GOD_MODE
 };
 Game.viewportTileWidth = Settings.defaultViewportWidth;
 Game.viewportTileHeight = Settings.defaultViewportHeight;

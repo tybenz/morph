@@ -191,8 +191,10 @@ Game.Entity.Hero = Game.Entity.extend({
                 } else {
                     var collisions = this.hasCollisionWith( 'Machine' );
                     if ( collisions && this.pos.x == collisions.entity.pos.x ) {
-                        Game.openTransformMenu();
-                        this.skipAction = true;
+                        var opened = Game.openTransformMenu();
+                        if ( opened ) {
+                            this.skipAction = true;
+                        }
                     }
                 }
             }
@@ -222,7 +224,7 @@ Game.Entity.Hero = Game.Entity.extend({
             this.pos.y = adj.entity.pos.y - adj.entity.height;
         }
 
-        if ( this.activeSprite == 'hero-dying-9' || this.activeSprite == 'flame-dying-9' ) {
+        if ( ( this.activeSprite == 'hero-dying-9' || this.activeSprite == 'flame-dying-9' ) && !Game.godMode ) {
             this.visible = false;
             Game.destroyEntity( this );
             Game.gameOver();

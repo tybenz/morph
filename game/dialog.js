@@ -71,6 +71,10 @@ Game.Dialog = {
                 },
                 {
                     "prompt": "THE KID is our neighborhood mad scientist. He lives EAST of town in his LAB.'",
+                    "questlog": {
+                        "questID": 'main',
+                        "id": 'kid'
+                    },
                     "options": [
                         {
                             "text": "You don't happen to have a MAP do you?"

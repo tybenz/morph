@@ -10,6 +10,8 @@ window.Settings = {
     tileSize: TILESIZE,
     landBackground: '#000',
     seaBackground: '#003',
+    // God mode
+    godMode: true,
     // Viewport stuff
     viewportShiftBoundary: 2,
     defaultViewportWidth: 25,
