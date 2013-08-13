@@ -24,6 +24,9 @@ Game.Quests = {
         },
         'discs': {
             text: 'Talked to THE KID. He says I have to find some lost DISCS in order to be able to defeat GRUNGOR - the other shape shifter.'
+        },
+        'man': {
+            text: 'Got my first SHAPE! It\'s called MAN. Gotta try it out.'
         }
     },
     'axe': {

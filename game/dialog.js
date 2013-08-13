@@ -64,16 +64,15 @@ Game.Dialog = {
                             "text": "Who's THE KID?"
                         },
                         {
-                            "text": "And where can I find this KID?",
-                            "actoin": "next"
+                            "text": "And where can I find this KID?"
                         }
                     ]
                 },
                 {
                     "prompt": "THE KID is our neighborhood mad scientist. He lives EAST of town in his LAB.'",
                     "questlog": {
-                        "questID": 'main',
-                        "id": 'kid'
+                        "questID": "main",
+                        "id": "kid"
                     },
                     "options": [
                         {
@@ -414,7 +413,7 @@ Game.Dialog = {
                     ]
                 },
                 {
-                    "prompt": "GRUNGOR hacked the MACHINEs' network and erased them...",
+                    "prompt": "GRUNGOR hacked the MACHINES' network and erased them...",
                     "options": [
                         {
                             "text": "Next"
@@ -463,6 +462,10 @@ Game.Dialog = {
                 },
                 {
                     "prompt": "I'll ask around for any information on the locations of the other DISCS...",
+                    "questlog": {
+                        "questID": "main",
+                        "id": "discs"
+                    },
                     "options": [
                         {
                             "text": "Next"
@@ -470,14 +473,46 @@ Game.Dialog = {
                     ]
                 },
                 {
-                    "prompt": "Now go find that disc and bring it back here as soon as you find it.",
-                    "questlog": {
+                    "prompt": "Now, before you go, let me show how these machines work.",
+                    "options": [
+                        {
+                            "text": "Next"
+                        }
+                    ]
+                },
+                {
+                    "prompt": "When you come across a machine you can interact with it by hitting X.",
+                    "options": [
+                        {
+                            "text": "Next"
+                        }
+                    ]
+                },
+                {
+                    "prompt": "You'll see a menu of the available shapes. Use the arrow keys/X to select one.",
+                    "options": [
+                        {
+                            "text": "Next"
+                        }
+                    ]
+                },
+                {
+                    "prompt": "Luckily I do still have one basic shape. I call it MAN.",
+                    "questLog": {
                         "questID": "main",
-                        "id": "discs"
+                        "id": "man"
                     },
                     "options": [
                         {
-                            "text": "Alright. Thanks for filling me in. I guess it's time to go to work.",
+                            "text": "Next"
+                        }
+                    ]
+                },
+                {
+                    "prompt": "Try it out on my machine before you leave. But get moving ASAP.",
+                    "options": [
+                        {
+                            "text": "Alright. Thanks for the info. Time to go to work.",
                             "action": "exit"
                         }
                     ]
