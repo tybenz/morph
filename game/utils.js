@@ -4,9 +4,9 @@
 
 // Flip bitmap
 window.flipBitmap = function( b ) {
-    $.each( b, function( i,bit ) {
-        bit.reverse();
-    });
+    for ( var i = 0, len = b.length; i < len; i++ ) {
+        b[i].reverse();
+    }
 
     return JSON.stringify(b, undefined, 4).
                 replace( /",\n(\s)*/g, '", ' ).

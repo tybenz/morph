@@ -2,25 +2,6 @@
 
 (function( Game, Settings, window, document, undefined ) {
 
-function getRGB(color) {
-    if (result = /rgb(s*([0-9]{1,3})s*,s*([0-9]{1,3})s*,s*([0-9]{1,3})s*)/.exec(color)) return [parseInt(result[1]), parseInt(result[2]), parseInt(result[3])];
-    if (result = /rgb(s*([0-9]+(?:.[0-9]+)?)%s*,s*([0-9]+(?:.[0-9]+)?)%s*,s*([0-9]+(?:.[0-9]+)?)%s*)/.exec(color)) return [parseFloat(result[1]) * 2.55, parseFloat(result[2]) * 2.55, parseFloat(result[3]) * 2.55];
-    if (result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color)) return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
-    if (result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color)) return [parseInt(result[1] + result[1], 16), parseInt(result[2] + result[2], 16), parseInt(result[3] + result[3], 16)];
-}
-
-/*
-$('h1').css('text-shadow', function() {
-    var rgb = getRGB($(this).css('color'));
-
-    for(var i = 0; i < rgb.length; i++){
-        rgb[i] = Math.min(rgb[i] + 90, 255);
-    }
-	
-    var newColor = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
-});
-*/
-
 var tr = Settings.transparentColor,
     gn = Settings.heroColor,
     re = Settings.enemyColor,

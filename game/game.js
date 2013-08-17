@@ -14,7 +14,6 @@ var TILESIZE = Settings.tileSize,
     ACTION_KEY = Settings.actionKey,
     JUMP_KEY = Settings.jumpKey,
     PAUSE_KEY = Settings.pauseKey,
-    QUESTLOG_KEY = Settings.questlogKey,
     MAP_KEY = Settings.mapKey,
     INVENTORY_KEY = Settings.inventoryKey,
     ENTER_KEY = Settings.enterKey,
@@ -44,20 +43,11 @@ var Game = {
             right: Math.floor( Game.viewportTileWidth / 2 ) * TILESIZE - ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE )
         };
 
-        //Initialize map
-        Game.Map.init();
-
         //Initialize pause menu
         var pauseMenuWidth = TILESIZE * MENU_WIDTH,
             pauseMenuHeight = TILESIZE * MENU_HEIGHT,
             pauseMenuLineWidth = MENU_LINE_WIDTH;
         Game.pauseMenu = new Game.Menu.Pause( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
-
-        //Initialize map menu
-        Game.mapMenu = new Game.Menu.Map( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth, Game.Map.locationNames() );
-
-        //Initialize questlog menu
-        Game.questlogMenu = new Game.Menu.Questlog( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
 
         //Initialize transform menu
         Game.transformMenu = new Game.Menu.Transform( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
@@ -79,13 +69,7 @@ var Game = {
             document.onclick = Game.nextGameFrame;
         }
 
-        if ( !Game.skipResize ) {
-            Game.resize();
-        }
-
         Game.keysLocked = false;
-
-        Game.Questlog.push( 'main', 'initial' );
 
         //Initialize drawLayers
         Game.initDrawLayers();
@@ -173,9 +157,6 @@ var Game = {
         //Start event listeners and main loop
         addEventListener( 'keydown', Game.keyDownListener, false );
         addEventListener( 'keyup', Game.keyUpListener, false );
-        if ( Modernizr.touch ) {
-            Game.initTouchButtons();
-        }
 
         //Background
         Game.ctx.fillStyle = Game.background;
@@ -193,106 +174,6 @@ var Game = {
         Game.lastUpdate = null;
         //Start the actual loop
         Game.requestID = requestAnimationFrame( Game.loop ); 
-    },
-    initTouchButtons: function() {
-        $( 'body' ).addClass( 'touch' );
-
-        //Prepare touch buttons
-        Game.$leftButton = $( 'button.direction.left' );
-        Game.$upButton = $( 'button.direction.up' );
-        Game.$rightButton = $( 'button.direction.right' );
-        Game.$actionButton = $( 'button.action' );
-        Game.$pauseButton = $( 'button.pause' );
-
-        // right button
-        Game.$rightButton.on( 'vmousedown', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: RIGHT_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyDownListener( evt );
-        });
-        Game.$rightButton.on( 'vmouseup', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: RIGHT_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyUpListener( evt );
-        });
-
-        // left button
-        Game.$leftButton.on( 'vmousedown', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: LEFT_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyDownListener( evt );
-        });
-        Game.$leftButton.on( 'vmouseup', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: LEFT_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyUpListener( evt );
-        });
-
-        // up button
-        Game.$upButton.on( 'vmousedown', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: JUMP_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyDownListener( evt );
-        });
-        Game.$upButton.on( 'vmouseup', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: JUMP_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyUpListener( evt );
-        });
-
-        // pause button
-        Game.$pauseButton.on( 'vmousedown', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: PAUSE_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyDownListener( evt );
-        });
-        Game.$pauseButton.on( 'vmouseup', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: PAUSE_KEY,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyUpListener( evt );
-        });
-
-        // action button
-        Game.$actionButton.on( 'vmousedown', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: 88,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyDownListener( evt );
-        });
-        Game.$actionButton.on( 'vmouseup', function( evt ) {
-            evt.preventDefault();
-            var evt = {
-                keyCode: 88,
-                preventDefault: function( evt ) {}
-            };
-            Game.keyUpListener( evt );
-        });
     },
     loop: function( timestamp ) {
         //We update and render each loop
@@ -317,14 +198,6 @@ var Game = {
             } else if ( Game.switchToLevel ) {
                 Game.performLevelSwitch();
             }
-        }
-    },
-    nextWalkthrough: function() {
-        if ( Game.currentLevel.walkthroughs && Game.currentLevel.walkthroughs[ Game.lastWalkthrough + 1 ] ) {
-            Game.lastWalkthrough++;
-            Game.activeWalkthrough = Game.currentLevel.walkthroughs[ Game.lastWalkthrough ];
-        } else {
-            Game.activeWalkthrough = null;
         }
     },
     update: function( timeDiff ) {
@@ -524,22 +397,6 @@ var Game = {
             Game.invalidRect.right = right;
         }
     },
-    displayInvalidRect: function() {
-        var left = $( Game.canvas ).offset().left + Game.invalidRect.left - Game.viewportOffset,
-            top = $( Game.canvas ).offset().top + Game.invalidRect.top,
-            width = Game.invalidRect.right - Game.invalidRect.left,
-            height = Game.invalidRect.bottom - Game.invalidRect.top,
-            box = $( '#invalid-rect' );
-        if ( box.length ) {
-            box.css( 'left', left + 'px' );
-            box.css( 'top', top + 'px' );
-            box.width( width );
-            box.height( height );
-        } else {
-            box = $( '<div id="invalid-rect" style="border: 1px solid ' + DEBUG_INVALID_RECT_COLOR + ';position:absolute;left:'+left+'px;top:'+top+'px;width:'+width+'px;height:'+height+'px"></div>' );
-            $( 'body' ).append( box );
-        }
-    },
     //Called every update - uses the invalidRect to set a clip
     //so we only re-render entities that have changed
     render: function() {
@@ -643,17 +500,6 @@ var Game = {
                 Game.ctx.fillStyle = LEVEL_NAME_COLOR;
                 Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );
             }
-
-            if ( Game.activeWalkthrough ) {
-                var check = Game.activeWalkthrough.callback();
-
-                if ( !check ) {
-                    Game.invalidateRect( 0 - TILESIZE, Game.viewportWidth + 2 * TILESIZE, Game.viewportHeight + 2 * TILESIZE, 0 - TILESIZE );
-                } else {
-                    Game.activeWalkthrough.render();
-                }
-            }
-
         }
     },
     //Iterate through level grid and instantiate all entities based on class name
@@ -765,11 +611,6 @@ var Game = {
                 button.setDoors( linkGroup );
             }
         }
-
-        if ( Game.currentLevel.walkthroughs && Game.currentLevel.walkthroughs.length ) {
-            Game.activeWalkthrough = Game.currentLevel.walkthroughs[0];
-            Game.lastWalkthrough = 0;
-        }
     },
     keyDownListener: function( evt ) {
         //Prevent default on up and down so the
@@ -781,11 +622,6 @@ var Game = {
             if ( !Game.paused ) {
                 Game.keysDown[ PAUSE_KEY ] = 'locked';
                 Game.pause( 'pause' );
-            }
-        } else if ( evt.keyCode == QUESTLOG_KEY ) {
-            if ( !Game.paused ) {
-                Game.keysDown[ QUESTLOG_KEY ] = 'locked';
-                Game.pause( 'questlog' );
             }
         } else if ( evt.keyCode == MAP_KEY ) {
             if ( !Game.paused ) {
@@ -884,12 +720,6 @@ var Game = {
         Game.initDrawLayers();
         Game.hasStarted = false;
     },
-    resize: function() {
-        var $game = $( '#game' );
-        $game.width( Game.viewportWidth )
-        $game.height( Game.viewportHeight );
-        $game.css( 'top', '-' + Game.viewportHeight / 2 + 'px' );
-    },
     nextGameFrame: function() {
         Game.requestID = requestAnimationFrame( Game.loop ); 
     },
@@ -963,9 +793,5 @@ var Game = {
 Game.viewportTileWidth = Settings.defaultViewportWidth;
 Game.viewportTileHeight = Settings.defaultViewportHeight;
 window.Game = Game;
-
-$(function() {
-    $( window ).on( 'resize', Game.resize );
-});
 
 })( Settings, window, document );

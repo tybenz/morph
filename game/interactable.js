@@ -226,7 +226,8 @@ Game.Entity.Interactable.Switch = Game.Entity.Interactable.extend({
         this.ignoreGravity = true;
     },
     setDoors: function( doors ) {
-        doors = $.isArray( doors ) ? doors : [ doors ];
+        doors = Object.prototype.toString.call( doors ) === '[object Array]' ? doors : [ doors ];
+
         this.doors = doors;
     },
     collideWith: function( entity, collisions ) {
