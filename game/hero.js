@@ -208,7 +208,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
 
         if ( !this.skipAction && !Game.keysLocked && ACTION_KEY in Game.keysDown && Game.keysDown[ ACTION_KEY ] != 'locked' ) {
             if ( this.holding ) {
-                this.actions.throw.call( this );
+                this.actions.drop.call( this );
                 Game.keysDown[ ACTION_KEY ] = 'locked';
             } else {
                 var adjacent = this.adjacentTo( 'Interactable.Rock' ),
@@ -248,7 +248,7 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     up: function() {
         //jump
         if ( this.activeSprite.match( 'holding' ) ) {
-            this.actions.drop.call( this );
+            this.actions.throw.call( this );
         } else if ( !this.disableJump ) {
             var jumpForce = new Game.Vector( 0, this.jumpVelocity );
             this.velocity = this.velocity.add( jumpForce );
