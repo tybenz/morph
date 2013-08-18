@@ -1,9 +1,9 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
-var TILESIZE = Settings.tileSize,
-    GRAVITY = Settings.gravity;
+var TILESIZE = 36,
+    GRAVITY = 0.000055555 * TILESIZE;
 
 Game.Entity = Class.extend({
     type: 'Entity',
@@ -567,4 +567,4 @@ Game.Entity = Class.extend({
     }
 });
 
-})( Game, Settings, window, document );
+})( Game, window, document );

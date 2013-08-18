@@ -1,9 +1,10 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
-var WAVE_SPEED = Settings.waveSpeed,
-    TILESIZE = Settings.tileSize;
+var SECONDS = 1000,
+    WAVE_SPEED = 0.4 * SECONDS,
+    TILESIZE = 36;
 
 Game.Entity.Terrain = Game.Entity.extend({
     type: 'Terrain',
@@ -79,4 +80,4 @@ Game.Entity.Terrain.Invisible = Game.Entity.Terrain.extend({
     initialState: 'still'
 });
 
-})( Game, Settings, window, document );
+})( Game, window, document );

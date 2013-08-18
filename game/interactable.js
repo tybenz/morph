@@ -1,8 +1,8 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
-var TILESIZE = Settings.tileSize;
+var TILESIZE = 36;
 
 Game.Entity.Interactable = Game.Entity.extend({
     type: 'Interactable',
@@ -128,4 +128,4 @@ Game.Entity.Interactable.Switch = Game.Entity.Interactable.extend({
     }
 });
 
-})( Game, Settings, window, document );
+})( Game, window, document );

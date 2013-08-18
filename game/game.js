@@ -1,28 +1,25 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Settings, window, document, undefined ) {
+(function( window, document, undefined ) {
 
-var TILESIZE = Settings.tileSize,
-    VIEWPORT_SHIFT_BOUNDARY = Settings.viewportShiftBoundary,
-    MENU_WIDTH = Settings.menuWidth,
-    MENU_HEIGHT = Settings.menuHeight,
-    MENU_LINE_WIDTH = Settings.menuLineWidth,
-    LEFT_KEY = Settings.leftKey,
-    RIGHT_KEY = Settings.rightKey,
-    DOWN_KEY = Settings.downKey,
-    UP_KEY = Settings.upKey,
-    ACTION_KEY = Settings.actionKey,
-    JUMP_KEY = Settings.jumpKey,
-    PAUSE_KEY = Settings.pauseKey,
-    MAP_KEY = Settings.mapKey,
-    INVENTORY_KEY = Settings.inventoryKey,
-    ENTER_KEY = Settings.enterKey,
-    GOD_MODE = Settings.godMode,
-    LAND_BACKGROUND = Settings.landBackground,
-    SEA_BACKGROUND = Settings.seaBackground,
-    INIT_MAX_HEALTH = Settings.initialMaxHealth;
-    LEVEL_NAME_COLOR = Settings.levelNameColor,
-    LEVEL_NAME_FONT_SIZE = Settings.levelNameFontSize;
+var TILESIZE = 36,
+    VIEWPORT_SHIFT_BOUNDARY = 2,
+    LEFT_KEY = 37,
+    RIGHT_KEY = 39,
+    DOWN_KEY = 40,
+    UP_KEY = 38,
+    ACTION_KEY = 88,
+    JUMP_KEY = 90,
+    PAUSE_KEY = 80,
+    MAP_KEY = 77,
+    INVENTORY_KEY = 73,
+    ENTER_KEY = 13,
+    GOD_MODE = true,
+    LAND_BACKGROUND = '#000',
+    SEA_BACKGROUND = '#003',
+    INIT_MAX_HEALTH = 10,
+    LEVEL_NAME_COLOR = '#f9f9f9',
+    LEVEL_NAME_FONT_SIZE = Math.round( 0.666667 * TILESIZE );
 
 var Game = {
     //Array of entities that should be destroyed on the following update
@@ -41,15 +38,6 @@ var Game = {
             left: Math.floor( Game.viewportTileWidth / 2 ) * TILESIZE + ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE ),
             right: Math.floor( Game.viewportTileWidth / 2 ) * TILESIZE - ( VIEWPORT_SHIFT_BOUNDARY * TILESIZE )
         };
-
-        //Initialize pause menu
-        var pauseMenuWidth = TILESIZE * MENU_WIDTH,
-            pauseMenuHeight = TILESIZE * MENU_HEIGHT,
-            pauseMenuLineWidth = MENU_LINE_WIDTH;
-        Game.pauseMenu = new Game.Menu.Pause( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
-
-        //Initialize game over menu
-        Game.gameOverMenu = new Game.Menu.GameOver( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
 
         //Prepare canvas
         Game.canvas = document.createElement( 'canvas' );
@@ -166,8 +154,6 @@ var Game = {
         if ( !Game.clickStep ) {
             if ( ( !Game.stopLoop ) && !Game.paused ) {
                 Game.requestID = requestAnimationFrame( Game.loop ); 
-            } else if ( Game.showSign ) {
-                Game.showSignMenu();
             } else if ( Game.switchToLevel ) {
                 Game.performLevelSwitch();
             }
@@ -575,6 +561,8 @@ var Game = {
             if ( !Game.paused ) {
                 Game.keysDown[ PAUSE_KEY ] = 'locked';
                 Game.pause( 'pause' );
+            } else {
+                Game.resume();
             }
         } else if ( evt.keyCode == MAP_KEY ) {
             if ( !Game.paused ) {
@@ -589,12 +577,7 @@ var Game = {
     keyUpListener: function( evt ) {
         delete Game.keysDown[ evt.keyCode ];
     },
-    pause: function( menu ) {
-        if ( menu == 'pause' ) {
-            Game.pauseMenu.show();
-        } else if ( menu == 'map' ) {
-            Game.mapMenu.show();
-        }
+    pause: function() {
         Game.paused = true;
         cancelAnimationFrame( Game.requestID );
     },
@@ -623,7 +606,6 @@ var Game = {
         Game.requestID = requestAnimationFrame( Game.loop ); 
     },
     gameOver: function() {
-        Game.gameOverMenu.show();
         Game.paused = true;
     },
     switchLevel: function( levelID ) {
@@ -713,8 +695,8 @@ var Game = {
     },
     godMode: GOD_MODE
 };
-Game.viewportTileWidth = Settings.defaultViewportWidth;
-Game.viewportTileHeight = Settings.defaultViewportHeight;
+Game.viewportTileWidth = 25;
+Game.viewportTileHeight = 14;
 window.Game = Game;
 
-})( Settings, window, document );
+})( window, document );

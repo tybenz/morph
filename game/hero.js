@@ -1,33 +1,30 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
-var TILESIZE = Settings.tileSize,
-    PLANE_TAKEOFF_VELOCITY = Settings.planeTakeoffVelocity,
-    LEFT_KEY = Settings.leftKey,
-    RIGHT_KEY = Settings.rightKey,
-    DOWN_KEY = Settings.downKey,
-    UP_KEY = Settings.upKey,
-    ACTION_KEY = Settings.actionKey,
-    JUMP_KEY = Settings.jumpKey,
-    PAUSE_KEY = Settings.pauseKey,
-    ENTER_KEY = Settings.enterKey,
-    TAKING_DAMAGE_DURATION = Settings.takingDamageDuration,
-    MAN_JUMP_VELOCITY = Settings.manJumpVelocity,
-    BLOCK_JUMP_VELOCITY = Settings.blockJumpVelocity,
-    ROCK_THROW_VELOCITY = Settings.rockThrowVelocity,
-    BOAT_BULLET_SPEED = Settings.boatBulletSpeed,
-    BOAT_BULLET_RELOAD_RATE = Settings.boatBulletReloadRate,
-    PLANE_BULLET_SPEED = Settings.planeBulletSpeed,
-    PLANE_BULLET_RELOAD_RATE = Settings.planeBulletReloadRate,
-    PLANE_HORIZONTAL_VELOCITY = Settings.planeHorizontalVelocity,
-    PLANE_LANDING_VELOCITY = Settings.planeLandingVelocity,
-    PLANE_TAKEOFF_VELOCITY = Settings.planeTakeoffVelocity,
-    TAKING_DAMAGE_DURATION = Settings.takingDamageDuration,
-    CLOCK_STOP_DURATION = Settings.clockStopDuration,
-    CLOCK_STOP_COOLDOWN = Settings.clockStopCooldown,
-    CLOCK_JUMP_VELOCITY = Settings.clockJumpVelocity,
-    FLAME_JUMP_VELOCITY = Settings.flameJumpVelocity;
+var TILESIZE = 36,
+    SECONDS = 1000,
+    PLANE_TAKEOFF_VELOCITY = -0.016667 * TILESIZE,
+    LEFT_KEY = 37,
+    RIGHT_KEY = 39,
+    DOWN_KEY = 40,
+    UP_KEY = 38,
+    ACTION_KEY = 88,
+    JUMP_KEY = 90,
+    PAUSE_KEY = 80,
+    ENTER_KEY = 13,
+    TAKING_DAMAGE_DURATION = SECONDS,
+    MAN_JUMP_VELOCITY = -0.022222 * TILESIZE,
+    BLOCK_JUMP_VELOCITY = -0.027778 * TILESIZE,
+    ROCK_THROW_VELOCITY = 0.005556 * TILESIZE,
+    BOAT_BULLET_SPEED = -0.016667 * TILESIZE,
+    BOAT_BULLET_RELOAD_RATE = 0.5 * SECONDS,
+    PLANE_BULLET_SPEED = 0.016667 * TILESIZE,
+    PLANE_BULLET_RELOAD_RATE = 0.3 * SECONDS,
+    PLANE_HORIZONTAL_VELOCITY = 0.005556 * TILESIZE,
+    PLANE_LANDING_VELOCITY = 0.004444 * TILESIZE,
+    PLANE_TAKEOFF_VELOCITY = -0.016667 * TILESIZE,
+    TAKING_DAMAGE_DURATION = SECONDS;
 
 Game.Entity.Hero = Game.Entity.extend({
     type: 'Hero',
@@ -324,4 +321,4 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
     }
 });
 
-})( Game, Settings, window, document );
+})( Game, window, document );

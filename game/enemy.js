@@ -1,24 +1,25 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
-var TILESIZE = Settings.tileSize,
-    TURRET_INTERVAL = Settings.turretInterval,
-    QUICK_TURRET_INTERVAL = Settings.quickTurretInterval,
-    SMART_TURRET_INTERVAL = Settings.smartTurretInterval,
-    TURRET_SPEED = Settings.turretSpeed,
-    QUICK_TURRET_SPEED = Settings.quickTurretSpeed,
-    SMART_TURRET_SPEED = Settings.smartTurretSpeed,
-    SUBMARINE_SPEED = Settings.submarineSpeed,
-    BALLOON_SPEED = Settings.balloonSpeed,
-    BATTLESHIP_SPEED = Settings.battleshipSpeed,
-    BIRD_VELOCITY = Settings.birdVelocity,
-    SPIDER_VELOCITY = Settings.spiderVelocity,
-    SPIDER_CLIMBING_VELOCITY = Settings.spiderClimbingVelocity,
-    BALLOON_HORIZONTAL_VELOCITY = Settings.balloonHorizontalVelocity,
-    BALLOON_VERTICAL_VELOCITY = Settings.balloonVerticalVelocity,
-    BALLOON_VERTICAL_BOUNDARY = Settings.balloonVerticalBoundary,
-    MONSTER_WALKING_INTERVAL = Settings.monsterWalkingInterval;
+var TILESIZE = 36,
+    SECONDS = 1000,
+    TURRET_INTERVAL = 2 * SECONDS,
+    QUICK_TURRET_INTERVAL = 0.8 * SECONDS,
+    SMART_TURRET_INTERVAL = 0.4 * SECONDS,
+    TURRET_SPEED = -0.022222 * TILESIZE,
+    QUICK_TURRET_SPEED = -0.044444 * TILESIZE,
+    SMART_TURRET_SPEED = -0.033333 * TILESIZE,
+    SUBMARINE_SPEED = -0.022222 * TILESIZE,
+    BALLOON_SPEED = -0.022222 * TILESIZE,
+    BATTLESHIP_SPEED = -0.022222 * TILESIZE,
+    BIRD_VELOCITY = -0.005 * TILESIZE,
+    SPIDER_VELOCITY = 0.003333 * TILESIZE,
+    SPIDER_CLIMBING_VELOCITY = -0.004444 * TILESIZE,
+    BALLOON_HORIZONTAL_VELOCITY = -0.001111 * TILESIZE,
+    BALLOON_VERTICAL_VELOCITY = 0.000389 * TILESIZE,
+    BALLOON_VERTICAL_BOUNDARY = 0.388889 * TILESIZE,
+    MONSTER_WALKING_INTERVAL = 0.5 * SECONDS;
 
 Game.Entity.Enemy = Game.Entity.extend({
     type: 'Enemy',
@@ -216,4 +217,4 @@ Game.Entity.Enemy.Bullet = Game.Entity.Enemy.extend({
     }
 });
 
-})( Game, Settings, window, document );
+})( Game, window, document );

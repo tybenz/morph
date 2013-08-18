@@ -1,21 +1,21 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
-var A = Settings.transparentColor, // var tr = Settings.transparentColor,   
-    B = Settings.heroColor,        //     gn = Settings.heroColor,          
-    C = Settings.enemyColor,       //     re = Settings.enemyColor,         
-    D = Settings.waterColor,       //     bu = Settings.waterColor,         
-    E = Settings.friendColor,      //     cy = Settings.friendColor,        
-    F = Settings.rockColor,        //     gy = Settings.rockColor,          
-    G = Settings.heartColor,       //     pi = Settings.heartColor,         
-    H = Settings.cloudColor,       //     wh = Settings.cloudColor,         
-    I = Settings.blackColor,       //     bk = Settings.blackColor,         
-    J = Settings.landColor,        //     sg = Settings.landColor,          
-    K = Settings.coinColor,        //     yl = Settings.coinColor,          
-    L = Settings.kidColor,         //     or = Settings.kidColor,           
-    M = Settings.machineColor,     //     pu = Settings.machineColor,       
-    N = Settings.woodColor;        //     br = Settings.woodColor;          
+var A = 'transparent',
+    B = '#0ed839',
+    C = '#e92f2f',
+    D = '#3b48e3',
+    E = '#23edda',
+    F = '#777777',
+    G = '#f996e2',
+    H = '#f9f9f9',
+    I = '#000000',
+    J = '#102015',
+    K = '#dddd13',
+    L = '#e09448',
+    M = '#7a237a',
+    N = '#69542d';
 
 Game.Sprite = function( path ) {
     var image = new Image();
@@ -680,4 +680,4 @@ Game.Bitmaps = {
     ]
 };
 
-})( Game, Settings, window, document );
+})( Game, window, document );

@@ -1,6 +1,6 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
 Game.Vector = Class.extend({
     init: function( x, y ) {
@@ -66,4 +66,4 @@ Game.checkIntersection = function( p1, p2, p3, p4 ) {
         (d4 == 0 && Game.isOnSegment(x1, y1, x2, y2, x4, y4));
 };
 
-})( Game, Settings, window, document );
+})( Game, window, document );

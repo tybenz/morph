@@ -1,31 +1,31 @@
 /* vim: set tabstop=4 softtabstop=4 shiftwidth=4 expandtab: */
 
-(function( Game, Settings, window, document, undefined ) {
+(function( Game, window, document, undefined ) {
 
-var TILESIZE = Settings.tileSize;
+var TILESIZE = 36;
 
-var A = 'blank',                                     //var bl = 'blank',
-    B = 'terrain.land',                              //    ld = 'terrain.land',                                   
-    C = 'terrain.water',                             //    wt = 'terrain.water',                                   
-    D = 'terrain.wave',                              //    wv = 'terrain.wave',                                   
-    E = 'hero.man',                                  //    hm = 'hero.man',                                   
-    F = 'hero.boat',                                 //    hb = 'hero.boat',                                   
-    G = 'hero.plane',                                //    hp = 'hero.plane',                                   
-    H = 'enemy.monster',                             //    mn = 'enemy.monster',                                   
-    I = 'enemy.spider',                              //    sp = 'enemy.spider',                                   
-    J = 'enemy.bird',                                //    bd = 'enemy.bird',                                   
-    K = 'enemy.battleship',                          //    bs = 'enemy.battleship',                                   
-    L = 'enemy.balloon',                             //    ba = 'enemy.balloon',                                   
-    M = 'enemy.turret',                              //    tr = 'enemy.turret',                                   
-    N = 'interactable.coin',                         //    co = 'interactable.coin',                                   
-    O = 'interactable.heart',                        //    ht = 'interactable.heart',                                   
-    P = 'interactable.rock',                         //    rk = 'interactable.rock',                                   
-    Q = function( id ) {                             //    td = function( id ) {                                   
-        return 'terrain.trapdoor(' + id + ')';        //        return 'terrain.trapdoor(' + id + ')';                                   
-    },                                                //    },                                                   
-    R = function( id ) {                             //    sw = function( id ) {                                   
-        return 'interactable.switch[6](' + id + ')';  //        return 'interactable.switch[6](' + id + ')';                                   
-    }                                                 //    }                                                    
+var A = 'blank',
+    B = 'terrain.land',
+    C = 'terrain.water',
+    D = 'terrain.wave',
+    E = 'hero.man',
+    F = 'hero.boat',
+    G = 'hero.plane',
+    H = 'enemy.monster',
+    I = 'enemy.spider',
+    J = 'enemy.bird',
+    K = 'enemy.battleship',
+    L = 'enemy.balloon',
+    M = 'enemy.turret',
+    N = 'interactable.coin',
+    O = 'interactable.heart',
+    P = 'interactable.rock',
+    Q = function( id ) {
+        return 'terrain.trapdoor(' + id + ')';
+    },
+    R = function( id ) {
+        return 'interactable.switch[6](' + id + ')';
+    };
 
 Game.Level = Class.extend({
     init: function( type, title, next, grid ) {
@@ -108,4 +108,4 @@ Game.Levels = {
     ])
 };
 
-})( Game, Settings, window, document );
+})( Game, window, document );
