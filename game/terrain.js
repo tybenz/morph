@@ -20,14 +20,7 @@ Game.Entity.Terrain.Land = Game.Entity.Terrain.extend({
     type: 'Terrain.Land',
     initialSprite: 'land',
     states: {
-        'still': Game.Entity.prototype.states.still,
-        'dying': {
-            animation: {
-                delta: 40,
-                sequence: [ 'land-dying-1', 'land-dying-2', 'land-dying-3', 'land-dying-4', 'land-dying-5', 'land-dying-6', 'land-dying-7', 'land-dying-8', 'land-dying-9' ],
-                times: 1
-            }
-        }
+        'still': Game.Entity.prototype.states.still
     },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );

@@ -123,7 +123,7 @@ Game.Entity.Interactable.Switch = Game.Entity.Interactable.extend({
     collideWith: function( entity, collisions ) {
         if ( entity.type == 'Interactable.Rock' && entity.pos.y <= this.pos.y ) {
             for ( var i = 0, len = this.doors.length; i < len; i++ ) {
-                this.doors[i].changeState( 'dying' );
+                Game.destroyEntity( this.doors[i] );
             }
         }
     }

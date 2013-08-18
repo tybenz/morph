@@ -117,14 +117,14 @@ Game.Entity.Enemy.Monster = Game.Entity.Enemy.extend({
                     delta: MONSTER_WALKING_INTERVAL,
                     action: function() { this.pos.x -= TILESIZE; },
                     until: function() {
-                        return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' );
+                        return this.adjacentTo( 'Terrain.Land', 'left' ) || this.adjacentToLevelEdge( 'left' ) || this.adjacentTo( 'Terrain.Trapdoor', 'left' );
                     }
                 },
                 {
                     delta: MONSTER_WALKING_INTERVAL,
                     action: function() { this.pos.x += TILESIZE; },
                     until: function() {
-                        return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' );
+                        return this.adjacentTo( 'Terrain.Land', 'right' ) || this.adjacentToLevelEdge( 'right' ) || this.adjacentTo( 'Terrain.Trapdoor', 'right' );
                     }
                 }
             ]

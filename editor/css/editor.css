@@ -1,0 +1,129 @@
+#game-wrapper {
+  overflow: hidden;
+  height: 519px;
+  width: 900px;
+  margin: 0 auto;
+  position: relative;
+  top: -225px;
+  box-shadow: 0 0 0 1px #0f0;
+}
+
+#game {
+  box-shadow: none;
+  top: 0;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding-bottom: 15px;
+  height: 504px;
+  width: 900px;
+}
+
+#panel {
+  height: 504px;
+  width: 181px;
+  padding: 0 15px 15px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  margin-left: -680px;
+  margin-top: -226px;
+  border: 1px solid #0f0;
+  overflow-y: auto;
+}
+
+#tools {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid white;
+  overflow: hidden;
+  position: fixed;
+  height: 98px;
+  width: 150px;
+  z-index: 1;
+  background: #111;
+}
+
+#sprites {
+  overflow: hidden;
+  margin-top: 130px;
+}
+
+.sprite, .tool {
+  float: left;
+  padding: 3px;
+}
+
+.sprite img, .tool img {
+  display: block;
+}
+
+.sprite:nth-child(2n), .tool:nth-child(2n) {
+  margin-left: 10px;
+}
+
+.sprite.active, .tool.active {
+  padding: 2px;
+  border: 1px solid #0f0;
+}
+
+#rectangle-tool {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  border: 2px solid white;
+  display: none;
+  position: absolute;
+}
+
+#add-column, #remove-column {
+  border: 1px solid white;
+  padding: 3px 8px;
+  font-weight: bold;
+  position: absolute;
+  top: 40%;
+  right: 50%;
+  margin-top: -196px;
+  margin-right: -495px;
+  font-family: monospace;
+  font-size: 1.3em;
+}
+
+#remove-column {
+  margin-top: -159px;
+}
+
+#columns {
+  border: none;
+  position: absolute;
+  top: 40%;
+  right: 50%;
+  margin-top: -226px;
+  margin-right: -495px;
+  width: 26px;
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+}
+
+#level-name {
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  outline: none;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  background: transparent;
+  border: 1px solid white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  font-size: 20px;
+  font-family: 'uni05';
+  width: 400px;
+  margin-left: -200px;
+  margin-top: -300px;
+}
