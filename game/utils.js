@@ -2,18 +2,6 @@
 
 (function( window, document, undefined ) {
 
-// Flip bitmap
-window.flipBitmap = function( b ) {
-    for ( var i = 0, len = b.length; i < len; i++ ) {
-        b[i].reverse();
-    }
-
-    return JSON.stringify(b, undefined, 4).
-                replace( /",\n(\s)*/g, '", ' ).
-                replace( /\[\n\s*"/g, '[ "' ).
-                replace( /"\n\s*\]/g, '" ]' );
-};
-
 // Capitalize only the first letters in a string
 // passing in a delimiters means each "word" will be capitalized
 String.prototype.capitalize = function( delim ) {

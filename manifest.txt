@@ -8,9 +8,6 @@ game/entity.js
 game/level.js
 game/hero.js
 game/enemy.js
-game/friend.js
 game/terrain.js
 game/interactable.js
-game/machine.js
-game/inventory.js
 game/menu.js

@@ -152,9 +152,6 @@ Game.Entity = Class.extend({
             }
         }
     },
-    say: function( quote ) {
-        console.log(quote);
-    },
     generateNextCoords: function( timeDiff ) {
         //Bool that will tell us if the entity animated
         this.animated = this.animate( timeDiff );
@@ -296,30 +293,6 @@ Game.Entity = Class.extend({
         this.width = right - left;
         this.pos.x = left;
         this.pos.y = top;
-    },
-    getActualDimensions: function() {
-        if ( this.entityList && this.entityList.length ) {
-
-            var entityObj = this.entityList[0],
-                relativePos = entityObj.relativePos,
-                dimensions = entityObj.oldDimensions;
-
-            return {
-                pos: {
-                    x: this.pos.x + relativePos.x,
-                    y: this.pos.y + relativePos.y
-                },
-                oldPos: {
-                    x: this.oldPos.x + relativePos.x,
-                    y: this.oldPos.y + relativePos.y
-                },
-                width: dimensions.width,
-                height: dimensions.height
-            };
-
-        }
-
-        return this;
     },
     render: function() {
         //Render the activeSprite

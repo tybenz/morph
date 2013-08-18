@@ -17,11 +17,10 @@ var TILESIZE = Settings.tileSize,
     MAP_KEY = Settings.mapKey,
     INVENTORY_KEY = Settings.inventoryKey,
     ENTER_KEY = Settings.enterKey,
-    DEBUG_INVALID_RECT = Settings.debugInvalidRect,
-    DEBUG_INVALID_RECT_COLOR = Settings.debugInvalidRectColor,
     GOD_MODE = Settings.godMode,
     LAND_BACKGROUND = Settings.landBackground,
     SEA_BACKGROUND = Settings.seaBackground,
+    INIT_MAX_HEALTH = Settings.initialMaxHealth;
     LEVEL_NAME_COLOR = Settings.levelNameColor,
     LEVEL_NAME_FONT_SIZE = Settings.levelNameFontSize;
 
@@ -48,9 +47,6 @@ var Game = {
             pauseMenuHeight = TILESIZE * MENU_HEIGHT,
             pauseMenuLineWidth = MENU_LINE_WIDTH;
         Game.pauseMenu = new Game.Menu.Pause( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
-
-        //Initialize transform menu
-        Game.transformMenu = new Game.Menu.Transform( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
 
         //Initialize game over menu
         Game.gameOverMenu = new Game.Menu.GameOver( ( Game.viewportWidth - pauseMenuWidth ) / 2, ( Game.viewportHeight - pauseMenuHeight ) / 2, pauseMenuWidth, pauseMenuHeight, pauseMenuLineWidth );
@@ -96,27 +92,6 @@ var Game = {
         //Same init as Game.Entity
         for ( var i in Game.Bitmaps ) {
             Game.Sprites[i] = Game.Sprite( Game.convertBitmapToSprite( Game.Bitmaps[i], TILESIZE / 9 ) );
-            Game.totalSprites++;
-        }
-
-        var heroList = {
-            'block': Game.Bitmaps[ 'block' ],
-            'man-right': Game.Bitmaps[ 'man-right' ],
-            'boat-right': Game.Bitmaps[ 'boat-right' ],
-            'frog-right': Game.Bitmaps[ 'frog-right' ],
-            'plane-right': Game.Bitmaps[ 'plane-right' ],
-            'jellyfish': Game.Bitmaps[ 'jellyfish' ],
-            'clock': Game.Bitmaps[ 'clock-1' ],
-            'flame': Game.Bitmaps[ 'flame-big' ],
-            'restart': Game.Bitmaps[ 'restart' ],
-            'exit': Game.Bitmaps[ 'exit' ],
-            'friend-man-closeup': Game.Bitmaps[ 'friend-man-closeup' ],
-            'friend-monster-closeup': Game.Bitmaps[ 'friend-monster-closeup' ],
-            'kid-closeup': Game.Bitmaps[ 'kid-closeup' ]
-        };
-
-        for ( var i in heroList ) {
-            Game.Sprites[i + '-double'] = Game.Sprite( Game.convertBitmapToSprite( heroList[i], TILESIZE / 4.5 ) );
             Game.totalSprites++;
         }
     },
@@ -189,10 +164,8 @@ var Game = {
         }
         Game.lastUpdate = timestamp;
         if ( !Game.clickStep ) {
-            if ( ( !Game.stopLoop && !Game.startTransform && !Game.showSign ) && !Game.paused ) {
+            if ( ( !Game.stopLoop ) && !Game.paused ) {
                 Game.requestID = requestAnimationFrame( Game.loop ); 
-            } else if ( Game.startTransform ) {
-                Game.showTransformMenu();
             } else if ( Game.showSign ) {
                 Game.showSignMenu();
             } else if ( Game.switchToLevel ) {
@@ -201,115 +174,99 @@ var Game = {
         }
     },
     update: function( timeDiff ) {
-        if ( 73 in Game.keysDown && Game.keysDown[ 73 ] != 'locked' ) {
-            // "I" key for inventory
-            // show inventory menu
-        }
-
         if ( Game.currentLevel.scene && Game.currentLevel.scene.playing ) {
             var scene = Game.currentLevel.scene;
             scene.next();
         }
 
-        if ( Game.transforming ) {
-            Game.hero.generateNextCoords( timeDiff );
-            Game.hero.invalidateRect();
-            for ( var i = 0; i < Game.currentLevel.entities.length; i++ ) {
-                var collisions = Game.hero.getCollisions( Game.currentLevel.entities[i] );
-                if ( collisions ) {
-                    Game.hero.collideWith( Game.currentLevel.entities[i], collisions );
+        if ( Game.hero.pos.x >= ( Game.currentLevel.width - Game.hero.width ) && Game.currentLevel.next ) {
+            Game.currentLevel.loadNextLevel();
+            return;
+        }
+
+        var entities = Game.currentLevel.entities;
+
+        //Destroy entities that are queued for removal
+        for ( var i = Game.toBeDestroyed.length - 1; i >= 0; i-- ) {
+            drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
+            for ( var j = entities.length - 1; j >= 0; j-- ) {
+                if ( entities[j] == Game.toBeDestroyed[i] ) {
+                    entities[j].invalidateRect();
+                    entities.splice( j, 1 ); 
                 }
+            }
+            for ( var j = drawLayer.length - 1; j >= 0; j-- ) {
+                if ( drawLayer[j] == Game.toBeDestroyed[i] ) {
+                    drawLayer.splice( j, 1 );
+                }
+            }
+            Game.toBeDestroyed.splice( i, 1 );
+        }
+
+        // Generate each entity's next coordinates.
+        for ( var i = 0; i < entities.length; i++ ) {
+            entities[ i ].generateNextCoords( timeDiff );
+        }
+
+        ////////// Collision Detection ////////
+
+        // Keep entity list sorted on x, ascending.
+        entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
+
+        // List of entities to check entities[ i ] against
+        var activeList = new Array( entities[ 0 ] );
+
+        // List of possible collisions
+        var possibleCollisions = new Array();
+
+        for ( var i = 1; i < entities.length; i++ ) {
+            for ( var j = activeList.length - 1; j >= 0; j-- ) {
+                if ( entities[ i ].pos.x > ( activeList[ j ].pos.x + activeList[ j ].width ) ) {
+                    // The current entity is past this activeList entity -- we know it
+                    // won't collide with the rest of the entities.
+                    activeList.splice( j, 1 );
+                    continue;		    
+                } else if ( entities[ i ] != activeList[ j ] ) {
+                    // It's possible that there is a collision (their x coordinates are close).
+                    possibleCollisions.push( [ entities[ i ], activeList[ j ] ] );
+                }
+            }
+            // Place the current entity into activeList.
+            activeList.push(entities[ i ]);
+        }
+
+        // Fine-grained collision detection.
+        for ( var i = 0; i < possibleCollisions.length; i++ ) {
+            var entityPair = possibleCollisions[ i ];
+            if ( entityPair[ 0 ] instanceof Game.Entity && entityPair[ 1 ] instanceof Game.Entity ) {
+                Game.collider( entityPair[ 0 ], entityPair[ 1 ] );
+            }
+        }
+
+        for ( var i = 0; i < entities.length; i++ ) {
+            var ent = entities[ i ];
+            if ( Game.still ) {
+                ent.pos.x = ent.oldPos.x;
+                ent.pos.y = ent.oldPos.y;
+            }
+            if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated || ent.detached || ent.attached ) {
+                ent.invalidateRect();
+            }
+        }
+
+        //Shift viewport if hero's pos is past the shift boundary
+        if ( Game.currentLevel.type == 'sky' ) {
+            if ( Game.viewportOffset < Game.viewportShiftBuffer ) {
+                Game.lastShift = Date.now();
+                Game.hero.pos.x += TILESIZE / 18;
+                Game.viewportShiftBoundary.left = Game.hero.pos.x - TILESIZE / 18;
+                Game.shiftViewport( 'left' );
             }
         } else {
-            if ( Game.hero.pos.x >= ( Game.currentLevel.width - Game.hero.width ) && Game.currentLevel.next ) {
-                Game.currentLevel.loadNextLevel();
-                return;
-            }
-
-            var entities = Game.currentLevel.entities;
-
-            //Destroy entities that are queued for removal
-            for ( var i = Game.toBeDestroyed.length - 1; i >= 0; i-- ) {
-                drawLayer = Game.drawLayers[Game.toBeDestroyed[i].drawLayer];
-                for ( var j = entities.length - 1; j >= 0; j-- ) {
-                    if ( entities[j] == Game.toBeDestroyed[i] ) {
-                        entities[j].invalidateRect();
-                        entities.splice( j, 1 ); 
-                    }
-                }
-                for ( var j = drawLayer.length - 1; j >= 0; j-- ) {
-                    if ( drawLayer[j] == Game.toBeDestroyed[i] ) {
-                        drawLayer.splice( j, 1 );
-                    }
-                }
-                Game.toBeDestroyed.splice( i, 1 );
-            }
-
-            // Generate each entity's next coordinates.
-            for ( var i = 0; i < entities.length; i++ ) {
-                entities[ i ].generateNextCoords( timeDiff );
-            }
-
-            ////////// Collision Detection ////////
-
-            // Keep entity list sorted on x, ascending.
-            entities.sort( function( a, b ) { return a.pos.x - b.pos.x } );
-
-            // List of entities to check entities[ i ] against
-            var activeList = new Array( entities[ 0 ] );
-
-            // List of possible collisions
-            var possibleCollisions = new Array();
-
-            for ( var i = 1; i < entities.length; i++ ) {
-                for ( var j = activeList.length - 1; j >= 0; j-- ) {
-                    if ( entities[ i ].pos.x > ( activeList[ j ].pos.x + activeList[ j ].width ) ) {
-                        // The current entity is past this activeList entity -- we know it
-                        // won't collide with the rest of the entities.
-                        activeList.splice( j, 1 );
-                        continue;		    
-                    } else if ( entities[ i ] != activeList[ j ] ) {
-                        // It's possible that there is a collision (their x coordinates are close).
-                        possibleCollisions.push( [ entities[ i ], activeList[ j ] ] );
-                    }
-                }
-                // Place the current entity into activeList.
-                activeList.push(entities[ i ]);
-            }
-
-            // Fine-grained collision detection.
-            for ( var i = 0; i < possibleCollisions.length; i++ ) {
-                var entityPair = possibleCollisions[ i ];
-                if ( entityPair[ 0 ] instanceof Game.Entity && entityPair[ 1 ] instanceof Game.Entity ) {
-                    Game.collider( entityPair[ 0 ], entityPair[ 1 ] );
-                }
-            }
-
-            for ( var i = 0; i < entities.length; i++ ) {
-                var ent = entities[ i ];
-                if ( Game.still ) {
-                    ent.pos.x = ent.oldPos.x;
-                    ent.pos.y = ent.oldPos.y;
-                }
-                if ( ent.pos.x != ent.oldPos.x || ent.pos.y != ent.oldPos.y || ent.animated || ent.detached || ent.attached ) {
-                    ent.invalidateRect();
-                }
-            }
-
-            //Shift viewport if hero's pos is past the shift boundary
-            if ( Game.currentLevel.type == 'sky' ) {
-                if ( Game.viewportOffset < Game.viewportShiftBuffer ) {
-                    Game.lastShift = Date.now();
-                    Game.hero.pos.x += TILESIZE / 18;
-                    Game.viewportShiftBoundary.left = Game.hero.pos.x - TILESIZE / 18;
-                    Game.shiftViewport( 'left' );
-                }
-            } else {
-                if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
-                    Game.shiftViewport( 'left' );
-                } else if ( Game.hero.pos.x < Game.viewportShiftBoundary.right && Game.viewportOffset ) {
-                    Game.shiftViewport( 'right' );
-                }
+            if ( Game.hero.pos.x > Game.viewportShiftBoundary.left && Game.viewportOffset < Game.viewportShiftBuffer ) {
+                Game.shiftViewport( 'left' );
+            } else if ( Game.hero.pos.x < Game.viewportShiftBoundary.right && Game.viewportOffset ) {
+                Game.shiftViewport( 'right' );
             }
         }
     },
@@ -447,10 +404,6 @@ var Game = {
                 Game.viewportShiftRight = false;
             }
 
-            if ( DEBUG_INVALID_RECT ) {
-                Game.displayInvalidRect();
-            }
-
             //Save canvas context before setting clip
             Game.ctx.save();
             Game.ctx.beginPath();
@@ -477,10 +430,10 @@ var Game = {
         //TODO - refactor HUD rendering
         if ( !Game.HUDOff ) {
 
-            for ( i = 0; i < Game.Inventory.maxHealth; i++ ) {
-                if ( i % 2 == 0 && i < Game.Inventory.health ) {
+            for ( i = 0; i < Game.maxHealth; i++ ) {
+                if ( i % 2 == 0 && i < Game.health ) {
                     Game.ctx.drawImage( Game.Sprites[ 'heart' ], Math.floor( i / 2 ) * TILESIZE + TILESIZE / 2, TILESIZE / 2 );
-                } else if ( i == Game.Inventory.health && i % 2 == 1 ) {
+                } else if ( i == Game.health && i % 2 == 1 ) {
                     Game.ctx.drawImage( Game.Sprites[ 'half-heart' ], Math.floor( i / 2 ) * TILESIZE + TILESIZE / 2, TILESIZE / 2 );
                 } else if ( i % 2 == 0 ) {
                     Game.ctx.drawImage( Game.Sprites[ 'empty-heart' ], Math.floor( i / 2 ) * TILESIZE + TILESIZE / 2, TILESIZE / 2 );
@@ -492,7 +445,7 @@ var Game = {
             if ( levelName ) {
                 Game.ctx.fillStyle = Game.background;
 
-                Game.ctx.font = 'normal ' + LEVEL_NAME_FONT_SIZE + 'px uni05';
+                Game.ctx.font = 'normal ' + LEVEL_NAME_FONT_SIZE + 'px Helvetica, Arial, sans-serif';
                 Game.ctx.textAlign = 'right';
 
                 Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );
@@ -641,8 +594,6 @@ var Game = {
             Game.pauseMenu.show();
         } else if ( menu == 'map' ) {
             Game.mapMenu.show();
-        } else if ( menu == 'questlog' ) {
-            Game.questlogMenu.show();
         }
         Game.paused = true;
         cancelAnimationFrame( Game.requestID );
@@ -652,58 +603,6 @@ var Game = {
         Game.lastUpdate = null;
         Game.invalidateRect( 0, Game.viewportWidth, Game.viewportHeight, 0 );
         Game.requestID = requestAnimationFrame( Game.loop ); 
-    },
-    showTransformMenu: function() {
-        Game.keyUpListener( { keyCode: ACTION_KEY } );
-        Game.transformMenu.show();
-        Game.startTransform = false;
-    },
-    openTransformMenu: function() {
-        if ( Game.Questlog.inLog( 'man' ) || Game.godMode ) {
-            Game.startTransform = true;
-            return true;
-        }
-        // Can't transform - play sound
-        return false;
-    },
-    openSign: function( content ) {
-        var menuWidth = TILESIZE * MENU_WIDTH,
-            menuHeight = TILESIZE * MENU_HEIGHT,
-            menuLineWidth = MENU_LINE_WIDTH;
-
-        Game.keyUpListener( { keyCode: ACTION_KEY } );
-        Game.currentSign = new Game.Menu.Sign( ( Game.viewportWidth - menuWidth ) / 2, ( Game.viewportHeight - menuHeight ) / 2, menuWidth, menuHeight, menuLineWidth, content );
-        Game.showSign = true;
-    },
-    openDialog: function( content ) {
-        var menuWidth = TILESIZE * MENU_WIDTH,
-            menuHeight = TILESIZE * MENU_HEIGHT,
-            menuLineWidth = MENU_LINE_WIDTH;
-
-        Game.keyUpListener( { keyCode: ACTION_KEY } );
-        Game.currentSign = new Game.Menu.Dialog( ( Game.viewportWidth - menuWidth ) / 2, ( Game.viewportHeight - menuHeight ) / 2, menuWidth, menuHeight, menuLineWidth, content );
-        Game.showSign = true;
-    },
-    showSignMenu: function() {
-        Game.paused = true;
-        Game.currentSign.show();
-        Game.showSign = false;
-    },
-    startTransformAnimation: function( newType ) {
-        Game.startTransform = false;
-        Game.transforming = true;
-        Game.keysLocked = true;
-        Game.hero.transform( newType );
-        Game.lastUpdate = null;
-        Game.invalidateRect( 0, Game.viewportWidth + Game.viewportOffset, Game.viewportHeight, Game.viewportOffset );
-        Game.render( 0 );
-        Game.requestID = requestAnimationFrame( Game.loop );
-    },
-    doneTransforming: function() {
-        Game.paused = false;
-        Game.transforming = false;
-        Game.keysLocked = false;
-        Game.startTransform = false;
     },
     imageLoaded: function( img ) {
         if ( Game.imageCount < Game.totalSprites ) {
@@ -787,6 +686,30 @@ var Game = {
         }
 
         return { width: largestWidth, height: ( y - startY ), bottom: y + lineHeight * 2 };
+    },
+    currency: 0,
+    maxCurrency: 9999,
+    incrementCurrency: function() {
+        if ( this.currency < this.maxCurrency ) {
+            this.currency++;
+        }
+    },
+    decrementCurrency: function() {
+        if ( this.currency > 0 ) {
+            this.currency--;
+        }
+    },
+    maxHealth: INIT_MAX_HEALTH,
+    health: INIT_MAX_HEALTH,
+    incrementHealth: function() {
+        if ( this.health < this.maxHealth ) {
+            this.health++;
+        }
+    },
+    decrementHealth: function() {
+        if ( this.health > 0 ) {
+            this.health--;
+        }
     },
     godMode: GOD_MODE
 };

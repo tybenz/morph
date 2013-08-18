@@ -18,7 +18,6 @@ Game.Entity.Terrain = Game.Entity.extend({
 Game.Entity.Terrain.Land = Game.Entity.Terrain.extend({
     type: 'Terrain.Land',
     initialSprite: 'land',
-    heatThreshold: 400,
     states: {
         'still': Game.Entity.prototype.states.still,
         'dying': {
@@ -29,87 +28,8 @@ Game.Entity.Terrain.Land = Game.Entity.Terrain.extend({
             }
         }
     },
-    collideWith: function( entity, collisions, parent ) {
-        this._super( entity, collisions );
-
-        var entityList = this.entityList,
-            length = entityList ? entityList.length : 0;
-
-        if ( entity.type == 'Interactable.Heat' ) {
-
-            var actualCollisions = this.getCollisions( entity, this.getActualDimensions() );
-            if ( actualCollisions ) {
-                this.heatTouched = this.heatTouched || Date.now();
-            }
-
-            if ( length ) {
-                for ( var i = 1; i < this.entityList.length; i++ ) {
-                    var subEnt = entityList[i].entity,
-                        subCollisions = subEnt.getCollisions( entity );
-                    if ( subCollisions ) {
-                        subEnt.collideWith( entity, subCollisions, this );
-                    }
-                }
-            }
-        }
-
-        if ( ( Date.now() - this.heatTouched ) > this.heatThreshold ) {
-            if ( length ) {
-
-                var newList = this.detach( this );
-                length = this.entityList.length;
-
-                if ( newList[0] ) {
-                    var first = newList[0].entity;
-                    newList = newList.splice( 1, newList.length );
-
-                    // Create new composite entity
-                    first.attach( newList );
-                    // Add new composite entity to list of entities to track
-                    Game.drawLayers[ first.drawLayer ].push( first );
-                    Game.currentLevel.entities.push( first );
-
-                    this.changeState( 'dying' );
-
-                    if ( length ) {
-                        for ( var i = 1; i < length; i++ ) {
-                            var subEnt = entityList[i].entity,
-                                subCollisions = subEnt.getCollisions( entity );
-                            if ( subCollisions ) {
-                                subEnt.collideWith( entity, subCollisions, this );
-                            }
-                        }
-                    }
-                }
-            } else if ( parent ) {
-                var newList = parent.detach( this );
-
-                if ( newList[0] ) {
-                    var first = newList[0].entity;
-                    newList = newList.splice( 1, newList.length );
-
-                    // Create new composite entity
-                    first.attach( newList );
-                    // Add new composite entity to list of entities to track
-                    Game.drawLayers[ first.drawLayer ].push( first );
-                    Game.currentLevel.entities.push( first );
-                }
-
-                // Just detached add as a singular entity to entity list
-                Game.drawLayers[ this.drawLayer ].push( this );
-                Game.currentLevel.entities.push( this );
-                this.changeState( 'dying' );
-            } else {
-                this.changeState( 'dying' );
-            }
-        }
-    },
     generateNextCoords: function( timeDiff ) {
         this._super( timeDiff );
-
-        if ( this.heatTouched && !this.hasCollisionWith( 'Interactable.Heat' ) ) {
-            this.heatTouched = null;
-        }
 
         if ( this.state == 'dying' ) {
             this.ignoreGravity = false;
@@ -149,38 +69,6 @@ Game.Entity.Terrain.Water = Game.Entity.Terrain.extend({
     initialSprite: 'water'
 });
 
-Game.Entity.Terrain.Waterfall = Game.Entity.Terrain.extend({
-    type: 'Terrain.Waterfall',
-    drawLayer: 5,
-    initialSprite: 'waterfall-1',
-    initialState: 'falling',
-    states: {
-        'falling': {
-            animation: {
-                delta: WAVE_SPEED,
-                sequence: [ 'waterfall-1', 'waterfall-2', 'waterfall-3', 'waterfall-4', 'waterfall-5', 'waterfall-6', 'waterfall-7', 'waterfall-8', 'waterfall-9' ],
-                times: 'infinite'
-            }
-        }
-    }
-});
-
-Game.Entity.Terrain.Waterclimb = Game.Entity.Terrain.extend({
-    type: 'Terrain.Waterclimb',
-    drawLayer: 5,
-    initialSprite: 'waterclimb-1',
-    initialState: 'climbing',
-    states: {
-        'climbing': {
-            animation: {
-                delta: WAVE_SPEED,
-                sequence: [ 'waterclimb-1', 'waterclimb-2', 'waterclimb-3', 'waterclimb-4', 'waterclimb-5', 'waterclimb-6', 'waterclimb-7', 'waterclimb-8', 'waterclimb-9' ],
-                times: 'infinite'
-            }
-        }
-    }
-});
-
 Game.Entity.Terrain.Portal = Game.Entity.Terrain.extend({
     type: 'Terrain.Portal',
     initialState: 'still'
@@ -189,56 +77,6 @@ Game.Entity.Terrain.Portal = Game.Entity.Terrain.extend({
 Game.Entity.Terrain.Invisible = Game.Entity.Terrain.extend({
     type: 'Terrain.Invisible',
     initialState: 'still'
-});
-
-Game.Entity.Terrain.Cloud = Game.Entity.Terrain.extend({
-    type: 'Terrain.Cloud',
-    initialState: 'still',
-    initialSprite: 'cloud-1',
-    init: function( x, y ) {
-        this._super( x, y );
-        var rand = Math.random();
-        if ( rand > 0.66 ) {
-            this.activeSprite = 'cloud-1';
-        } else if ( rand > 0.33 ) {
-            this.activeSprite = 'cloud-2';
-        } else {
-            this.activeSprite = 'cloud-3';
-        }
-    }
-});
-
-Game.Entity.Terrain.Bubble = Game.Entity.Terrain.extend({
-    type: 'Terrain.Bubble',
-    initialState: 'still',
-    initialSprite: 'bubble'
-});
-
-Game.Entity.Terrain.Wood = Game.Entity.Terrain.extend({
-    type: 'Terrain.Wood',
-    initialSprite: 'wood'
-});
-
-Game.Entity.Terrain.Window = Game.Entity.Terrain.extend({
-    type: 'Terrain.Window',
-    initialSprite: 'window'
-});
-
-Game.Entity.Terrain.Door = Game.Entity.Terrain.extend({
-    type: 'Terrain.Door',
-    width: 3 * TILESIZE,
-    height: 2 * TILESIZE,
-    initialSprite: 'door'
-});
-
-Game.Entity.Terrain.Sign = Game.Entity.Terrain.extend({
-    type: 'Terrain.Sign',
-    width: TILESIZE,
-    height: TILESIZE,
-    initialSprite: 'sign',
-    setContent: function( content ) {
-        this.content = content;
-    }
 });
 
 })( Game, Settings, window, document );
