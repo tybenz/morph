@@ -119,6 +119,26 @@ button.pause {
 }
 
 #rules p {
-  color: #0f0;
   margin: 0.6em 0;
+}
+
+#game-over {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 3em;
+  background: black;
+  z-index: 1;
+  display: none
+}
+
+#game-over.show {
+  display: block;
+}
+
+#game-over h1 {
+  text-align: center;
+  margin: 2em 0;
 }

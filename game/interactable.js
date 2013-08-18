@@ -12,6 +12,7 @@ Game.Entity.Interactable = Game.Entity.extend({
 
 Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
     type: 'Interactable.Rock',
+    drawLayer: 3,
     initialSprite: 'rock',
     init: function( x, y ) {
         this.velocity = new Game.Vector( 0, 0 );

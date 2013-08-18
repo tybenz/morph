@@ -139,7 +139,7 @@ Game.Entity.Hero = Game.Entity.extend({
             this.pos.y = adj.entity.pos.y - adj.entity.height;
         }
 
-        if ( ( this.activeSprite == 'hero-dying-9' || this.activeSprite == 'flame-dying-9' ) && !Game.godMode ) {
+        if ( ( this.activeSprite == 'hero-dying-9' || this.activeSprite == 'flame-dying-9' ) ) {
             this.visible = false;
             Game.destroyEntity( this );
             Game.gameOver();

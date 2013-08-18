@@ -14,7 +14,6 @@ var TILESIZE = 36,
     MAP_KEY = 77,
     INVENTORY_KEY = 73,
     ENTER_KEY = 13,
-    GOD_MODE = true,
     LAND_BACKGROUND = '#000',
     SEA_BACKGROUND = '#003',
     INIT_MAX_HEALTH = 10,
@@ -152,7 +151,7 @@ var Game = {
         }
         Game.lastUpdate = timestamp;
         if ( !Game.clickStep ) {
-            if ( ( !Game.stopLoop ) && !Game.paused ) {
+            if ( !Game.stopLoop && !Game.paused ) {
                 Game.requestID = requestAnimationFrame( Game.loop ); 
             } else if ( Game.switchToLevel ) {
                 Game.performLevelSwitch();
@@ -607,6 +606,7 @@ var Game = {
     },
     gameOver: function() {
         Game.paused = true;
+        document.querySelector( '#game-over' ).classList.add( 'show' );
     },
     switchLevel: function( levelID ) {
         Game.stopLoop = true;
@@ -693,7 +693,7 @@ var Game = {
             this.health--;
         }
     },
-    godMode: GOD_MODE
+    godMode: false
 };
 Game.viewportTileWidth = 25;
 Game.viewportTileHeight = 14;
