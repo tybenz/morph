@@ -123,8 +123,8 @@ Game.Entity.Hero = Game.Entity.extend({
         if ( this.takingDamage && this.takingDamage != 'locked' ) {
             var hero = this;
             var oldState = this.state;
-            Game.Inventory.decrementHealth();
-            if ( Game.Inventory.health > 0 ) {
+            Game.decrementHealth();
+            if ( Game.health > 0 ) {
                 this.changeState( 'blinking' );
                 this.takingDamage = 'locked';
             } else {
@@ -164,11 +164,11 @@ Game.Entity.Hero = Game.Entity.extend({
                 break;
             case 'Interactable.Heart':
                 Game.destroyEntity( entity );
-                Game.Inventory.incrementHealth();
+                Game.incrementHealth();
                 break;
             case 'Interactable.Coin':
                 Game.destroyEntity( entity );
-                Game.Inventory.incrementCurrency();
+                Game.incrementCurrency();
                 break;
             case 'Terrain.Portal':
                 Game.switchLevel( entity.toLevel );

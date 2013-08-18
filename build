@@ -1,6 +1,6 @@
 #!/bin/bash
 
 concat manifest.txt out.js
-uglifyjs out.js -o out.min.js
+uglifyjs -mt -o out.min.js out.js
 rm out.js
 gzip out.min.js

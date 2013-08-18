@@ -38,41 +38,6 @@ Game.Vector = Class.extend({
     }
 });
 
-Game.getIntersection = function( p1, p2, p3, p4 ) {
-    var m1, c1, m2, c2,
-        intersectionX, intersectionY;
-
-    // HACK - avoid infinite and zero slopes
-    if ( !( p2.x - p1.x ) ) {
-        p2.x += 0.001;
-    }
-    if ( !( p4.x - p3.x ) ) {
-        p4.x += 0.001;
-    }
-    if ( !( p2.y - p1.y ) ) {
-        p2.y += 0.001;
-    }
-    if ( !( p4.y - p3.y ) ) {
-        p4.y += 0.001;
-    }
-
-    m1 = ( p2.y - p1.y ) / ( p2.x - p1.x );
-    c1 = p1.y - m1 * p1.x;
-
-
-    m2 = ( p4.y - p3.y ) / ( p4.x - p3.x );
-    c2 = p3.y - m2 * p3.x;
-
-    if ( !( m1 - m2 ) ) {
-        return null;
-    } else {
-        intersectionX = ( c2 - c1 ) / ( m1 - m2 );
-        intersectionY = m1 * intersectionX + c1;
-
-        return new Game.Vector( intersectionX, intersectionY );
-    }
-}
-
 Game.isOnSegment = function( xi, yi, xj, yj, xk, yk ) {
     return (xi <= xk || xj <= xk) && (xk <= xi || xk <= xj) &&
         (yi <= yk || yj <= yk) && (yk <= yi || yk <= yj);

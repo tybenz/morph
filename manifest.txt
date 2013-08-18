@@ -1,6 +1,5 @@
 lib/inherit.js
 game/utils.js
-game/settings.js
 game/game.js
 game/vector.js
 game/sprite.js
@@ -10,4 +9,3 @@ game/hero.js
 game/enemy.js
 game/terrain.js
 game/interactable.js
-game/menu.js
