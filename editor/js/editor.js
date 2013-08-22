@@ -429,10 +429,9 @@ Editor = {
         }
 
         var json = JSON.stringify( lev, undefined, 4 );
-        json = json.replace( /",\n(\s)*/g, '", ' ).
-                    replace( /\[\n\s*"/g, '[ "' ).
-                    replace( /"\n\s*\]/g, '" ]' );
-        window.open( 'data:text/plain,new Game.Level( \'land\', \'\', null, ' + encodeURIComponent( json ) + '),' );
+        json = json.replace( /\[ "/, '[\n    ' )
+                   .replace( /, "/, ',\n    "' );
+        window.open( "data:text/plain,'': new Game.Level( \'land\', \'\', null, " + encodeURIComponent( json ) + ")," );
     },
     preview: function() {
         Editor.$canvas.hide();
