@@ -560,7 +560,7 @@ Game.Entity = Class.extend({
         }
     },
     applyGravity: function( timeDiff ) {
-        if ( !this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+        if ( !this.adjacentTo( 'Terrain.Land', 'bottom' ) && !this.adjacentTo( 'Terrain.Trapdoor', 'bottom' ) ) {
             var gravitationalForce = this.gravity.multiply( timeDiff );
             this.velocity = this.velocity.add( gravitationalForce );
         }

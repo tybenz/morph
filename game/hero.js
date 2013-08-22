@@ -51,13 +51,13 @@ Game.Entity.Hero = Game.Entity.extend({
     },
     right: function() {
         this.direction = 'right';
-        if ( !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) ) {
+        if ( !this.adjacentTo( 'Terrain.Land', 'right' ) && !this.adjacentToLevelEdge( 'right' ) && !this.adjacentTo( 'Terrain.Trapdoor', 'right' ) ) {
             this.pos.x += TILESIZE;
         }
     },
     left: function() {
         this.direction = 'left';
-        if ( !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) ) {
+        if ( !this.adjacentTo( 'Terrain.Land', 'left' ) && !this.adjacentToLevelEdge( 'left' ) && !this.adjacentTo( 'Terrain.Trapdoor', 'left' ) ) {
             this.pos.x -= TILESIZE;
         }
     },
@@ -154,6 +154,7 @@ Game.Entity.Hero = Game.Entity.extend({
     collideWith: function( entity, collisionTypes ) {
         var entityType = entity.type;
         switch ( entity.type ) {
+            case 'Terrain.Trapdoor':
             case 'Terrain.Land':
                 if ( this.velocity.y > 0 ) {
                     this.disableJump = false;

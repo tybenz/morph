@@ -49,7 +49,7 @@ Game.Level = Class.extend({
 });
 
 Game.Levels = {
-    '01': new Game.Level( 'land', '01', null, [
+    '01': new Game.Level( 'land', '01', '02', [
         "blank*7|terrain.land*1|blank*100|terrain.land*2",
         "blank*7|terrain.land*1|blank*100|terrain.land*2",
         "blank*7|terrain.land*1|blank*19|enemy.monster*1|blank*2|interactable.rock*1|blank*41|enemy.bird*1|blank*35|terrain.land*2",
@@ -64,7 +64,23 @@ Game.Levels = {
         "blank*7|terrain.trapdoor(1)*1|blank*37|terrain.land*6|blank*57|terrain.trapdoor(3)*1|blank*1",
         "hero.man*1|blank*3|interactable.switch[6](1)*1|blank*2|terrain.trapdoor(1)*1|blank*6|enemy.monster*1|blank*64|enemy.monster*1|blank*1|enemy.monster*1|blank*1|enemy.monster*1|blank*19|interactable.rock*1|blank*1|interactable.switch[6](3)*1|blank*2|terrain.trapdoor(3)*1|blank*1",
         "terrain.land*25|blank*44|terrain.land*19|blank*14|terrain.land*8"
-    ])
+    ]),
+    '02': new Game.Level( 'land', '02', null, [
+        "blank*97|terrain.land*1|blank*11|terrain.land*1",
+        "blank*97|terrain.land*1|blank*11|terrain.land*1",
+        "blank*17|interactable.switch[6](1)*1|blank*79|terrain.land*1|blank*11|terrain.land*1",
+        "blank*13|terrain.land*6|blank*31|terrain.land*2|blank*38|terrain.land*2|blank*5|terrain.land*1|blank*11|terrain.land*1",
+        "blank*6|interactable.rock*1|blank*43|enemy.turret*1|terrain.land*1|blank*37|terrain.land*2|blank*6|terrain.land*1|blank*9|enemy.monster*1|blank*1|terrain.land*1",
+        "blank*3|terrain.land*6|blank*33|terrain.land*6|blank*2|terrain.land*2|blank*36|terrain.land*2|blank*7|terrain.land*1|blank*4|terrain.land*8",
+        "blank*77|enemy.bird*1|blank*9|terrain.land*2|blank*7|terrain.land*4|blank*9|terrain.land*1",
+        "blank*38|terrain.land*2|blank*15|terrain.land*2|blank*29|terrain.land*2|blank*7|terrain.land*2|blank*2|terrain.land*1|blank*9|terrain.land*1",
+        "terrain.land*4|blank*9|interactable.rock*1|blank*8|interactable.rock*1|blank*15|enemy.turret*1|terrain.land*1|blank*15|enemy.turret*1|terrain.land*1|blank*16|enemy.bird*1|blank*11|terrain.land*2|blank*7|terrain.land*2|blank*3|terrain.land*9|blank*1|terrain.land*1",
+        "blank*13|terrain.trapdoor(1)*1|blank*8|terrain.trapdoor(1)*1|blank*7|terrain.land*6|blank*2|terrain.land*2|blank*8|terrain.land*5|blank*2|terrain.land*2|blank*28|terrain.land*1|blank*7|terrain.land*2|blank*14|terrain.land*1",
+        "blank*84|terrain.land*2|blank*4|terrain.land*4|blank*14|terrain.land*2",
+        "blank*6|terrain.land*1|blank*76|terrain.land*3|blank*22|terrain.trapdoor(2)*1|blank*1",
+        "hero.man*1|blank*5|terrain.land*1|blank*6|enemy.turret*1|blank*8|enemy.turret*1|blank*38|interactable.rock*1|blank*5|enemy.turret*1|blank*8|enemy.turret*1|blank*5|terrain.land*2|enemy.monster*1|terrain.land*1|interactable.rock*1|blank*9|enemy.turret*1|blank*1|enemy.turret*1|blank*5|interactable.switch[6](2)*1|blank*3|terrain.trapdoor(2)*1|blank*1",
+        "terrain.land*14|terrain.trapdoor(1)*8|terrain.land*7|blank*31|terrain.land*50"
+    ]),
 };
 
 })( Game, window, document );
