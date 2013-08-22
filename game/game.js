@@ -430,7 +430,7 @@ var Game = {
             if ( levelName ) {
                 Game.ctx.fillStyle = Game.background;
 
-                Game.ctx.font = 'normal ' + LEVEL_NAME_FONT_SIZE + 'px Helvetica, Arial, sans-serif';
+                Game.ctx.font = 'normal ' + LEVEL_NAME_FONT_SIZE + 'px "Terminus (TTF)", "Envy Code R", "Source Code Pro", "Menlo", Courier, monospace';
                 Game.ctx.textAlign = 'right';
 
                 Game.ctx.fillText( levelName, Game.viewportWidth - 10, TILESIZE );

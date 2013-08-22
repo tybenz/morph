@@ -11,7 +11,7 @@ html, body {
 
 body {
   margin: 0;
-  font-family: Myriad Pro, Helvetica, Arial, sans-serif;
+  font-family: 'Terminus (TTF)', 'Envy Code R', 'Source Code Pro', 'Menlo', Courier, monospace;
   background-color: #111;
   color: #f7f7f7;
 }
@@ -111,7 +111,7 @@ button.pause {
 }
 
 #rules {
-  font-size: 1.2em;
+  font-size: 1.05em;
   width: 100%;
   position: absolute;
   text-align: center;
