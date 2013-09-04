@@ -263,11 +263,10 @@ Game.Entity.Hero.Man = Game.Entity.Hero.extend({
             entity.pos.x = this.pos.x;
             if ( this.direction == 'right' ) {
                 this.activeSprite = 'man-holding-right';
-                this.invalidateRect( 0, 0 + TILESIZE, 0, 0 );
             } else if ( this.direction == 'left' ) {
                 this.activeSprite = 'man-holding-left';
-                this.invalidateRect( 0, 0, 0, 0 - TILESIZE );
             }
+            this.invalidateRect( 0 - TILESIZE, TILESIZE, TILESIZE, 0 - TILESIZE );
 
             this.attach( [ entity ] );
             Game.destroyEntity( entity );

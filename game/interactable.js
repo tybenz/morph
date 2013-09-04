@@ -46,7 +46,7 @@ Game.Entity.Interactable.Rock = Game.Entity.Interactable.extend({
         } else {
             frictionalForce = ( new Game.Vector( 0.0003, 0 ) ).multiply( timeDiff );
         }
-        if ( this.adjacentTo( 'Terrain.Land', 'bottom' ) ) {
+        if ( this.adjacentTo( 'Terrain.Land', 'bottom' ) || this.adjacentTo( 'Terrain.Trapdoor', 'bottom' ) ) {
             if ( this.velocity.x != 0 ) {
                 this.velocity = this.velocity.add( frictionalForce );
             }
