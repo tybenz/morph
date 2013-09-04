@@ -492,6 +492,25 @@ Game.Entity.Enemy.Bullet = Game.Entity.Enemy.extend({
     width: 4,
     height: 4,
     states: Game.Entity.prototype.states,
+    invalidateRect: function() {
+        var offsetTop = 0 - this.height,
+            offsetRight = this.width,
+            offsetBottom = this.height,
+            offsetLeft = 0 - this.width,
+            newX = this.pos.x - this.width,
+            newY = this.pos.y - this.height,
+            oldX = this.oldPos.x - this.width,
+            oldY = this.oldPos.y - this.height,
+            width = this.width + this.width * 2,
+            height = this.height + this.height * 2,
+            top = oldY <= newY ? oldY + offsetTop : newY + offsetTop,
+            left = oldX <= newX ? oldX + offsetLeft : newX + offsetLeft,
+            bottom = ( oldY + height ) >= ( newY + height ) ? oldY + height + offsetBottom : newY + height + offsetBottom,
+            right = ( oldX + width ) >= ( newX + width ) ? oldX + width + offsetRight : newX + width + offsetRight;
+
+        //Pass a rect (position/dimensions) to the global invalidRect
+        Game.invalidateRect( top, right, bottom, left );
+    },
     init: function( x, y ) {
         this._super( x, y );
         this.ignoreGravity = true;
