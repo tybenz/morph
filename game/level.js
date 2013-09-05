@@ -65,7 +65,7 @@ Game.Levels = {
         "hero.man*1|blank*3|interactable.switch[6](1)*1|blank*2|terrain.trapdoor(1)*1|blank*6|enemy.monster*1|blank*64|enemy.monster*1|blank*1|enemy.monster*1|blank*1|enemy.monster*1|blank*19|interactable.rock*1|blank*1|interactable.switch[6](3)*1|blank*2|terrain.trapdoor(3)*1|blank*1",
         "terrain.land*25|blank*44|terrain.land*19|blank*14|terrain.land*8"
     ]),
-    '02': new Game.Level( 'land', '02', null, [
+    '02': new Game.Level( 'land', '02', '03', [
         "blank*97|terrain.land*1|blank*11|terrain.land*1",
         "blank*97|terrain.land*1|blank*11|terrain.land*1",
         "blank*17|interactable.switch[6](1)*1|blank*79|terrain.land*1|blank*11|terrain.land*1",
@@ -80,6 +80,22 @@ Game.Levels = {
         "blank*6|terrain.land*1|blank*76|terrain.land*3|blank*22|terrain.trapdoor(2)*1|blank*1",
         "hero.man*1|blank*5|terrain.land*1|blank*6|enemy.turret*1|blank*8|enemy.turret*1|blank*38|interactable.rock*1|blank*5|enemy.turret*1|blank*8|enemy.turret*1|blank*5|terrain.land*2|enemy.monster*1|terrain.land*1|interactable.rock*1|blank*9|enemy.turret*1|blank*1|enemy.turret*1|blank*5|interactable.switch[6](2)*1|blank*3|terrain.trapdoor(2)*1|blank*1",
         "terrain.land*14|terrain.trapdoor(1)*8|terrain.land*7|blank*31|terrain.land*50"
+    ]),
+    '03': new Game.Level( 'land', '03', null, [
+        "blank*31|terrain.land*1|blank*1|terrain.land*1|blank*75|terrain.land*1",
+        "blank*31|terrain.land*1|enemy.monster*1|terrain.land*1|blank*3|enemy.turret*1|blank*15|terrain.land*2|blank*54|terrain.land*1",
+        "blank*31|terrain.land*1|terrain.trapdoor(1)*1|terrain.land*1|blank*2|terrain.land*2|blank*15|enemy.turret*1|terrain.land*1|blank*23|enemy.bird*1|blank*30|terrain.land*1",
+        "blank*21|enemy.bird*1|blank*9|terrain.land*1|enemy.monster*1|terrain.land*1|enemy.monster*1|blank*2|terrain.land*3|blank*7|terrain.land*5|blank*1|terrain.land*2|blank*54|terrain.land*1",
+        "blank*31|terrain.land*1|terrain.trapdoor(1)*1|terrain.land*2|blank*5|terrain.land*4|blank*38|enemy.bird*1|blank*10|terrain.land*2|blank*13|enemy.bird*1|terrain.land*1",
+        "blank*24|enemy.bird*1|blank*6|terrain.land*1|enemy.monster*1|terrain.land*1|blank*10|terrain.land*1|blank*11|terrain.land*2|blank*25|interactable.rock*1|blank*23|enemy.bird*1|blank*1|terrain.land*1",
+        "blank*22|enemy.bird*1|blank*8|terrain.land*1|terrain.trapdoor(1)*1|terrain.land*1|blank*11|terrain.land*1|blank*10|enemy.turret*1|terrain.land*1|blank*22|enemy.bird*1|terrain.land*6|blank*22|terrain.land*1",
+        "blank*29|interactable.rock*1|blank*1|terrain.land*1|blank*1|terrain.land*8|blank*4|terrain.land*1|blank*3|terrain.land*6|blank*1|terrain.land*2|blank*31|terrain.land*2|blank*6|terrain.land*2|blank*10|terrain.land*1",
+        "blank*28|terrain.land*2|blank*1|terrain.land*1|blank*1|terrain.land*1|enemy.monster*1|blank*1|enemy.monster*1|blank*1|enemy.monster*1|terrain.land*2|blank*4|terrain.land*1|blank*15|terrain.land*2|blank*13|enemy.monster*1|blank*32|terrain.land*1",
+        "blank*31|terrain.land*1|blank*1|terrain.land*1|terrain.trapdoor(1)*5|terrain.land*1|blank*4|terrain.land*1|blank*16|enemy.turret*1|terrain.land*1|blank*7|terrain.land*8|blank*29|terrain.land*3",
+        "blank*13|terrain.land*1|enemy.monster*1|blank*5|enemy.monster*1|terrain.land*1|blank*9|terrain.land*1|blank*10|terrain.land*2|blank*11|terrain.land*5|blank*1|terrain.land*2|blank*44|terrain.trapdoor(2)*1|blank*2",
+        "blank*13|terrain.land*9|blank*9|terrain.trapdoor(1)*1|blank*9|terrain.land*1|blank*65|terrain.trapdoor(2)*1|blank*2",
+        "hero.man*1|blank*5|interactable.rock*1|blank*1|terrain.land*1|blank*2|enemy.monster*1|blank*4|interactable.heart*1|enemy.monster*1|interactable.heart*1|blank*4|enemy.monster*1|blank*2|terrain.land*1|blank*2|interactable.switch[6](1)*1|blank*1|terrain.trapdoor(1)*1|blank*8|terrain.land*1|terrain.wave*19|blank*5|enemy.turret*1|blank*5|enemy.monster*1|blank*3|enemy.monster*1|blank*3|enemy.monster*1|blank*11|enemy.turret*1|blank*7|enemy.turret*1|blank*6|interactable.switch[6](2)*1|terrain.land*1|blank*2",
+        "terrain.land*41|terrain.water*19|terrain.land*50"
     ]),
 };
 
