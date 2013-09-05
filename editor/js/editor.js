@@ -26,6 +26,7 @@ Editor = {
         this.initTools();
     },
     initEditing: function() {
+        this.initLevelList();
         this.initLevel();
         this.initCanvas();
         this.drawLevel();
@@ -148,6 +149,29 @@ Editor = {
         Editor.drawLevel();
         Editor.$rectangle.hide();
     },
+    initLevelList: function() {
+        Editor.levelList = {};
+        Editor.$levelList = $( '#level-list' );
+
+        for ( var i in Game.Levels ) {
+            var level = Game.Levels[i];
+
+            Editor.levelList[ level.title ] = level.grid;
+            Editor.$levelList.append( '<li class="select-level">' + level.title + '</li>' );
+        }
+
+        Editor.$levelList.on( 'click', '.select-level', function() {
+            var name = $( this ).text();
+
+            Editor.level = Editor.levelList[ name ];
+
+            Editor.width = Editor.level[0].length;
+            Editor.$input.val( Editor.width );
+            Editor.canvas.width = Editor.width * TILESIZE;
+
+            Editor.drawLevel();
+        });
+    },
     initLevel: function() {
         this.level = [];
         for ( var i = 0; i < Editor.height; i++ ) {
@@ -195,7 +219,7 @@ Editor = {
 
         for ( i in this.level ) {
             for ( j in this.level[i] ) {
-                sprite = this.level[i][j];
+                sprite = this.level[i][j].replace( /\([^\(\)]*\)/g, '' ).replace( /\[[^\[\]]*\]/g, '' );
                 if ( sprite != 'blank' ) {
                     this.ctx.drawImage( this.sprites[ sprite ], j * TILESIZE, i * TILESIZE );
                 }
