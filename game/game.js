@@ -20,6 +20,7 @@ var TILESIZE = 36,
     LEVEL_NAME_COLOR = '#f9f9f9',
     LEVEL_NAME_FONT_SIZE = Math.round( 0.666667 * TILESIZE );
 
+
 var Game = {
     //Array of entities that should be destroyed on the following update
     toBeDestroyed: [],
