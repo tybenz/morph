@@ -26,6 +26,7 @@ Editor = {
         this.initTools();
     },
     initEditing: function() {
+        this.initLevelList();
         this.initLevel();
         this.initCanvas();
         this.drawLevel();
@@ -148,6 +149,29 @@ Editor = {
         Editor.drawLevel();
         Editor.$rectangle.hide();
     },
+    initLevelList: function() {
+        Editor.levelList = {};
+        Editor.$levelList = $( '#level-list' );
+
+        for ( var i in Game.Levels ) {
+            var level = Game.Levels[i];
+
+            Editor.levelList[ level.title ] = level.grid;
+            Editor.$levelList.append( '<li class="select-level">' + level.title + '</li>' );
+        }
+
+        Editor.$levelList.on( 'click', '.select-level', function() {
+            var name = $( this ).text();
+
+            Editor.level = Editor.levelList[ name ];
+
+            Editor.width = Editor.level[0].length;
+            Editor.$input.val( Editor.width );
+            Editor.canvas.width = Editor.width * TILESIZE;
+
+            Editor.drawLevel();
+        });
+    },
     initLevel: function() {
         this.level = [];
         for ( var i = 0; i < Editor.height; i++ ) {
@@ -195,7 +219,7 @@ Editor = {
 
         for ( i in this.level ) {
             for ( j in this.level[i] ) {
-                sprite = this.level[i][j];
+                sprite = this.level[i][j].replace( /\([^\(\)]*\)/g, '' ).replace( /\[[^\[\]]*\]/g, '' ).replace( /\{[^\{\}]*\}/g, '' );
                 if ( sprite != 'blank' ) {
                     this.ctx.drawImage( this.sprites[ sprite ], j * TILESIZE, i * TILESIZE );
                 }
@@ -403,11 +427,40 @@ Editor = {
         return $( '#level-name' ).val();
     },
     save: function() {
-        var json = JSON.stringify( this.level, undefined, 4 );
-        json = json.replace( /",\n(\s)*/g, '", ' ).
-                    replace( /\[\n\s*"/g, '[ "' ).
-                    replace( /"\n\s*\]/g, '" ]' );
-        window.open( 'data:text/plain,new Game.Level( \'land\', \'' + Editor.levelName() + '\', null, ' + encodeURIComponent( json ) + '),' );
+        var lev = [];
+        for ( var i = 0, len = this.level.length; i < len; i++ ) {
+            var str = '',
+                count = 0,
+                currentType;
+            for ( var j = 0, len2 = this.level[i].length; j < len2; j++ ) {
+                if ( !currentType || currentType != this.level[i][j] ) {
+                    if ( count ) {
+                        if ( str.length ) {
+                            str += '|' + currentType + '*' + count;
+                        } else {
+                            str = currentType + '*' + count;
+                        }
+                    }
+                    currentType = this.level[i][j];
+                    count = 1;
+                } else {
+                    count++;
+                }
+            }
+            if ( count ) {
+                if ( str.length ) {
+                    str += '|' + currentType + '*' + count;
+                } else {
+                    str = currentType + '*' + count;
+                }
+            }
+            lev[i] = str;
+        }
+
+        var json = JSON.stringify( lev, undefined, 4 );
+        json = json.replace( /\[ "/, '[\n    ' )
+                   .replace( /, "/, ',\n    "' );
+        window.open( "data:text/plain,'': new Game.Level( \'land\', \'\', null, " + encodeURIComponent( json ) + ")," );
     },
     preview: function() {
         Editor.$canvas.hide();
